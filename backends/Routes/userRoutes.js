@@ -22,7 +22,6 @@ const { validateUser, authorizeAdmin } = require("../middlewares/auth");
 userRouter
   .route("/")
   .post(createUser)
-
   .get(validateUser, authorizeAdmin, getAllUser);
 
 userRouter.post("/login", loginUser);
