@@ -7,10 +7,10 @@ const crypto = require("crypto");
 const joi = require("joi");
 // Local
 const generateVerificationToken = require("../utils/verification.Token");
-const sendMail = require("../utils/mail.Send");
-const generateToken = require("../utils/verification.Token");
-const welcomeMail = require("../utils/welcome.Mail");
-const passResetMail = require("../utils/password.Reset");
+const sendMail = require("../Mail/mail.Send");
+const generateToken = require("../utils/createToken");
+const welcomeMail = require("../Mail/welcome.Mail");
+const passResetMail = require("../Mail/password.Reset");
 
 const userCreatingSchema = joi.object({
   username: joi
@@ -165,9 +165,9 @@ const createUser = async (req, res) => {
     });
 
     await newUser.save();
-    sendMail(verificationToken, newUser.email);
-
+    // sendMail(verificationToken, newUser.email);
     generateToken(res, newUser._id);
+
     return res.status(201).json({
       error: false,
       message: "User created successfully.",
@@ -362,6 +362,7 @@ const verifyUseremail = async (req, res) => {
   const { userverifycode } = req.body;
 
   try {
+    console.log(req.user);
     const user = await userModel.findById(req.user._id);
 
     if (
@@ -397,7 +398,7 @@ const forgotpass = async (req, res) => {
     if (!user) {
       return res
         .status(400)
-        .json({ error: true, message: "Couldnot Found user" });
+        .json({ error: true, message: "Invalid Credentials" });
     }
     const resetToken = crypto.randomBytes(20).toString("hex");
 

@@ -3,6 +3,7 @@ const userModel = require("../Models/User.model");
 
 const validateUser = async (req, res, next) => {
   let cookieToken = req.cookies.token;
+  console.log(cookieToken);
 
   if (!cookieToken) {
     return res
@@ -10,12 +11,15 @@ const validateUser = async (req, res, next) => {
       .json({ message: "Not authorized,no token", error: true });
   }
   try {
-    const signId = jwt.verify(cookieToken, process.env.JWT_SECRET);
+    const signId = jwt.verify(cookieToken, process.env.SECRET);
 
-    req.user = await userModel.findById(signId.user._id).select("-password");
+    req.user = await userModel.findById(signId.userId).select("-password");
+
     next();
   } catch (e) {
-    return res.status(400).json({ message: e.message, error: true });
+    return res
+      .status(400)
+      .json({ message: "Couldnot verify User", error: true });
   }
 };
 const authorizeAdmin = async (req, res) => {
