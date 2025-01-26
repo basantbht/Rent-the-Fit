@@ -15,7 +15,7 @@ const {
   verifyUseremail,
   resetpass,
   getAllUser,
-} = require("../Controllers/UserAuth");
+} = require("../Controllers/User.Controller");
 
 const { validateUser, authorizeAdmin } = require("../middlewares/auth");
 

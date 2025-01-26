@@ -10,11 +10,11 @@ const {
   editDetail,
   deleteDetail,
   searchProduct,
-} = require("../Controllers/Product");
+} = require("../Controllers/Product.Controller");
 
-userRouter.get("/search", searchProduct);
-userRouter.post("/abc", validateUser, authorizeAdmin, productDetail);
-userRouter.get("/abc", validateUser, authorizeAdmin, ReadDetail);
-userRouter.put("/abcd/:id", validateUser, authorizeAdmin, editDetail);
-userRouter.delete("/cd/:id", validateUser, authorizeAdmin, deleteDetail);
+productRouter.get("/search", searchProduct);
+productRouter.post("/abc", validateUser, authorizeAdmin, productDetail);
+productRouter.get("/abc", validateUser, authorizeAdmin, ReadDetail);
+productRouter.put("/abcd/:id", validateUser, authorizeAdmin, editDetail);
+productRouter.delete("/cd/:id", validateUser, authorizeAdmin, deleteDetail);
 module.exports = productRouter;
