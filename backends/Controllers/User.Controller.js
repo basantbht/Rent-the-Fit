@@ -6,11 +6,11 @@ const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const joi = require("joi");
 // Local
-const generateVerificationToken = require("../middlewares/verificationToken");
-const sendMail = require("../middlewares/mail.send");
-const generateToken = require("../middlewares/token");
-const welcomeMail = require("../middlewares/welcomeMail");
-const passResetMail = require("../middlewares/password.reset");
+const generateVerificationToken = require("../utils/verification.Token");
+const sendMail = require("../utils/mail.Send");
+const generateToken = require("../utils/verification.Token");
+const welcomeMail = require("../utils/welcome.Mail");
+const passResetMail = require("../utils/password.Reset");
 
 const userCreatingSchema = joi.object({
   username: joi
