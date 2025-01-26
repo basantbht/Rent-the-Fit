@@ -3,13 +3,18 @@ import React, { useState } from 'react'
 const Signup = () => {
 
   const [name, setName] = useState('');
-  const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  console.log(name,email,password)
 
-  const submitHandler = (e) => {
+  const submitHandler = async(e) => {
     e.preventDefault();
 
     try {
+
+      const response = await axios.post('http://localhost:4000/api/user/',{name,password,email})
+
+      console.log(response)
       
     } catch (error) {
       
