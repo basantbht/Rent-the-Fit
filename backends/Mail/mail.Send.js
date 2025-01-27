@@ -12,7 +12,9 @@ const sendMail = async (verftoken, email,res) => {
     console.log("Email Sent");
   } catch (e) {
     console.log("Error in SendMail", e);
+
     return res.status(500).json({ message: "Couldnot Sent Email" });
   }
-};
+}
+
 module.exports = sendMail;

@@ -168,7 +168,9 @@ const createUser = async (req, res) => {
     });
 
     await newUser.save();
+
     sendMail(verificationToken, newUser.email, res);
+
     generateToken(res, newUser._id);
 
     return res.status(201).json({
