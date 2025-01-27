@@ -1,11 +1,14 @@
 // Model
+
 const userModel = require("../Models/User.model");
 // Module
-const bcrypt = require("bcrypt");
 
+const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const joi = require("joi");
+
 // Local
+
 const generateVerificationToken = require("../utils/verification.Token");
 const sendMail = require("../Mail/mail.Send");
 const generateToken = require("../utils/createToken");
@@ -165,7 +168,7 @@ const createUser = async (req, res) => {
     });
 
     await newUser.save();
-    // sendMail(verificationToken, newUser.email);
+    sendMail(verificationToken, newUser.email, res);
     generateToken(res, newUser._id);
 
     return res.status(201).json({
@@ -212,17 +215,22 @@ const loginUser = async (req, res) => {
           .status(401)
           .json({ error: true, message: "Invalid credentials" });
       }
+      if (userExisted.isVerified === true) {
+        generateToken(res, userExisted._id);
+        return res.status(200).json({
+          message: "LogIn Success.",
+          _id: userExisted._id,
+          username: userExisted.username,
+          email: userExisted.email,
 
-      generateToken(res, userExisted._id);
-      return res.status(200).json({
-        message: "LogIn Success.",
-        _id: userExisted._id,
-        username: userExisted.username,
-        email: userExisted.email,
-
-        isAdmin: userExisted.isAdmin,
-        error: false,
-      });
+          isAdmin: userExisted.isAdmin,
+          error: false,
+        });
+      } else {
+        return res
+          .status(401)
+          .json({ error: true, message: "Verify First through code" });
+      }
     }
   } catch (e) {
     console.log("Error in login", e);
@@ -362,7 +370,7 @@ const verifyUseremail = async (req, res) => {
   const { userverifycode } = req.body;
 
   try {
-    console.log(req.user);
+    //console.log(req.user);
     const user = await userModel.findById(req.user._id);
 
     if (

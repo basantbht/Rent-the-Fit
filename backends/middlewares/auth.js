@@ -3,7 +3,6 @@ const userModel = require("../Models/User.model");
 
 const validateUser = async (req, res, next) => {
   let cookieToken = req.cookies.token;
-  console.log(cookieToken);
 
   if (!cookieToken) {
     return res
@@ -22,9 +21,8 @@ const validateUser = async (req, res, next) => {
       .json({ message: "Couldnot verify User", error: true });
   }
 };
-const authorizeAdmin = async (req, res) => {
+const authorizeAdmin = async (req, res,next) => {
   if (req.user && req.user.isAdmin) {
-    res.status(200);
     next();
   } else {
     res

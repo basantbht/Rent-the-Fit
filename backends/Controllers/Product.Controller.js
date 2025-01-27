@@ -3,50 +3,78 @@ const productModel = require("../Models/Product.model");
 
 // Module
 const joi = require("joi");
+const cloudinary = require("../cloudCofig/config");
 
 const productSchema = joi.object({
-  name: joi.string().required().max(30),
-  brand: joi.string().required().max(30),
-  quantity: joi.string().required(),
-  category: joi.string().required(),
-  description: joi.string().required().max(100),
-  price: joi.string().required(),
-  image: joi.string().required(),
+  name: joi.string().required().max(30).messages({
+    "string.empty": "Product name is required.",
+    "string.max": "Product name cannot exceed 30 characters.",
+  }),
+  brand: joi.string().required().max(30).messages({
+    "string.empty": "Brand is required.",
+    "string.max": "Brand name cannot exceed 30 characters.",
+  }),
+  quantity: joi.string().required().messages({
+    "string.empty": "Quantity is required.",
+  }),
+  description: joi.string().required().max(100).messages({
+    "string.empty": "Description is required.",
+    "string.max": "Description cannot exceed 100 characters.",
+  }),
+  price: joi.number().required().min(0).messages({
+    "number.base": "Price must be a number.",
+    "number.empty": "Price is required.",
+    "number.min": "Price must be a positive number.",
+  }),
+  sizes: joi.string().required().messages({
+    "string.empty": "Sizes are required.",
+  }),
 });
 
-const productDetail = async (req, res) => {
+const createProduct = async (req, res) => {
   try {
     const { error } = productSchema.validate(req.body);
     if (error) {
-      return res
-        .status(404)
-        .json({ error: true, message: error.details[0].message });
+      return res.status(404).json({ error: true, message: error.message });
     }
-    const { name, brand, quantity, category, description, price } = req.body;
+    const { name, brand, quantity, description, price, sizes, bestseller } =
+      req.body;
+    //console.log(req.file);
+    const image = req.file;
+    if (!image) {
+      return res.status(400).json({ error: true, message: "No Image Found" });
+    }
+    let cloudRes = await cloudinary.uploader.upload(image.path, {
+      folder: "product-image",
+    });
+    // console.log(cloudRes);
 
     const newProduct = new productModel({
       name,
       brand,
       quantity,
-      category,
+
       description,
       price,
+      sizes,
+      image: cloudRes.secure_url,
+      bestseller: bestseller === true ? true : false,
     });
     await newProduct.save();
-    return res.status(201).json({ erro: false, message: newProduct });
+    return res.status(201).json({ error: false, message: "Product Added" });
   } catch (error) {
     console.log("Error in CreateProduct", error);
     return res
-      .status(404)
+      .status(400)
       .json({ error: true, message: "Couldnot Create the Product" });
   }
 };
 
-const ReadDetail = async (req, res) => {
+const ReadProduct = async (req, res) => {
   try {
     // sort -1 => descending order
     // sort 1 => ascending order
-    const allProduct = await productModel.find({}).sort({ name: 1 }).limit(5);
+    const allProduct = await productModel.find({}).sort({ name: 1 });
 
     if (allProduct.length === 0) {
       return res.status(404).json({ message: "Coulnt find product" });
@@ -59,15 +87,23 @@ const ReadDetail = async (req, res) => {
   }
 };
 
-const editDetail = async (req, res) => {
+const editProduct = async (req, res) => {
   const { error } = productSchema.validate(req.body);
   if (error) {
-    return res
-      .status(404)
-      .json({ error: true, message: error.details[0].message });
+    return res.status(404).json({ error: true, message: error.message });
   }
   try {
-    const { name, brand, quantity, category, description, price } = req.body;
+    const { name, brand, quantity, category, description, price, bestseller } =
+      req.body;
+
+    const image = req.file;
+    if (!image) {
+      return res.status(400).json({ error: true, message: "No Image Found" });
+    }
+    let cloudRes = await cloudinary.uploader.upload(image.path, {
+      folder: "product-image",
+    });
+
     const Product = await productModel.findById(req.params.id);
     if (!Product) {
       return res
@@ -84,12 +120,14 @@ const editDetail = async (req, res) => {
     const updateProduct = await productModel.findByIdAndUpdate(
       req.params.id,
       {
-        name,
-        brand,
-        quantity,
-        category,
-        description,
-        price,
+        name: name || Product.name,
+        brand: brand || Product.brand,
+        quantity: quantity || Product.quantity,
+        category: category || Product.category,
+        description: description || Product.description,
+        price: price || Product.price,
+        image: cloudRes.secure_url || Product.image,
+        bestseller: bestseller === true ? true : false,
       },
       { new: true }
     );
@@ -103,15 +141,20 @@ const editDetail = async (req, res) => {
   }
 };
 
-const deleteDetail = async (req, res) => {
+const deleteProduct = async (req, res) => {
   try {
-    await product.findByIdAndDelete(req.params.id);
+    const product = await product.findByIdAndDelete(req.body.id);
+    if (!product) {
+      return res
+        .status(404)
+        .json({ error: true, message: "Product not found." });
+    }
 
     const allProduct = await productModel.find({});
 
     return res
       .status(200)
-      .json({ error: false, message: "Product removed", allProduct });
+      .json({ error: false, message: "Product removed", products: allProduct });
   } catch (error) {
     console.log("Error in RemoveProduct", error);
     return res
@@ -136,13 +179,13 @@ const searchProduct = async (req, res) => {
         .json({ value: `OOPS :) CouldNot Found Your ${searchingValue}` });
     }
   } catch (e) {
-    return res.status(500).json({ message: "ssdhghh" });
+    return res.status(500).json({ message: "couldnot get product" });
   }
 };
 module.exports = {
-  productDetail,
-  ReadDetail,
-  editDetail,
-  deleteDetail,
+  createProduct,
+  ReadProduct,
+  editProduct,
+  deleteProduct,
   searchProduct,
 };

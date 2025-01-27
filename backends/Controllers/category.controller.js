@@ -55,7 +55,7 @@ const updateCategory = async (req, res) => {
         message: "Looks like you changed the name recently,so wait for 24 hr.",
       });
     }
-    const trimmedName = name.replace(/\s+/g, "");
+    
 
     categoryInDb.name = trimmedName || categoryInDb.name;
     await categoryInDb.save();
