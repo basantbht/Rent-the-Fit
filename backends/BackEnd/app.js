@@ -8,6 +8,7 @@ const cors = require("cors")
 // Local Module
 const userRouter = require("../Routes/userRoutes");
 const productRouter = require("../Routes/productRoutes");
+const cartRouter=require('../Routes/cartRoutes')
 
 // middlewares
 
@@ -20,6 +21,7 @@ app.use(cors())
 
 app.use("/api/users", userRouter);
 app.use("/api/product", productRouter);
+app.use("/api/cart", cartRouter);
 
 // database and server
 const connection = require("../DB/connectDB");
