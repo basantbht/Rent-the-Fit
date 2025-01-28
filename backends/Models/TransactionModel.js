@@ -1,13 +1,14 @@
-import mongoose from "mongoose";// Define the Transaction schema
+import mongoose from "mongoose"; // Define the Transaction schema
 const transactionSchema = new mongoose.Schema(
-  {product_id: {
-      type: String, 
+  {
+    product_id: {
+      type: String,
       required: true,
     },
     amount: {
       type: Number,
       required: true,
-      min: 0, // Amount should not be negative
+      min: 0,
     },
     status: {
       type: String,

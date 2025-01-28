@@ -171,7 +171,7 @@ const createUser = async (req, res) => {
 
     sendMail(verificationToken, newUser.email, res);
 
-    generateToken(res, newUser._id);
+    const token = generateToken(res, newUser._id);
 
     return res.status(201).json({
       error: false,
@@ -180,6 +180,7 @@ const createUser = async (req, res) => {
       username: newUser.username,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
+      token: token,
     });
   } catch (e) {
     console.log("Error in create user.", e);
@@ -218,12 +219,13 @@ const loginUser = async (req, res) => {
           .json({ error: true, message: "Invalid credentials" });
       }
       if (userExisted.isVerified === true) {
-        generateToken(res, userExisted._id);
+        const token = generateToken(res, userExisted._id);
         return res.status(200).json({
           message: "LogIn Success.",
           _id: userExisted._id,
           username: userExisted.username,
           email: userExisted.email,
+          token: token,
 
           isAdmin: userExisted.isAdmin,
           error: false,

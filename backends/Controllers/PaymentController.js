@@ -1,60 +1,115 @@
-import {EsewaPaymentGateway,EsewaCheckStatus} from "esewajs";
-import { Transaction } from "../Models/TransationModel";
-const EsewaInitiatePayment = async(req, res)=>{
-    const{amount,productId} = req.body;
+const productModel = require("../Models/Product.model");
+const PurchasedItem = require("../Models/purchasedItem.model");
 
-    try{
-        const reqPayment = await EsewaPaymentGateway(
-            amount,0,0,0,productId,process.env.MERCHANT_ID,
-            process.env.SECRET,process.env.SUCCESS_URL,
-            process.env.FAILURE_URL,
-            process.env.ESEWAPAYMENT_URL,undefined,undefined
-        )
+const initializeKhaltiPayment = async (req, res) => {
+  try {
+    const { itemId, totalPrice, website_url } = req.body;
 
-        if(!reqPayment){
-            return res.status(400).json("error sending data")
-
-        }
-             if(reqPayment.status === 200){
-                const transaction = new Transation({
-                    product_id: productId,
-                    amount:amount,
-                });
-                await transaction.save();
-                console.log("transaction passed")
-                return res.send({
-                    url:reqPayment.request.res.responseUrl,
-                });
-             }
-    }catch(error){
-        return res.status(400).json("error sending data")
+    const itemData = await productModel.findOne({
+      _id: itemId,
+      price: Number(totalPrice),
+    });
+    if (!itemData) {
+      return res.status(400).send({
+        success: false,
+        message: "item not found",
+      });
     }
-}
-   const paymentStatus = async(req,res)=>{
-    const {product_id}= req.body;
-
-    try{
-
-        const transaction = await Transation.findOne({product_id});
-        if(!transaction){
-            return res.status(400).json({message:"Transation not found"})
-        }
-
-        const paymentStatusCheck = await EsewaCheckStatus(transaction.amount,transaction.product_id,
-            process.env.MERCHANT_ID,process.env.ESEWAPAYMENT_STATUS_CHECK_URL)
-
-            if(paymentStatusCheck.status===200){
-                transaction.status = paymentStatusCheck.data.status;
-                await Transation.save();
-                res
-                  .status(200)
-                  .json({message:"Transtion status updated successful"})
-            }
-
-    }catch(error){
-        console.error("Error updating transtion status",error)
-        res.status(500).json({message:"Server error",error:error})
-
-    }
+    const purchasedItemData = await PurchasedItem.create({
+      item: itemId,
+      paymentMethod: "khalti",
+      totalPrice: totalPrice * 100,
+    });
+    const paymentInitate = await initializeKhaltiPayment({
+      amount: totalPrice * 100,
+      purchase_order_id: purchasedItemData._id, //
+      purchase_order_name: itemData.name,
+      return_url: `${process.env.BACKEND_URI}/complete-khalti-payment`,
+      website_url,
+    });
+    return res.status(200).json({
+      success: true,
+      purchasedItemData,
+      payment: paymentInitate,
+    });
+  } catch (error) {
+    console.log("Error in initializekhalti", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "Couldnot initialize payment" });
+  }
 };
-export{EsewaInitiatePayment,paymentStatus}
+const completeKhaltiPayment = async (req, res) => {
+  const {
+    pidx,
+    txnId,
+    amount,
+    mobile,
+    purchase_order_id,
+    purchase_order_name,
+    transaction_id,
+  } = req.query;
+
+  try {
+    const paymentInfo = await verifyKhaltiPayment(pidx);
+
+    if (
+      paymentInfo?.status !== "Completed" ||
+      paymentInfo.transaction_id !== transaction_id ||
+      Number(paymentInfo.total_amount) !== Number(amount)
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Incomplete information",
+        paymentInfo,
+      });
+    }
+
+    const purchasedItemData = await PurchasedItem.find({
+      _id: purchase_order_id,
+      totalPrice: amount,
+    });
+
+    if (!purchasedItemData) {
+      return res.status(400).send({
+        success: false,
+        message: "Purchased data not found",
+      });
+    }
+
+    await PurchasedItem.findByIdAndUpdate(
+      purchase_order_id,
+
+      {
+        $set: {
+          status: "completed",
+        },
+      }
+    );
+
+    const paymentData = await Payment.create({
+      pidx,
+      transactionId: transaction_id,
+      productId: purchase_order_id,
+      amount,
+      dataFromVerificationReq: paymentInfo,
+      apiQueryFromUser: req.query,
+      paymentGateway: "khalti",
+      status: "success",
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "Payment Successful",
+      paymentData,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "An error occurred",
+      error,
+    });
+  }
+};
+module.exports = { initializeKhaltiPayment, completeKhaltiPayment };
