@@ -49,7 +49,7 @@ const productSchema = new mongoose.Schema(
     },
     category: {
       type: mongoose.Schema.Types.ObjectId,
-      required: true,
+      //required: true,
       ref: "Category",
     },
     description: {
@@ -65,6 +65,11 @@ const productSchema = new mongoose.Schema(
       default: 0,
       required: true,
     },
+    sizes: {
+      type: Array,
+      required: true,
+    },
+    bestseller: { type: Boolean },
     price: {
       type: Number,
       required: true,

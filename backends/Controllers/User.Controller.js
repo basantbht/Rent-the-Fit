@@ -1,11 +1,14 @@
 // Model
+
 const userModel = require("../Models/User.model");
 // Module
-const bcrypt = require("bcrypt");
 
+const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const joi = require("joi");
+
 // Local
+
 const generateVerificationToken = require("../utils/verification.Token");
 const sendMail = require("../Mail/mail.Send");
 const generateToken = require("../utils/createToken");
@@ -165,16 +168,19 @@ const createUser = async (req, res) => {
     });
 
     await newUser.save();
-    // sendMail(verificationToken, newUser.email);
-    generateToken(res, newUser._id);
+
+    sendMail(verificationToken, newUser.email, res);
+
+    const token = generateToken(res, newUser._id);
 
     return res.status(201).json({
       error: false,
-      message: "User created successfully.",
+      message: "OTP SEND SUCCESSFULLY.",
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
+      token: token,
     });
   } catch (e) {
     console.log("Error in create user.", e);
@@ -212,17 +218,22 @@ const loginUser = async (req, res) => {
           .status(401)
           .json({ error: true, message: "Invalid credentials" });
       }
-
-      generateToken(res, userExisted._id);
-      return res.status(200).json({
-        message: "LogIn Success.",
-        _id: userExisted._id,
-        username: userExisted.username,
-        email: userExisted.email,
-
-        isAdmin: userExisted.isAdmin,
-        error: false,
-      });
+      if (userExisted.isVerified === true) {
+        const token = generateToken(res, userExisted._id);
+        return res.status(200).json({
+          message: "LogIn Success.",
+          _id: userExisted._id,
+          username: userExisted.username,
+          email: userExisted.email,
+          isAdmin: userExisted.isAdmin,
+          error: false,
+          token: token,
+        });
+      } else {
+        return res
+          .status(401)
+          .json({ error: true, message: "Verify First through code" });
+      }
     }
   } catch (e) {
     console.log("Error in login", e);
@@ -362,7 +373,7 @@ const verifyUseremail = async (req, res) => {
   const { userverifycode } = req.body;
 
   try {
-    console.log(req.user);
+    //console.log(req.user);
     const user = await userModel.findById(req.user._id);
 
     if (
