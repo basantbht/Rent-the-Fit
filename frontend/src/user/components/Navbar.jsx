@@ -3,7 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import logo from '../../assets/logo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
-import {faCartShopping} from '@fortawesome/free-solid-svg-icons'
+import { faCartShopping } from '@fortawesome/free-solid-svg-icons'
 
 const Navbar = () => {
     return (
@@ -37,19 +37,19 @@ const Navbar = () => {
 
 
             <div className='mr-5'>
-<Link to='/login'>
-                <button className='bg-black text-white px-4 py-2 text-sm active:bg-gray-700 rounded-full cursor-pointer'>login</button>
+                <Link to='/login'>
+                    <button className='bg-black text-white px-4 py-2 text-sm active:bg-gray-700 rounded-full cursor-pointer'>login</button>
                 </Link>
 
-<Link to='/signup'>
-                <button className='bg-black text-white cursor-pointer px-4 py-2 text-sm active:bg-gray-700 ml-2 rounded-full mr-3'>signup</button>
+                <Link to='/signup'>
+                    <button className='bg-black text-white cursor-pointer px-4 py-2 text-sm active:bg-gray-700 ml-2 rounded-full mr-3'>signup</button>
                 </Link>
 
                 <FontAwesomeIcon className='w-5 mr-3' icon={faUser} />
 
                 <FontAwesomeIcon icon={faCartShopping} />
-                
-             
+
+
             </div>
 
 

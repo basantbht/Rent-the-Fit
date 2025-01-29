@@ -5,6 +5,7 @@ import { registerUser } from '../../store/auth/authSlice';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import OtpInput from '../components/OtpInput';
+import Cookies from "js-cookie";
 
 
 const Signup = () => {
@@ -34,10 +35,13 @@ const Signup = () => {
 
       if (error === false) {
         toast.success(message)
-        setToken(localStorage.setItem('token', token))
-        // navigate('/login')
-        setFormData('')
-        setShowOtpField(true)
+        localStorage.setItem('token',token)
+        Cookies.set("token", token, { expires: 5, path: "/" }); // Token expires in 7 days
+        navigate('/otp')
+        // setTimeout(()=>{
+        //   setShowOtpField(true)
+        // },1000)
+        
       }
 
     } catch (error) {
@@ -51,7 +55,7 @@ const Signup = () => {
   }
   return (
     <>
-      {!showotpfield ? (
+      
         <form onSubmit={submitHandler} className='flex flex-col items-center w-[90%] sm:max-w-96 m-auto mt-14 gap-4 text-gray-800'>
           <div className='inline-flex items-center gap-2 mb-2 mt-10'>
             <p className='prata-regular text-3xl'>Signup</p>
@@ -70,18 +74,7 @@ const Signup = () => {
 
           <button className='bg-black text-white font-light px-8 py-2 mt-4 rounded-full w-full cursor-pointer'>SignUp</button>
         </form>
-      ) : 
-      (
-
-        <div className="fixed inset-0 flex items-center justify-center">
-          <div className="bg-white rounded-lg shadow-xl p-6">
-            <h2 className="text-xl font-semibold mb-4 text-center">Enter the verification code we just emailed to you.</h2>
-            <div className="flex justify-center">
-              <OtpInput email={formData.email}  />
-            </div>
-          </div>
-        </div>)
-      }
+     
     </>
   )
 }
