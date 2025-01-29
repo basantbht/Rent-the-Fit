@@ -232,7 +232,7 @@ const loginUser = async (req, res) => {
       } else {
         return res
           .status(401)
-          .json({ error: true, message: "Verify First through code" });
+          .json({ error: true, message: "Verify your email first" });
       }
     }
   } catch (e) {
