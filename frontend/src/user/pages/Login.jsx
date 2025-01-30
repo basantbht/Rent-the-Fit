@@ -4,40 +4,53 @@ import { useDispatch, useSelector } from 'react-redux'
 import { registerUser } from '../../store/auth/authSlice';
 import { toast } from 'react-toastify';
 import axios from 'axios';
+import { signInStart, signInSuccess, signInFailure } from '../../redux/User/userSlice'
+import Cookies from "js-cookie";
 
 const Login = () => {
   const [formData, setFormData] = useState({});
-  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { error, isLoading } = useSelector((state) => state.auth); 
+  const { loading, error } = useSelector((state) => state.user);
+  // dispatch
+  const dispatch = useDispatch();
 
 
   const onChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
-  })
+    })
   }
   console.log(formData)
 
-  const submitHandler = async(e) => {
+  const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post('http://localhost:3000/api/users/login',formData);
+      dispatch(signInStart());
+      const res = await axios.post('http://localhost:3000/api/users/login', formData);
+
       console.log(res);
-      if(res.data.error === false){
+      
+      const { token, message, error, isAdmin } = res.data;
+      
+      if (res.data.error === false) {
+        dispatch(signInSuccess(res))
+        localStorage.setItem('token', token)
+        localStorage.setItem('isAdmin', isAdmin)
+        Cookies.set("token", token, { expires: 5, path: "/" });
         toast.success(res.data.message)
-        navigate('/')
+        navigate('/');
       }
 
     } catch (error) {
+      dispatch(signInFailure(error));
       if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message);
       } else {
         toast.error(error.message);
       }
-    }    
+    }
   }
   return (
     <>
@@ -52,13 +65,13 @@ const Login = () => {
         <input onChange={onChange} name='password' type="password" className='w-full px-3 py-2 border border-gray-800' placeholder='Password' required />
 
         <div className='w-full flex justify-between text-sm mt-[-8px]'>
-         <Link to='/signup'> <p className='cursor-pointer'>Don't have an account?</p></Link>
-         <Link> <p className='cursor-pointer'>Forgot Password</p></Link>
+          <Link to='/signup'> <p className='cursor-pointer'>Don't have an account?</p></Link>
+          <Link> <p className='cursor-pointer'>Forgot Password</p></Link>
         </div>
 
         <button className='bg-black text-white font-light px-8 py-2 mt-4 rounded-full w-full cursor-pointer'>Login</button>
       </form>
-      
+
     </>
   )
 }
