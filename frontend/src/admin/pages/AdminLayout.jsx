@@ -6,8 +6,6 @@ import { toast } from 'react-toastify';
 import axios from 'axios';
 import Cookies from "js-cookie";
 
-
-
 const AdminLayout = () => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
@@ -24,7 +22,6 @@ const AdminLayout = () => {
     e.preventDefault();
 
     try {
-      // dispatch(signInStart());
       const res = await axios.post('http://localhost:3000/api/users/login', formData);
 
       console.log(res);
@@ -33,7 +30,6 @@ const AdminLayout = () => {
 
       console.log(isAdmin);
       if (res.data.error === false) {
-        // dispatch(signInSuccess(res))
         localStorage.setItem('token', token)
         localStorage.setItem('isAdmin', isAdmin)
         Cookies.set("token", token, { expires: 5, path: "/" });
@@ -42,7 +38,6 @@ const AdminLayout = () => {
       }
 
     } catch (error) {
-      // dispatch(signInFailure(error));
       if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message);
       } else {
@@ -53,7 +48,7 @@ const AdminLayout = () => {
 
   return (
     <>
-      { localStorage.getItem('isAdmin') ?
+      { localStorage.getItem('isAdmin') === 'true'?
 
         <>
           <div className="flex h-screen overflow-x-hidden bg-gray-700">

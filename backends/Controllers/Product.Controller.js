@@ -13,6 +13,10 @@ const productSchema = joi.object({
   brand: joi.string().required().max(30).messages({
     "string.empty": "Brand is required.",
     "string.max": "Brand name cannot exceed 30 characters.",
+  }),  
+  category: joi.string().required().max(30).messages({
+    "string.empty": "Category is required.",
+    "string.max": "Category name cannot exceed 30 characters.",
   }),
   quantity: joi.string().required().messages({
     "string.empty": "Quantity is required.",
@@ -29,6 +33,7 @@ const productSchema = joi.object({
   sizes: joi.string().required().messages({
     "string.empty": "Sizes are required.",
   }),
+  bestseller:joi.boolean().required()
 });
 
 const createProduct = async (req, res) => {
@@ -37,7 +42,7 @@ const createProduct = async (req, res) => {
     if (error) {
       return res.status(404).json({ error: true, message: error.message });
     }
-    const { name, brand, quantity, description, price, sizes, bestseller } =
+    const { name, brand, quantity, category, description, price, sizes, bestseller } =
       req.body;
     //console.log(req.file);
     const image = req.file;
@@ -53,12 +58,12 @@ const createProduct = async (req, res) => {
       name,
       brand,
       quantity,
-
+      category,
       description,
       price,
       sizes,
       image: cloudRes.secure_url,
-      bestseller: bestseller === true ? true : false,
+      bestseller,
     });
     await newProduct.save();
     return res.status(201).json({ error: false, message: "Product Added" });
