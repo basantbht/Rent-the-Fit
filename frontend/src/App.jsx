@@ -28,6 +28,7 @@ const App = () => {
   return (
     <div>
       {!isAdminPage && <Navbar />}
+
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='/products' element={<Products />} />
@@ -38,7 +39,7 @@ const App = () => {
           <Route path='/about' element={<About />} />
           <Route path='/profile' element={<Profile />} />
         </Route>
-        
+
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
         {/* <Route path='/otp' element={<OtpInput />} /> */}
