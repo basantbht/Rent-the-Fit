@@ -1,18 +1,12 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { registerUser } from '../../store/auth/authSlice';
 import { toast } from 'react-toastify';
 import axios from 'axios';
-import { signInStart, signInSuccess, signInFailure } from '../../redux/User/userSlice'
 import Cookies from "js-cookie";
 
 const Login = () => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
-  const { loading, error } = useSelector((state) => state.user);
-  // dispatch
-  const dispatch = useDispatch();
 
 
   const onChange = (e) => {
@@ -27,7 +21,6 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      dispatch(signInStart());
       const res = await axios.post('http://localhost:3000/api/users/login', formData);
 
       console.log(res);
@@ -35,7 +28,6 @@ const Login = () => {
       const { token, message, error, isAdmin } = res.data;
       
       if (res.data.error === false) {
-        dispatch(signInSuccess(res))
         localStorage.setItem('token', token)
         localStorage.setItem('isAdmin', isAdmin)
         Cookies.set("token", token, { expires: 5, path: "/" });
@@ -44,7 +36,6 @@ const Login = () => {
       }
 
     } catch (error) {
-      dispatch(signInFailure(error));
       if (error.response && error.response.data && error.response.data.message) {
         toast.error(error.response.data.message);
       } else {

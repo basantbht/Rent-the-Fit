@@ -14,9 +14,11 @@ import PrivateRoute from './user/components/PrivateRoute'
 import AdminLayout from './admin/pages/AdminLayout'
 import AdminProducts from './admin/pages/AdminProducts'
 import AddProducts from './admin/pages/AddProducts'
-import DeleteProducts from './admin/pages/DeleteProducts'
+import DeleteProducts from './admin/pages/UpdateProduct'
 import Orders from './admin/pages/Orders'
 import Dashboard from './admin/pages/Dashboard'
+import UpdateProduct from './admin/pages/UpdateProduct'
+import Footer from './user/components/Footer'
 
 
 const App = () => {
@@ -26,7 +28,7 @@ const App = () => {
 
 
   return (
-    <div>
+    <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[7vw]'>
       {!isAdminPage && <Navbar />}
 
       <Routes>
@@ -34,11 +36,11 @@ const App = () => {
         <Route path='/products' element={<Products />} />
         <Route path='/otp' element={<OtpInput />} />
 
-        <Route element={<PrivateRoute />}>
+        {/* <Route element={<PrivateRoute />}> */}
           <Route path='/contact' element={<Contact />} />
           <Route path='/about' element={<About />} />
           <Route path='/profile' element={<Profile />} />
-        </Route>
+        {/* </Route> */}
 
         <Route path='/signup' element={<Signup />} />
         <Route path='/login' element={<Login />} />
@@ -51,7 +53,7 @@ const App = () => {
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='adminproducts' element={<AdminProducts />} />
           <Route path='addproducts' element={<AddProducts />} />
-          <Route path='deleteproducts' element={<DeleteProducts />} />
+          <Route path='updateproducts' element={<UpdateProduct />} />
           <Route path='orders' element={<Orders />} />
 
         </Route>
@@ -59,7 +61,7 @@ const App = () => {
       </Routes>
       <ToastContainer />
 
-
+<Footer />
     </div>
   )
 }
