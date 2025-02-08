@@ -40,9 +40,9 @@ const Sidebar = () => {
               <li className="p-2 hover:bg-gray-600 rounded">Add Product</li>
 
               </NavLink>
-              <NavLink to='deleteproducts'>
+              <NavLink to='updateproducts'>
 
-              <li className="p-2 hover:bg-gray-600 rounded">Delete Product</li>
+              <li className="p-2 hover:bg-gray-600 rounded">Update Product</li>
               </NavLink>
             </ul>
           )}

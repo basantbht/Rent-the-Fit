@@ -1,21 +1,15 @@
-import React, { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import { useDispatch, useSelector } from 'react-redux'
-import { registerUser } from '../../store/auth/authSlice';
+import React, { useContext, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import OtpInput from '../components/OtpInput';
 import Cookies from "js-cookie";
-
+import { RentContext } from '../../../context/RentContext';
 
 const Signup = () => {
   const [formData, setFormData] = useState({});
   const [showotpfield, setShowOtpField] = useState(false);
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [token,setToken] = useState('');
-  // const { token } = useSelector((state) => state.token);
-
+  const { token, setToken, navigate, backendUrl } = useContext(RentContext);
 
   const onChange = (e) => {
     setFormData({
@@ -31,11 +25,14 @@ const Signup = () => {
       const res = await axios.post('http://localhost:3000/api/users/', formData);
       console.log(res);
 
-      const {token,message,error} = res.data;
+      const {token,message,error,isAdmin} = res.data;
 
       if (error === false) {
         toast.success(message)
         localStorage.setItem('token',token)
+        setToken(token)
+        console.log(token)
+        localStorage.setItem('isAdmin',isAdmin)
         Cookies.set("token", token, { expires: 5, path: "/" }); // Token expires in 7 days
         navigate('/otp')
         // setTimeout(()=>{

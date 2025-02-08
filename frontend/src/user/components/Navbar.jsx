@@ -4,22 +4,18 @@ import logo from '../../assets/logo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { faCartShopping, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
-import { useSelector, useDispatch } from 'react-redux'
-import { logout } from '../../redux/User/userSlice'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import Cookies from "js-cookie";
 
 const Navbar = () => {
-    const { currentUser } = useSelector(state => state.user);
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
             const res = await axios.post('http://localhost:3000/api/users/logout',{withCredentials: true});
             console.log(res)
-            dispatch(logout());
             localStorage.removeItem('token');
+            localStorage.removeItem('isAdmin');
             Cookies.remove('token');
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {

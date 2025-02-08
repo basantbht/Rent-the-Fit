@@ -2,14 +2,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import upload_area from '../../assets/upload_area.png'
+import { AdminContext } from '../../../context/AdminContext'
 
 const AddProducts = () => {
-
-  useEffect(() => {
-    setToken(localStorage.getItem('token'));
-    setIsAdmin(localStorage.getItem('isAdmin'));
-  }, [])
-
+  const {backendUrl, token, isAdmin} = useContext(AdminContext);
+  
   const [name, setName] = useState("");
   const [image, setImage] = useState(null);
   const [brand, setBrand] = useState("");
@@ -22,12 +19,9 @@ const AddProducts = () => {
   const [bestseller, setBestSeller] = useState(false);
   const [price, setPrice] = useState("");
   const [countinstock, setCountInStock] = useState("");
-  const [token, setToken] = useState('');
-  const [isAdmin, setIsAdmin] = useState('');
+
 
   const onSubmitHandler = async (e) => {
-
-
     e.preventDefault();
     try {
       const formData = new FormData();
@@ -52,7 +46,7 @@ const AddProducts = () => {
         }
 
       })
-      
+
       if (response.data.error === false) {
         toast.success(response.data.message)
         setName('')

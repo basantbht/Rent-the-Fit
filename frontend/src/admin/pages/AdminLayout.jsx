@@ -16,15 +16,12 @@ const AdminLayout = () => {
       [e.target.name]: e.target.value,
     });
   };
-  console.log(formData);
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
     try {
       const res = await axios.post('http://localhost:3000/api/users/login', formData);
-
-      console.log(res);
 
       const { token, message, error, isAdmin } = res.data;
 

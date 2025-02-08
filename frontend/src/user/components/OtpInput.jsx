@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
+import { RentContext } from "../../../context/RentContext";
 
 const OtpInput = ({ length = 6, onOtpSubmit = () => { }, email }) => {
-
+  const { token, setToken, backendUrl } = useContext(RentContext);
   const [otp, setOtp] = useState(new Array(length).fill("")); // This is the state for OTP
   const inputRefs = useRef([]);
   const navigate = useNavigate();
@@ -25,7 +26,12 @@ const OtpInput = ({ length = 6, onOtpSubmit = () => { }, email }) => {
 
     // Submit trigger
     const combinedOtp = newOtp.join("");
-    if (combinedOtp.length === length) onOtpSubmit(combinedOtp);
+    if (combinedOtp.length === length)
+      {
+       onOtpSubmit(combinedOtp);        
+      }
+        
+
 
     // Move to next input if the current field is filled
     if (value && index < length - 1 && inputRefs.current[index + 1]) {
@@ -56,9 +62,17 @@ const OtpInput = ({ length = 6, onOtpSubmit = () => { }, email }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(token)
     try {
       const combinedOtp = otp.join("");
-      const res = await axios.post('http://localhost:3000/api/users/verifyemail', { userverifycode: combinedOtp }, { withCredentials: true });
+      console.log(combinedOtp)
+      const res = await axios.post('http://localhost:3000/api/users/verifyemail', { userverifycode: combinedOtp },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(res);
 
       if (res.data.error === false) {
@@ -68,8 +82,10 @@ const OtpInput = ({ length = 6, onOtpSubmit = () => { }, email }) => {
 
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
+        console.log(error)
         toast.error(error.response.data.message);
       } else {
+        console.log(error)
         toast.error(error.message);
       }
     }
