@@ -21,6 +21,7 @@ const validateUser = async (req, res, next) => {
       .json({ message: "Could not verify User", error: true });
   }
 };
+
 const authorizeAdmin = async (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
