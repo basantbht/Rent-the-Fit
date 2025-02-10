@@ -1,57 +1,93 @@
-const userModel = require("../Models/User.model");
-const getUserCart = async (req, res) => {
-  try {
-    const { userId } = req.body;
-    const user = await userModel.findById(userId);
-    const cartData = await user.cartData;
+const Product = require("../models/product.model");
 
-    return res.json({ error: false, message: cartData });
-  } catch (error) {
-    console.log("Error in getuserCart", error);
-    return res
-      .status(500)
-      .json({ error: true, message: "Couldnot get cart product." });
-  }
-};
 const addToCart = async (req, res) => {
   try {
-    const { userId, productId, size } = req.body;
-    const user = await userModel.findById(userId);
-    let cartData = await user.cartData;
+    const { productId } = req.body;
+    const user = req.user;
+    //console.log(user.cartItems);
+    const productExists = await Product.findById(productId);
 
-    if (cartData[productId]) {
-      if (cartData[productId][size]) {
-        cartData[productId][size] += 1;
-      } else {
-        cartData[productId][size] = 1;
-      }
-    } else {
-      cartData[productId] = {};
-      cartData[productId][size] = 1;
+    if (!productExists) {
+      return res
+        .status(404)
+        .json({ error: true, message: "Product not found." });
     }
-    await userModel.findByIdAndUpdate(userId, { cartData });
-    return res.status(200).json({ error: false, message: "Added to cart." });
+
+    const existingProduct = user.cartItems.find(
+      (item) => item.id === productId
+    );
+    //console.log(existingProduct);
+    if (existingProduct) {
+      existingProduct.quantity += 1;
+    } else {
+      //console.log('inside else');
+      user.cartItems.push(productId);
+    }
+    await user.save();
+    return res
+      .status(200)
+      .json({ error: false, message: "product added.", items: user.cartItems });
   } catch (error) {
-    console.log("Error in addToCart", error);
+    console.log("Error in addtocart", error);
     return res
       .status(500)
-      .json({ error: true, message: "Couldnot add product to cart." });
+      .json({ error: true, message: "couldnot add to cart." });
+  }
+};
+const removeAllFromCart = async (req, res) => {
+  try {
+    const { productId } = req.body;
+    const user = req.user;
+
+    user.cartItems = user.cartItems.filter((item) => item.id !== productId);
+    await user.save();
+    return res.status(200).json({ error: false, message: user.cartItems });
+  } catch (error) {
+    console.log("Error in removecart", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "coudlnot remove item" });
   }
 };
 const updateCart = async (req, res) => {
   try {
-    const { userId, productId, size, quantity } = req.body;
-    const user = await userModel.findById(userId);
-    let cartData = await user.cartData;
+    const { id } = req.params;
+    const { quantity } = req.body;
+    const user = req.user;
 
-    cartData[productId][size] = quantity;
-    await userModel.findByIdAndUpdate(userId, { cartData });
-    return res.status(200).json({ error: false, message: "Cart Updated" });
+    const existingItem = user.cartItems.find((item) => item.id == id);
+
+    if (existingItem) {
+      if (quantity === 0) {
+        user.cartItems = user.cartItems.filter((item) => item.id !== id);
+        await user.save();
+        return res.json({ error: false, message: user.cartItems });
+      } else if (quantity > 0 && quantity <= 10) {
+        existingItem.quantity = quantity;
+        await user.save();
+
+        return res.json({ error: false, message: user.cartItems });
+      } else {
+        return res.json({
+          error: true,
+          message: "provide a appropriate value",
+        });
+      }
+    }
   } catch (error) {
-    console.log("Error in updateCart,", error);
+    console.log("Error in updatecart", error);
     return res
       .status(500)
-      .json({ error: false, message: "Couldnot update Cart." });
+      .json({ error: true, message: "coudlnot update item" });
   }
 };
-module.exports = { getUserCart, addToCart, updateCart };
+const allItems = async (req, res) => {
+  try {
+    const user = req.user;
+    return res.status(200).json({ error: false, message: user.cartItems });
+  } catch (error) {
+    console.log("Error in allCart", error);
+    return res.status(500).json({ error: true, message: "couldnot get items" });
+  }
+};
+module.exports = { addToCart, removeAllFromCart, updateCart, allItems };

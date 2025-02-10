@@ -225,6 +225,7 @@ const loginUser = async (req, res) => {
           _id: userExisted._id,
           username: userExisted.username,
           email: userExisted.email,
+
           isAdmin: userExisted.isAdmin,
           error: false,
           token: token,
@@ -232,7 +233,7 @@ const loginUser = async (req, res) => {
       } else {
         return res
           .status(401)
-          .json({ error: true, message: "Verify your email first" });
+          .json({ error: true, message: "Verify First through code" });
       }
     }
   } catch (e) {
@@ -285,6 +286,14 @@ const updateCurrentProfile = async (req, res) => {
     return res.status(401).json({ error: true, message: error.message });
   }
   const { username } = req.body;
+      const image = req.file;
+      if (!image) {
+        return res.status(400).json({ error: true, message: "No Image Found" });
+      }
+      let cloudRes = await cloudinary.uploader.upload(image.path, {
+        folder: "profile-image",
+      });
+
   try {
     const user = await userModel.findById(req.user._id).select("-password");
     //console.log(user);
@@ -300,6 +309,7 @@ const updateCurrentProfile = async (req, res) => {
       });
     }
     user.username = username || user.username;
+    user.profileImage=cloudRes.secure_url;
     const updatedUsername = await user.save();
     return res.status(200).json({ message: updatedUsername, error: false });
   } catch (e) {
@@ -341,6 +351,7 @@ const getUserById = async (req, res) => {
     return res.status(400).json({ message: "Couldnot Find User..." });
   }
 };
+
 const updateUserById = async (req, res) => {
   const { error } = userUpdateSchema.validate(req.body);
   if (error) {
@@ -399,6 +410,7 @@ const verifyUseremail = async (req, res) => {
       .json({ error: true, message: "Couldnot verify email" });
   }
 };
+
 const forgotpass = async (req, res) => {
   const { error } = emailScheamforPassword.validate(req.body);
   if (error) {
@@ -430,6 +442,7 @@ const forgotpass = async (req, res) => {
     return res.status({ error: false, message: "Could not recover password." });
   }
 };
+
 const resetpass = async (req, res) => {
   const { error } = resetPasswordSchema.validate(req.body);
   if (error)
@@ -462,6 +475,7 @@ const resetpass = async (req, res) => {
       .json({ error: true, message: "Couldnot reset Password" });
   }
 };
+
 
 module.exports = {
   createUser,

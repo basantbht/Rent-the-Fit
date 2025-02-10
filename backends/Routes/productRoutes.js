@@ -29,4 +29,5 @@ productRouter.get("/", validateUser, authorizeAdmin, ReadProduct);
 productRouter.put("/:id", validateUser, authorizeAdmin, editProduct);
 
 productRouter.delete("/", validateUser, authorizeAdmin, deleteProduct);
+
 module.exports = productRouter;

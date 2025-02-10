@@ -1,5 +1,5 @@
 // Model
-const productModel = require("../Models/Product.model");
+const productModel = require('../Models/Product.model');
 
 // Module
 const joi = require("joi");
