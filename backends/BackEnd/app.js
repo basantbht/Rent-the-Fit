@@ -10,7 +10,7 @@ const userRouter = require("../Routes/userRoutes");
 const productRouter = require("../Routes/productRoutes");
 const cartRouter = require("../Routes/cartRoutes");
 const payRouter = require("../Routes/paymentRoutes");
-const kycRouter = require("../Routes/kyc.model");
+const kycRouter = require("../Routes/kyc.Route");
 
 // middlewares
 
