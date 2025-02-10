@@ -31,11 +31,27 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    cartData: { type: Object, default: {} },
+    profileImage: {
+      type: String,
+      default: "",
+    },
+    cartItems: [
+      {
+        quantity: {
+          type: Number,
+          default: 1,
+        },
+        product: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "Product",
+        },
+      },
+    ],
     resetPasswordToken: String,
     resetPasswordExpiresAt: Date,
     verificationToken: String,
     verificationTokenExpiresAt: Date,
+    
   },
 
   { timestamps: true }

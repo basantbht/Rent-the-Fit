@@ -13,6 +13,7 @@ const validateUser = async (req, res, next) => {
     const signId = jwt.verify(cookieToken, process.env.SECRET);
 
     req.user = await userModel.findById(signId.userId).select("-password");
+    // console.log(req.user);
 
     next();
   } catch (e) {
@@ -21,7 +22,7 @@ const validateUser = async (req, res, next) => {
       .json({ message: "Couldnot verify User", error: true });
   }
 };
-const authorizeAdmin = async (req, res,next) => {
+const authorizeAdmin = async (req, res, next) => {
   if (req.user && req.user.isAdmin) {
     next();
   } else {

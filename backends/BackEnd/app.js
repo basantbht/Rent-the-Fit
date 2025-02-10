@@ -8,8 +8,9 @@ const cookieParser = require("cookie-parser");
 // Local Module
 const userRouter = require("../Routes/userRoutes");
 const productRouter = require("../Routes/productRoutes");
-const cartRouter=require('../Routes/cartRoutes')
-const payRouter=require('../Routes/paymentRoutes')
+const cartRouter = require("../Routes/cartRoutes");
+const payRouter = require("../Routes/paymentRoutes");
+const kycRouter = require("../Routes/kyc.model");
 
 // middlewares
 
@@ -24,10 +25,11 @@ app.use("/api/users", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
 app.use("/api/pay", payRouter);
+app.use("/api/kyv", kycRouter);
 
 // database and server
 const connection = require("../DB/connectDB");
-const { required } = require("joi");
+
 const DATABASE_URI = process.env.MONGO_URI;
 connection(DATABASE_URI);
 const PORT = process.env.PORT;
