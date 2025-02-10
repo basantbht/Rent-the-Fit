@@ -175,7 +175,7 @@ const createUser = async (req, res) => {
 
     return res.status(201).json({
       error: false,
-      message: "User created successfully.",
+      message: "OTP SEND SUCCESSFULLY.",
       _id: newUser._id,
       username: newUser.username,
       email: newUser.email,
@@ -225,15 +225,15 @@ const loginUser = async (req, res) => {
           _id: userExisted._id,
           username: userExisted.username,
           email: userExisted.email,
-          token: token,
 
           isAdmin: userExisted.isAdmin,
           error: false,
+          token: token,
         });
       } else {
         return res
           .status(401)
-          .json({ error: true, message: "Verify First through " });
+          .json({ error: true, message: "Verify First through code" });
       }
     }
   } catch (e) {
@@ -382,10 +382,12 @@ const updateUserById = async (req, res) => {
 };
 const verifyUseremail = async (req, res) => {
   const { userverifycode } = req.body;
+  console.log(userverifycode)
 
   try {
     //console.log(req.user);
     const user = await userModel.findById(req.user._id);
+    console.log(typeof user.verificationToken, typeof userverifycode);
 
     if (
       user.verificationToken === userverifycode &&

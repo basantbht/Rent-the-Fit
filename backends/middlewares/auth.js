@@ -2,7 +2,8 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../Models/User.model");
 
 const validateUser = async (req, res, next) => {
-  let cookieToken = req.cookies.token;
+  let cookieToken = req.headers.authorization?.split(" ")[1]; // Extract Bearer Token
+  console.log(cookieToken)
 
   if (!cookieToken) {
     return res
@@ -11,15 +12,13 @@ const validateUser = async (req, res, next) => {
   }
   try {
     const signId = jwt.verify(cookieToken, process.env.SECRET);
-
     req.user = await userModel.findById(signId.userId).select("-password");
-    // console.log(req.user);
 
     next();
   } catch (e) {
     return res
       .status(400)
-      .json({ message: "Couldnot verify User", error: true });
+      .json({ message: "Could not verify User", error: true });
   }
 };
 const authorizeAdmin = async (req, res, next) => {
