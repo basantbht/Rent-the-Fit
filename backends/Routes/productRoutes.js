@@ -24,7 +24,7 @@ productRouter.post(
   createProduct
 );
 
-productRouter.get("/", validateUser, authorizeAdmin, ReadProduct);
+productRouter.get("/", ReadProduct);
 
 productRouter.put("/:id", validateUser, authorizeAdmin, editProduct);
 
