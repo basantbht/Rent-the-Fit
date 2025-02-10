@@ -1,2 +1,2 @@
-const createkyc = async (req, res) => {};
-module.exports = createKyc;
+const createKyc = async (req, res) => {};
+module.exports = {createKyc};

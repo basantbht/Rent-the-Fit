@@ -1,8 +1,9 @@
-const express=require('express')
+const express = require("express");
 
-const kycRouter=express.Router();
-const createkyc=require('../Controllers/kyc.controller')
+const kycRouter = express.Router();
 
-kycRouter.route('/',createKyc);
+const { createKyc } = require("../Controllers/kyc.controller");
 
-module.exports=kycRouter;
+kycRouter.route("/", createKyc);
+
+module.exports = kycRouter;
