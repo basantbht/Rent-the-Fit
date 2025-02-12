@@ -13,6 +13,8 @@ const RentContextProvider = (props) => {
   const [token, setToken] = useState(null);
   const [isAdmin, setIsAdmin] = useState('');
   const navigate = useNavigate();
+  const [search, setSearch] = useState('');
+    const [showSearch, setShowSearch] = useState(false);
 
   const getProductsData = async () => {
     try {
@@ -20,6 +22,7 @@ const RentContextProvider = (props) => {
       console.log(response);
       if (response.data.error === false) {
         setProducts(response.data.allProduct);
+        console.log(response.data.allProduct);
       } else {
         toast.error(response.data.message);
       }
@@ -29,13 +32,14 @@ const RentContextProvider = (props) => {
     }
   };
 
+
   useEffect(() => {
     getProductsData();
   }, []);
 
 
 
-  const value = { currency, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate }
+  const value = { currency, search,setSearch,showSearch,setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate,products }
 
   return (
     <RentContext.Provider value={value}>
