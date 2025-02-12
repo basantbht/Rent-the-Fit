@@ -12,7 +12,7 @@ const Navbar = () => {
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
-            const res = await axios.post('http://localhost:3000/api/users/logout',{withCredentials: true});
+            const res = await axios.post('http://localhost:3000/api/users/logout', { withCredentials: true });
             console.log(res)
             localStorage.removeItem('token');
             localStorage.removeItem('isAdmin');
@@ -28,7 +28,7 @@ const Navbar = () => {
 
     return (
         <div className='flex items-center justify-between py-5 font-medium bg-gray-50
-        '>
+        px-4 sm:px-[5vw] md:px-[7vw] lg:px-[7vw]'>
 
             <Link to='/'><img src={logo} className='w-36' alt="" /></Link>
 
@@ -55,29 +55,25 @@ const Navbar = () => {
                 </NavLink>
 
             </ul>
-
-
             <div className='mr-5'>
-
-
                 {/* <img className='h-7 w-7 rounded-full object-cover' src={currentUser.profilePicture} alt='profile' />
                         <FontAwesomeIcon className='w-8 mr-4 ml-4' icon={faUser} /> */}
                 <Link to='/login'>
                     <button className='bg-black text-white cursor-pointer px-4 py-2 text-sm active:bg-gray-700 ml-2 rounded-full mr-3'>
                         Login
-                        </button>
+                    </button>
                 </Link>
-
-
 
                 <Link to='/signup'>
                     <button className='bg-black text-white px-4 py-2 text-sm active:bg-gray-700 rounded-full cursor-pointer'>Sign Up</button>
                 </Link>
 
+                <Link to='/cart' className='relative'>
+                    <FontAwesomeIcon className='w-5 min-w-5' icon={faCartShopping} />
+                    <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]'>0</p>
 
+                </Link>
 
-
-                <FontAwesomeIcon className='w-8 cursor-pointer' icon={faCartShopping} />
                 <FontAwesomeIcon onClick={handleLogout} className='w-8 cursor-pointer' icon={faRightFromBracket} />
 
 

@@ -4,8 +4,8 @@ import ProductItem from '../components/ProductItem';
 import {assets} from '../../assets/assets'
 import { RentContext } from '../../../context/RentContext';
 
-const Collection = () => {
-  const { products } = useContext(RentContext);
+const Products = () => {
+  const { products,search,showSearch } = useContext(RentContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts,setFilterProducts] = useState([]);
   const[category,setCategory] = useState([]);
@@ -22,8 +22,8 @@ const Collection = () => {
   }
 
   const applyFilter = () => {
-    console.log(products)
     let productsCopy = products.slice();
+    console.log(products)
 
     if(showSearch && search){
       productsCopy = productsCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
@@ -121,4 +121,4 @@ const Collection = () => {
   )
 }
 
-export default Collection
+export default Products
