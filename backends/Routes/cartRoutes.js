@@ -4,7 +4,7 @@ const {
   allItems,
   addToCart,
   updateCart,
-  removeAllFromCart,
+
 } = require("../Controllers/cart.controller");
 
 const cartRouter = express.Router();
@@ -13,8 +13,8 @@ cartRouter
   .route("/")
   .get(validateUser, allItems)
   .post(validateUser, addToCart)
-  .delete(validateUser, removeAllFromCart);
 
-cartRouter.put("/:id", validateUser, updateCart);
+
+cartRouter.put("/", validateUser, updateCart);
 
 module.exports = cartRouter;

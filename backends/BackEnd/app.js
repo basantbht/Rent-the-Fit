@@ -24,6 +24,8 @@ app.use(cors())
 app.use("/api/users", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/kyc", kycRouter);
+app.use("/api/pay", payRouter);
 
 // database and server
 const connection = require("../DB/connectDB");

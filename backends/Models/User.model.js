@@ -35,13 +35,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-    cartData: {type: Object, default:{}},
+
+    cartData: {
+      type:Object,
+      default:{},
+    },
 
     resetPasswordToken: String,
     resetPasswordExpiresAt: Date,
     verificationToken: String,
     verificationTokenExpiresAt: Date,
-    
   },
 
   { timestamps: true }
