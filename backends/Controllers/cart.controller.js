@@ -2,8 +2,9 @@ const userModel=require('../Models/User.model')
 
 const addToCart = async (req, res) => {
   try {
-    const { userId,size, productId } = req.body;
-  
+    const { size, productId } = req.body;
+    const userId = req.user._id; 
+
     // Find user
     const userData = await userModel.findById(userId);
     if (!userData) {

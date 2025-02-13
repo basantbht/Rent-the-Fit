@@ -15,7 +15,6 @@ import AdminLayout from './admin/pages/AdminLayout'
 import AdminProducts from './admin/pages/AdminProducts'
 import AddProducts from './admin/pages/AddProducts'
 import DeleteProducts from './admin/pages/UpdateProduct'
-import Orders from './admin/pages/Orders'
 import Dashboard from './admin/pages/Dashboard'
 import UpdateProduct from './admin/pages/UpdateProduct'
 import Footer from './user/components/Footer'
@@ -23,6 +22,8 @@ import Product from './user/pages/Product'
 import ScrollToTop from './user/components/ScrollTop'
 import Cart from './user/pages/Cart'
 import PlaceOrder from './user/pages/PlaceOrder'
+import Orders from './user/pages/Orders'
+import AdminOrders from './admin/pages/AdminOrders'
 
 const App = () => {
   const location = useLocation();
@@ -42,13 +43,13 @@ const App = () => {
           <Route path='/product/:productId' element={<Product />} />
           <Route path='/otp' element={<OtpInput />} />
           
-          {/* <Route element={<PrivateRoute />}> */}
           <Route path='/contact' element={<Contact />} />
           <Route path='/about' element={<About />} />
           <Route path='/profile' element={<Profile />} />
-          {/* </Route> */}
+          
           <Route path='/cart' element={<Cart />} />
           <Route path='/placeorder' element={<PlaceOrder />} />
+          <Route path='/orders' element={<Orders />} />
 
           <Route path='/signup' element={<Signup />} />
           <Route path='/login' element={<Login />} />
@@ -62,7 +63,7 @@ const App = () => {
           <Route path='adminproducts' element={<AdminProducts />} />
           <Route path='addproducts' element={<AddProducts />} />
           <Route path='updateproducts' element={<UpdateProduct />} />
-          <Route path='orders' element={<Orders />} />
+          <Route path='adminorders' element={<AdminOrders />} />
         </Route>
 
       </Routes>

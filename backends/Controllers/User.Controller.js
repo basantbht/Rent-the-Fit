@@ -381,7 +381,7 @@ const verifyUseremail = async (req, res) => {
   console.log(userverifycode);
 
   try {
-    //console.log(req.user);
+    console.log(req.user);
     const user = await userModel.findById(req.user._id);
     console.log(typeof user.verificationToken, typeof userverifycode);
 

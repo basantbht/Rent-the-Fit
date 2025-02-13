@@ -7,7 +7,7 @@ import { RentContext } from '../../../context/RentContext'
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
-  const { navigate, backendUrl, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(RentContext);
+  const { navigate, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(RentContext);
 
   const [formData, setFormData] = useState({
     firstName: '',
@@ -47,37 +47,34 @@ const PlaceOrder = () => {
         items: orderItems,
         amount: getCartAmount() + delivery_fee
       }
-
+      console.log(token)
       switch (method) {
 
         // api calls for cod
         case 'cod':
-          const response = await axios.post(backendUrl + '/api/order/place', orderData, 
-            { headers: { 
-              Authorization: `Bearer${token}`
-             } 
+          const res = await axios.post('http://localhost:3000/api/order/place', orderData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
             })
-
-          if (response.data.success) {
+          console.log(res)
+          if (res.data.success) {
             setCartItems({})
             navigate('/orders')
           } else {
-            toast.error(response.data.message)
+            toast.error(res.data.message)
           }
-
           break;
 
         default:
           break;
       }
-
     } catch (error) {
       console.log(error);
       toast.error(error.message)
     }
-
   }
-
 
   return (
     <form onSubmit={onSubmitHandler} className='flex flex-col sm:flex-row justify-between gap-4 pt-5 sm:pt-14 min-h-[80vh] border-t'>
