@@ -9,7 +9,6 @@ const RentContextProvider = (props) => {
   const currency = 'Rs.';
   const delivery_fee = 10;
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
-  console.log(backendUrl)
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState(null);
   const [isAdmin, setIsAdmin] = useState('');
@@ -66,7 +65,6 @@ const RentContextProvider = (props) => {
   const getProductsData = async () => {
     try {
       const response = await axios.get('http://localhost:3000/api/product/');
-      console.log(response);
       if (response.data.error === false) {
         setProducts(response.data.allProduct);
       } else {
@@ -145,7 +143,7 @@ const RentContextProvider = (props) => {
     }
   }, [])
 
-  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate, products, addToCart, getCartCount, updateQuantity, cartItems, setCartItems, getCartAmount }
+  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate, products,setProducts, addToCart, getCartCount, updateQuantity, cartItems, setCartItems, getCartAmount }
 
   return (
     <RentContext.Provider value={value}>

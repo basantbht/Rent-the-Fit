@@ -3,7 +3,7 @@ const userModel = require("../Models/User.model");
 
 const validateUser = async (req, res, next) => {
   let cookieToken = req.headers.authorization?.split(" ")[1]; // Extract Bearer Token
-
+  console.log(cookieToken)
   if (!cookieToken) {
     return res
       .status(400)
@@ -13,9 +13,9 @@ const validateUser = async (req, res, next) => {
     const signId = jwt.verify(cookieToken, process.env.SECRET);
     // req.body.userId = await userModel.findById(signId.userId).select("-password");
     req.user = await userModel.findById(signId.userId).select("-password");
-   
+
     next();
-    
+
   } catch (e) {
     return res
       .status(400)

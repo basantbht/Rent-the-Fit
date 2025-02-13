@@ -6,7 +6,7 @@ const AdminContextProvider = (props) => {
 
     const currency = 'Rs.';
     const delivery_fee = 10;
-    const backendUrl = import.meta.env.BACKEND_URL
+    const backendUrl = import.meta.env.VITE_BACKEND_URL
     const [token, setToken] = useState('');
     const [isAdmin, setIsAdmin] = useState('');
 
