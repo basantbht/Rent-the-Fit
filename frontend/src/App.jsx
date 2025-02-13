@@ -22,6 +22,7 @@ import Footer from './user/components/Footer'
 import Product from './user/pages/Product'
 import ScrollToTop from './user/components/ScrollTop'
 import Cart from './user/pages/Cart'
+import PlaceOrder from './user/pages/PlaceOrder'
 
 const App = () => {
   const location = useLocation();
@@ -46,9 +47,10 @@ const App = () => {
           <Route path='/about' element={<About />} />
           <Route path='/profile' element={<Profile />} />
           {/* </Route> */}
+          <Route path='/cart' element={<Cart />} />
+          <Route path='/placeorder' element={<PlaceOrder />} />
 
           <Route path='/signup' element={<Signup />} />
-          <Route path='/cart' element={<Cart />} />
           <Route path='/login' element={<Login />} />
         </Routes>
       </div>

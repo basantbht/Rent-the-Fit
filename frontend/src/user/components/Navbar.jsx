@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -7,8 +7,10 @@ import { faCartShopping, faRightFromBracket } from '@fortawesome/free-solid-svg-
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import Cookies from "js-cookie";
+import { RentContext } from '../../../context/RentContext'
 
 const Navbar = () => {
+    const {getCartCount} = useContext(RentContext);
     const navigate = useNavigate();
     const handleLogout = async () => {
         try {
@@ -70,7 +72,7 @@ const Navbar = () => {
 
                 <Link to='/cart' className='relative'>
                     <FontAwesomeIcon className='w-5 min-w-5' icon={faCartShopping} />
-                    <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]'>0</p>
+                    <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]'>{getCartCount()}</p>
 
                 </Link>
 

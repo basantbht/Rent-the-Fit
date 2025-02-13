@@ -8,7 +8,7 @@ export const RentContext = createContext();
 const RentContextProvider = (props) => {
   const currency = 'Rs.';
   const delivery_fee = 10;
-  const backendUrl = import.meta.env.BACKEND_URL
+  const backendUrl = import.meta.env.BACKEND_URL;
   const [products, setProducts] = useState([]);
   const [token, setToken] = useState(null);
   const [isAdmin, setIsAdmin] = useState('');
@@ -20,35 +20,35 @@ const RentContextProvider = (props) => {
   const addToCart = async (productId, size) => {
 
     if (!size) {
-      toast.error("Select product size");
+      toast.error('Select Product Size');
       return;
-    }
-    let cartData = structuredClone(cartItems);
+  }
 
-    if (cartData[productId]) {
+  let cartData = structuredClone(cartItems);
+
+  if (cartData[productId]) {
       if (cartData[productId][size]) {
-        cartData[productId][size] += 1;
+          cartData[productId][size] += 1;
       }
       else {
-        cartData[productId][size] = 1;
+          cartData[productId][size] = 1;
       }
-    }
-    else {
+  }
+  else {
       cartData[productId] = {};
       cartData[productId][size] = 1;
-    }
-    setCartItems(cartData);
-    console.log(cartItems);
-    console.log(token)
+  }
+  setCartItems(cartData);
+  console.log(cartData);
+
     if (token) {
       try {
         const res = await axios.post('http://localhost:3000/api/cart/', { productId, size },
           {
             headers: {
-              Authorization: `Bearer ${token}`,
+              Authorization: `Bearer ${token}`
             }
           })
-        console.log(res);
       } catch (error) {
         console.log(error);
         toast.error(error.response.data.message)
@@ -63,7 +63,6 @@ const RentContextProvider = (props) => {
       console.log(response);
       if (response.data.error === false) {
         setProducts(response.data.allProduct);
-        console.log(response.data.allProduct);
       } else {
         toast.error(response.data.message);
       }
@@ -73,6 +72,61 @@ const RentContextProvider = (props) => {
     }
   };
 
+  const getCartCount = () => {
+    let totalCount = 0;
+    for (const items in cartItems) {
+        for (const item in cartItems[items]) {
+            try {
+                if (cartItems[items][item] > 0) {
+                    totalCount += cartItems[items][item];
+                }
+            } catch (error) {
+
+            }
+        }
+    }
+    return totalCount;
+}
+
+const updateQuantity = async(productId,size,quantity) => {
+
+  let cartData = structuredClone(cartItems);
+  cartData[productId][size]= quantity;
+  setCartItems(cartData);
+
+  if (token) {
+    try {
+      const res = await axios.put('http://localhost:3000/api/cart/', { productId, size, quantity },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          }
+        })
+      console.log(res);
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message)
+
+    }
+  }
+}
+
+const getCartAmount = () => {
+  let totalAmount =0;
+  for (const items in cartItems){
+    let itemInfo = products.find((product) => product._id === items);
+    for(const item in cartItems[items]){
+      try {
+        if(cartItems[items][item]>0){
+          totalAmount += itemInfo.price * cartItems[items][item] 
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+  return totalAmount;
+}
 
   useEffect(() => {
     getProductsData();
@@ -85,11 +139,7 @@ const RentContextProvider = (props) => {
     }
   }, [])
 
-  useEffect(()=> {
-    console.log(cartItems)
-  })
-
-  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate, products, addToCart }
+  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate, products, addToCart,getCartCount,updateQuantity ,cartItems, setCartItems, getCartAmount}
 
   return (
     <RentContext.Provider value={value}>
