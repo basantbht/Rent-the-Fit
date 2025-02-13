@@ -1,14 +1,10 @@
 // Model
-
 const userModel = require("../Models/User.model");
 // Module
-
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const joi = require("joi");
-
 // Local
-
 const generateVerificationToken = require("../utils/verification.Token");
 const sendMail = require("../Mail/mail.Send");
 const generateToken = require("../utils/createToken");
@@ -286,13 +282,13 @@ const updateCurrentProfile = async (req, res) => {
     return res.status(401).json({ error: true, message: error.message });
   }
   const { username } = req.body;
-      const image = req.file;
-      if (!image) {
-        return res.status(400).json({ error: true, message: "No Image Found" });
-      }
-      let cloudRes = await cloudinary.uploader.upload(image.path, {
-        folder: "profile-image",
-      });
+  const image = req.file;
+  if (!image) {
+    return res.status(400).json({ error: true, message: "No Image Found" });
+  }
+  let cloudRes = await cloudinary.uploader.upload(image.path, {
+    folder: "profile-image",
+  });
 
   try {
     const user = await userModel.findById(req.user._id).select("-password");
@@ -309,7 +305,7 @@ const updateCurrentProfile = async (req, res) => {
       });
     }
     user.username = username || user.username;
-    user.profileImage=cloudRes.secure_url;
+    user.profileImage = cloudRes.secure_url;
     const updatedUsername = await user.save();
     return res.status(200).json({ message: updatedUsername, error: false });
   } catch (e) {
@@ -382,7 +378,7 @@ const updateUserById = async (req, res) => {
 };
 const verifyUseremail = async (req, res) => {
   const { userverifycode } = req.body;
-  console.log(userverifycode)
+  console.log(userverifycode);
 
   try {
     //console.log(req.user);
@@ -475,7 +471,6 @@ const resetpass = async (req, res) => {
       .json({ error: true, message: "Couldnot reset Password" });
   }
 };
-
 
 module.exports = {
   createUser,
