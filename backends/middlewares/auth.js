@@ -2,8 +2,8 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../Models/User.model");
 
 const validateUser = async (req, res, next) => {
-  let cookieToken = req.headers.authorization?.split(" ")[1]; // Extract Bearer Token
-  console.log(cookieToken)
+  let cookieToken = req.cookies.token
+  //console.log(cookieToken)
 
   if (!cookieToken) {
     return res

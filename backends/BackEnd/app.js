@@ -10,7 +10,7 @@ const userRouter = require("../Routes/userRoutes");
 const productRouter = require("../Routes/productRoutes");
 const cartRouter = require("../Routes/cartRoutes");
 const payRouter = require("../Routes/paymentRoutes");
-const kycRouter = require("../Routes/kyc.model");
+const kycRouter = require("../Routes/kyc.Route");
 
 // middlewares
 
@@ -24,6 +24,8 @@ app.use(cors())
 app.use("/api/users", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
+app.use("/api/kyc", kycRouter);
+app.use("/api/pay", payRouter);
 
 // database and server
 const connection = require("../DB/connectDB");

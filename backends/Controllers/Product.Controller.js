@@ -60,8 +60,8 @@ const createProduct = async (req, res) => {
       quantity,
       category,
       description,
-      price,
-      sizes,
+      price:Number(price),
+      sizes:JSON.parse(sizes),
       image: cloudRes.secure_url,
       bestseller,
     });
