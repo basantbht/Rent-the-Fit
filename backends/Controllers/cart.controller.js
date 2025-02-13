@@ -1,39 +1,38 @@
 const Product = require("../models/product.model");
+const userModel = require("../Models/User.model");
 
+// add products to user cart
 const addToCart = async (req, res) => {
   try {
-    const { productId } = req.body;
-    const user = req.user;
-    //console.log(user.cartItems);
-    const productExists = await Product.findById(productId);
-
-    if (!productExists) {
-      return res
-        .status(404)
-        .json({ error: true, message: "Product not found." });
+    const { userId, itemId, size } = req.body;
+    const userData = req.user;
+    
+    if (!userData) {
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    const existingProduct = user.cartItems.find(
-      (item) => item.id === productId
-    );
-    //console.log(existingProduct);
-    if (existingProduct) {
-      existingProduct.quantity += 1;
+    let cartItems = userData.cartItems || {}; // Ensure cartItems exists
+
+    if (cartItems[itemId]) {
+      if (cartItems[itemId][size]) {
+        cartItems[itemId][size] += 1;
+      } else {
+        cartItems[itemId][size] = 1;
+      }
     } else {
-      //console.log('inside else');
-      user.cartItems.push(productId);
+      cartItems[itemId] = { [size]: 1 };
     }
-    await user.save();
-    return res
-      .status(200)
-      .json({ error: false, message: "product added.", items: user.cartItems });
+
+    await userModel.findByIdAndUpdate(userId, { cartItems });
+    res.json({ success: true, message: "Added to cart" });
+
   } catch (error) {
-    console.log("Error in addtocart", error);
-    return res
-      .status(500)
-      .json({ error: true, message: "couldnot add to cart." });
+    console.log(error);
+    res.status(500).json({ success: false, message: error.message });
   }
 };
+
+
 const removeAllFromCart = async (req, res) => {
   try {
     const { productId } = req.body;
