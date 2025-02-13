@@ -9,39 +9,28 @@ const RentContextProvider = (props) => {
   const currency = 'Rs.';
   const delivery_fee = 10;
   const backendUrl = import.meta.env.BACKEND_URL
-  const [products, setProducts] = useState();
-  const [token, setToken] = useState('');
+  const [products, setProducts] = useState([]);
+  const [token, setToken] = useState(null);
   const [isAdmin, setIsAdmin] = useState('');
   const navigate = useNavigate();
-
+  const [search, setSearch] = useState('');
+    const [showSearch, setShowSearch] = useState(false);
 
   const getProductsData = async () => {
-    // try {
-    //   const response = await axios.get('http://localhost:3000/api/product/', {
-    //     headers: {
-    //       Authorization: `Bearer ${token}`,
-    //       'Content-Type': 'multipart/form-data',
-    //       isAdmin,
-    //     }
-    //   });
-
-    //   console.log(response);
-
-    //   if (response.data.error === false) {
-    //     setProducts(response.data.allProduct);
-    //   } else {
-    //     toast.error(response.data.message);
-    //   }
-    // } catch (error) {
-    //   console.log(error);
-    //   toast.error(error.response.data.message);
-    // }
+    try {
+      const response = await axios.get('http://localhost:3000/api/product/');
+      console.log(response);
+      if (response.data.error === false) {
+        setProducts(response.data.allProduct);
+        console.log(response.data.allProduct);
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response.data.message);
+    }
   };
-
-  useEffect(() => {
-    setToken(localStorage.getItem('token'));
-    setIsAdmin(localStorage.getItem('isAdmin'));
-  });
 
 
   useEffect(() => {
@@ -50,7 +39,7 @@ const RentContextProvider = (props) => {
 
 
 
-  const value = { currency, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate }
+  const value = { currency, search,setSearch,showSearch,setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate,products }
 
   return (
     <RentContext.Provider value={value}>

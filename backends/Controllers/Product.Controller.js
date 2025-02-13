@@ -62,8 +62,10 @@ const createProduct = async (req, res) => {
       description,
       price:Number(price),
       sizes:JSON.parse(sizes),
+
       image: cloudRes.secure_url,
-      bestseller,
+      bestseller: bestseller === "true" ? true : false,
+      date:Date.now()
     });
     await newProduct.save();
     return res.status(201).json({ error: false, message: "Product Added" });

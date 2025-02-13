@@ -1,3 +1,4 @@
+
 const joi=require("joi")
 
 const kycSchema=joi.object({
@@ -18,5 +19,5 @@ const createKyc = async (req, res) => {
     
    }
 
-};
-module.exports = {createKyc};
+}
+

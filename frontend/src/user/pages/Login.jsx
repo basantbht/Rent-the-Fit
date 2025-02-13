@@ -1,12 +1,14 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import Cookies from "js-cookie";
+import { RentContext } from '../../../context/RentContext';
 
 const Login = () => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
+  const { token, setToken } = useContext(RentContext);
 
 
   const onChange = (e) => {
@@ -24,10 +26,11 @@ const Login = () => {
       const res = await axios.post('http://localhost:3000/api/users/login', formData);
 
       console.log(res);
-      
+
       const { token, message, error, isAdmin } = res.data;
-      
+
       if (res.data.error === false) {
+        setToken(token)
         localStorage.setItem('token', token)
         localStorage.setItem('isAdmin', isAdmin)
         Cookies.set("token", token, { expires: 5, path: "/" });

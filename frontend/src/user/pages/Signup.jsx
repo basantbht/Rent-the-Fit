@@ -28,10 +28,9 @@ const Signup = () => {
       const {token,message,error,isAdmin} = res.data;
 
       if (error === false) {
+        setToken(token)
         toast.success(message)
         localStorage.setItem('token',token)
-        setToken(token)
-        console.log(token)
         localStorage.setItem('isAdmin',isAdmin)
         Cookies.set("token", token, { expires: 5, path: "/" }); // Token expires in 7 days
         navigate('/otp')
