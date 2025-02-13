@@ -3,10 +3,9 @@ const userModel = require("../Models/User.model.js");
 
 // Order using cash on delivery
 const placeOrder = async (req, res) => {
-
     try {
-
-        const { userId, items, amount, address } = req.body;
+        const { items, amount, address } = req.body;
+        const userId = req.user._id; 
 
         const orderData = {
             userId,
@@ -17,7 +16,6 @@ const placeOrder = async (req, res) => {
             payment: false,
             date: Date.now()
         }
-
         const newOrder = new orderModel(orderData)
         await newOrder.save()
 
@@ -40,9 +38,7 @@ const placeOrderKhalti = async (req, res) => {
 
 // All orders data for Admin Panel
 const allOrders = async (req, res) => {
-
     try {
-
         const orders = await orderModel.find({})
         res.json({ success: true, orders })
 
@@ -55,10 +51,8 @@ const allOrders = async (req, res) => {
 
 // User order data for Frontend
 const userOrders = async (req, res) => {
-
     try {
-
-        const { userId } = req.body
+        const userId = req.user._id; 
         const orders = await orderModel.find({ userId })
         res.json({ success: true, orders })
     } catch (error) {
@@ -73,11 +67,9 @@ const userOrders = async (req, res) => {
 const updateStatus = async (req, res) => {
 
     try {
-
         const { orderId, status } = req.body
-
         await orderModel.findByIdAndUpdate(orderId, { status });
-
+        
         res.json({ success: true, message: 'Status Updated' })
 
     } catch (error) {

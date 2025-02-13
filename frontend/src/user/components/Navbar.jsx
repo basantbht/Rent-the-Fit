@@ -71,12 +71,12 @@ const Navbar = () => {
                 </Link>
 
                 <Link to='/cart' className='relative'>
-                    <FontAwesomeIcon className='w-5 min-w-5' icon={faCartShopping} />
+                    <FontAwesomeIcon className='w-6 min-w-6 ml-2' icon={faCartShopping} />
                     <p className='absolute right-[-5px] bottom-[-5px] w-4 text-center leading-4 bg-black text-white aspect-square rounded-full text-[8px]'>{getCartCount()}</p>
 
                 </Link>
 
-                <FontAwesomeIcon onClick={handleLogout} className='w-8 cursor-pointer' icon={faRightFromBracket} />
+                <FontAwesomeIcon onClick={handleLogout} className='w-8 ml-2 cursor-pointer' icon={faRightFromBracket} />
 
 
 
