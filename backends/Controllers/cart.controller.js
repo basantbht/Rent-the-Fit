@@ -1,3 +1,4 @@
+
 const userModel=require('../Models/User.model')
 const addToCart = async (req, res) => {
   try {
@@ -25,6 +26,7 @@ const addToCart = async (req, res) => {
   }
 };
 
+
 const updateCart = async (req, res) => {
 try{
   const {userId,itemId,size,quantity}=req.body
@@ -51,4 +53,6 @@ const allItems = async (req, res) => {
     return res.status(500).json({ error: true, message: "couldnot get items" });
   }
 };
+
 module.exports = { addToCart, updateCart, allItems };
+

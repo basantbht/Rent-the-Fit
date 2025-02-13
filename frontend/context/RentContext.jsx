@@ -14,7 +14,48 @@ const RentContextProvider = (props) => {
   const [isAdmin, setIsAdmin] = useState('');
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
-    const [showSearch, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+  const [cartItems, setCartItems] = useState({});
+
+  const addToCart = async (productId, size) => {
+
+    if (!size) {
+      toast.error("Select product size");
+      return;
+    }
+    let cartData = structuredClone(cartItems);
+
+    if (cartData[productId]) {
+      if (cartData[productId][size]) {
+        cartData[productId][size] += 1;
+      }
+      else {
+        cartData[productId][size] = 1;
+      }
+    }
+    else {
+      cartData[productId] = {};
+      cartData[productId][size] = 1;
+    }
+    setCartItems(cartData);
+    console.log(cartItems);
+    console.log(token)
+    if (token) {
+      try {
+        const res = await axios.post('http://localhost:3000/api/cart/', { productId, size },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            }
+          })
+        console.log(res);
+      } catch (error) {
+        console.log(error);
+        toast.error(error.response.data.message)
+
+      }
+    }
+  }
 
   const getProductsData = async () => {
     try {
@@ -37,9 +78,18 @@ const RentContextProvider = (props) => {
     getProductsData();
   }, []);
 
+  useEffect(() => {
+    if (!token && localStorage.getItem('token')) {
+      setToken(localStorage.getItem('token'))
+      // getUserCart(localStorage.getItem('token'))
+    }
+  }, [])
 
+  useEffect(()=> {
+    console.log(cartItems)
+  })
 
-  const value = { currency, search,setSearch,showSearch,setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate,products }
+  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate, products, addToCart }
 
   return (
     <RentContext.Provider value={value}>

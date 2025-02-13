@@ -21,6 +21,7 @@ import UpdateProduct from './admin/pages/UpdateProduct'
 import Footer from './user/components/Footer'
 import Product from './user/pages/Product'
 import ScrollToTop from './user/components/ScrollTop'
+import Cart from './user/pages/Cart'
 
 const App = () => {
   const location = useLocation();
@@ -33,13 +34,13 @@ const App = () => {
       {!isAdminPage && <Navbar />}
 
         {!isAdminPage ? (
-      <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[7vw]'>
+      <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/products' element={<Products />} />
           <Route path='/product/:productId' element={<Product />} />
           <Route path='/otp' element={<OtpInput />} />
-
+          
           {/* <Route element={<PrivateRoute />}> */}
           <Route path='/contact' element={<Contact />} />
           <Route path='/about' element={<About />} />
@@ -47,6 +48,7 @@ const App = () => {
           {/* </Route> */}
 
           <Route path='/signup' element={<Signup />} />
+          <Route path='/cart' element={<Cart />} />
           <Route path='/login' element={<Login />} />
         </Routes>
       </div>
