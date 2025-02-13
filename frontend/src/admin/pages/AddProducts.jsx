@@ -69,7 +69,7 @@ const AddProducts = () => {
         <p className='mb-2 font-medium'>Upload Image</p>
         <label htmlFor='image4' className='cursor-pointer'>
           <img className='w-24 h-24 object-cover rounded-md border' src={!image ? upload_area : URL.createObjectURL(image)} alt='' />
-          <input onChange={(e) => setImage(e.target.files[0])} type='file' id='image4' hidden />
+          <input onChange={(e) => setImage(e.target.files[0])} type='file' id='image' hidden />
         </label>
       </div>
 

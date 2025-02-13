@@ -4,27 +4,15 @@ import { toast } from 'react-toastify';
 import { RentContext } from '../../../context/RentContext';
 
 const AdminProducts = () => {
-  const { currency } = useContext(RentContext);
+  const { currency, backendUrl } = useContext(RentContext);
   const [token, setToken] = useState('');
   const [isAdmin, setIsAdmin] = useState('');
   const [list, setList] = useState([]);
 
-  useEffect(() => {
-    setToken(localStorage.getItem('token'));
-    setIsAdmin(localStorage.getItem('isAdmin'));
-  });
 
   const fetchList = async () => {
     try {
-      const response = await axios.get('http://localhost:3000/api/product/', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data',
-          isAdmin,
-        }
-      });
-
-      console.log(response);
+      const response = await axios.get(backendUrl + '/api/product/');
 
       if (response.data.error === false) {
         setList(response.data.allProduct);
@@ -37,20 +25,40 @@ const AdminProducts = () => {
     }
   };
 
-  useEffect(() => {
-    if (token && isAdmin) {
-      fetchList();
-    }
-  }, [token, isAdmin]);
-
   const removeProduct = async (id) => {
-    // Functionality remains unchanged
-  };
+    try {
+      const response = await axios.delete(`${backendUrl}/api/product/${id}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            isAdmin
+          }
+        })
+        console.log(response.data.error);  
+
+      if (response.data.error === false) {
+        toast.success(response.data.message);
+        await fetchList();
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.response.data.message)
+    }
+  }
+
+  
+  useEffect(() => {
+    setToken(localStorage.getItem('token'));
+    setIsAdmin(localStorage.getItem('isAdmin'));
+  });
+
+  useEffect(() => {
+    fetchList();
+  }, [])
 
   return (
     <div className='p-6 bg-gradient-to-r from-gray-100 to-gray-200 min-h-screen rounded-lg shadow-md'>
       <p className='mb-6 text-2xl font-extrabold text-gray-900 text-center'>All Product List</p>
-      
+
       <div className='flex flex-col gap-4'>
 
         {/* Table Header */}
@@ -77,7 +85,7 @@ const AdminProducts = () => {
             <p className='text-gray-900 font-bold'>{currency}{item.price}</p>
             <p
               onClick={() => removeProduct(item._id)}
-              className='text-center cursor-pointe text-lg font-bold text-red-900 px-3 py-1 rounded-lg transition duration-200'
+              className='text-center cursor-pointer text-lg font-bold text-red-900 px-3 py-1 rounded-lg transition duration-200'
             >
               X
             </p>

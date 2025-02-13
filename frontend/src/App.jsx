@@ -14,9 +14,9 @@ import PrivateRoute from './user/components/PrivateRoute'
 import AdminLayout from './admin/pages/AdminLayout'
 import AdminProducts from './admin/pages/AdminProducts'
 import AddProducts from './admin/pages/AddProducts'
-import DeleteProducts from './admin/pages/UpdateProduct'
+import DeleteProducts from './admin/pages/EditProduct'
 import Dashboard from './admin/pages/Dashboard'
-import UpdateProduct from './admin/pages/UpdateProduct'
+import UpdateProduct from './admin/pages/EditProduct'
 import Footer from './user/components/Footer'
 import Product from './user/pages/Product'
 import ScrollToTop from './user/components/ScrollTop'
@@ -24,6 +24,7 @@ import Cart from './user/pages/Cart'
 import PlaceOrder from './user/pages/PlaceOrder'
 import Orders from './user/pages/Orders'
 import AdminOrders from './admin/pages/AdminOrders'
+import EditProduct from './admin/pages/EditProduct'
 
 const App = () => {
   const location = useLocation();
@@ -62,8 +63,8 @@ const App = () => {
           <Route path='dashboard' element={<Dashboard />} />
           <Route path='adminproducts' element={<AdminProducts />} />
           <Route path='addproducts' element={<AddProducts />} />
-          <Route path='updateproducts' element={<UpdateProduct />} />
-          <Route path='adminorders' element={<AdminOrders />} />
+          <Route path='editproducts' element={<EditProduct />} />
+          <Route path='vieworders' element={<AdminOrders />} />
         </Route>
 
       </Routes>
