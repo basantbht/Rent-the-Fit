@@ -26,5 +26,6 @@ export const assets = {
     about_img,
     contact_img,
     star_icon,
-    star_dull_icon
+    star_dull_icon,
+    bin_icon
 }
