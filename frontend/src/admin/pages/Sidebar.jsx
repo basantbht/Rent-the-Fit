@@ -52,7 +52,9 @@ const Sidebar = () => {
         <li className="p-2 hover:bg-gray-700 rounded">Orders</li>
         </NavLink>
         
+        <NavLink to='customers'>
         <li className="p-2 hover:bg-gray-700 rounded">Customers</li>
+        </NavLink>
         <li className="p-2 hover:bg-gray-700 rounded">Settings</li>
       </ul>
     </aside>
