@@ -6,7 +6,7 @@ import { AdminContext } from '../../../context/AdminContext';
 import { RentContext } from '../../../context/RentContext';
 
 const EditProduct = () => {
-  const { backendUrl, token ,isAdmin} = useContext(AdminContext);
+  const { backendUrl, token, isAdmin,currency } = useContext(AdminContext);
   const { products, setProducts } = useContext(RentContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -90,31 +90,51 @@ const EditProduct = () => {
   };
 
   useEffect(() => {
-      fetchProducts();
-    }, [])
-  
+    fetchProducts();
+  }, [])
+
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-6">Products List</h1>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {products.map((product) => (
-          <div key={product._id} className="p-4 border rounded-lg shadow-md bg-white flex flex-col items-center">
-            <img src={product.image} alt={product.name} className="w-48 h-48 object-cover rounded-md mb-4" />
-            <h2 className="text-lg font-bold">{product.name}</h2>
-            <p className="text-sm text-gray-600">{product.brand}</p>
-            <p className="text-sm text-gray-600">${product.price}</p>
+     
+
+      <div className='flex flex-col gap-4'>
+        {/* Table Header */}
+        <div className='hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center py-3 px-6 border border-gray-300 bg-gray-800 text-white text-sm font-semibold rounded-lg shadow-lg'>
+          <b>Image</b>
+          <b>Name</b>
+          <b>Category</b>
+          <b>Quantity</b>
+          <b>Price</b>
+          <b className='text-center'>Action</b>
+        </div>
+
+        {/* Product List */}
+        {products.map((product, index) => (
+          <div
+            className={`grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center gap-4 py-3 px-6 border border-gray-200 text-sm rounded-lg shadow-md transition duration-200 
+            ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-200 hover:shadow-lg`}
+            key={index}
+          >
+            <img className='w-16 h-16 object-cover rounded-lg border border-gray-400' src={product.image} alt="" />
+            <p className='text-gray-900 font-semibold'>{product.name}</p>
+            <p className='text-gray-700'>{product.category}</p>
+            <p className='text-gray-700'>{product.quantity}</p>
+            <p className='text-gray-900 font-bold'>{currency}{product.price}</p>
             <button
               className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-              onClick={() => handleEditClick(product)}
+              onClick={() => handleEditClick(product)} // Trigger the edit functionality
             >
               Edit
             </button>
           </div>
         ))}
       </div>
+
+
 
       {showEditForm && selectedProduct && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

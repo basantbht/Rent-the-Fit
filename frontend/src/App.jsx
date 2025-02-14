@@ -25,6 +25,7 @@ import PlaceOrder from './user/pages/PlaceOrder'
 import Orders from './user/pages/Orders'
 import AdminOrders from './admin/pages/AdminOrders'
 import EditProduct from './admin/pages/EditProduct'
+import Customers from './admin/pages/Customers'
 
 const App = () => {
   const location = useLocation();
@@ -65,6 +66,7 @@ const App = () => {
           <Route path='addproducts' element={<AddProducts />} />
           <Route path='editproducts' element={<EditProduct />} />
           <Route path='vieworders' element={<AdminOrders />} />
+          <Route path='customers' element={<Customers />} />
         </Route>
 
       </Routes>
