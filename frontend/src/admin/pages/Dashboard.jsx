@@ -1,6 +1,8 @@
-import React from 'react'
+import React, { useContext, useState } from 'react'
+import { AdminContext } from '../../../context/AdminContext'
 
 const Dashboard = () => {
+const {userCount,} = useContext(AdminContext);
 
   return (
     <main className="ml-10 p-6 max-w-full overflow-hidden ">
@@ -8,7 +10,7 @@ const Dashboard = () => {
     <div className="grid grid-cols-4 gap-6">
     <div className="bg-green-500 p-5 rounded text-white">
         <h3 className="text-lg">CUSTOMERS</h3>
-        <h1 className="text-2xl font-bold">33</h1>
+        <h1 className="text-2xl font-bold">{userCount}</h1>
       </div>
       <div className="bg-blue-500 p-5 rounded text-white">
         <h3 className="text-lg">PRODUCTS</h3>
