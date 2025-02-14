@@ -7,8 +7,8 @@ const { authorizeAdmin, validateUser } = require('../middlewares/auth.js');
 const orderRouter = express.Router()
 
 //admin
-orderRouter.post('/list',authorizeAdmin,allOrders)
-orderRouter.post('/status',authorizeAdmin,updateStatus)
+orderRouter.get('/list',validateUser,authorizeAdmin,allOrders)
+orderRouter.post('/status',validateUser,authorizeAdmin,updateStatus)
 
 // payment
 orderRouter.post('/place',validateUser,placeOrder)
