@@ -191,10 +191,44 @@ const searchProduct = async (req, res) => {
     return res.status(500).json({ message: "couldnot get product" });
   }
 };
+const productReview=async(req,res)=>{
+  try {
+    const { rating, comment } = req.body;
+    const product = await productModel.findById(req.params.id);
+
+    if (product) {
+      const alreadyReviewed = product.reviews.find(
+        (r) => r.user.toString() === req.user._id.toString()
+      );
+
+      if (alreadyReviewed) {
+        return res
+          .status(500)
+          .json({ error: true, message: "Product Already reviewed" });
+      }
+      const review = {
+        name: req.user.username,
+        rating,
+        comment,
+        user: req.user._id,
+      };
+      product.reviews.push(review);
+      await product.save();
+      return res.status(200).json({ error: false, message: "review Added." });
+    }
+  } catch (error) {
+    console.log("Error in productReviews", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "Something went wrong." });
+  }
+
+}
 module.exports = {
   createProduct,
   ReadProduct,
   editProduct,
   deleteProduct,
   searchProduct,
+  productReview
 };

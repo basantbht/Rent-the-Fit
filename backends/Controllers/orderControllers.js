@@ -78,4 +78,6 @@ const updateStatus = async (req, res) => {
     }
 }
 
+
 module.exports = { placeOrder, placeOrderKhalti, allOrders, userOrders, updateStatus };
+
