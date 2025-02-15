@@ -86,4 +86,4 @@ const updateStatus = async (req,res) => {
     }
 }
 
-export {placeOrder, placeOrderKhalti, allOrders,userOrders,updateStatus}
+module.exports= {placeOrder, placeOrderKhalti, allOrders,userOrders,updateStatus}
