@@ -7,8 +7,8 @@ export const RentContext = createContext();
 
 const RentContextProvider = (props) => {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
-    const [isVerified, setIsVerified] = useState(localStorage.getItem('isVerified') === 'true');
-    const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
+  const [isVerified, setIsVerified] = useState(localStorage.getItem('isVerified') === 'true');
+  const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
 
   const currency = 'Rs.';
   const delivery_fee = 10;
@@ -149,11 +149,13 @@ const RentContextProvider = (props) => {
   }, [userDetails]);
 
   useEffect(() => {
-        setIsVerified(localStorage.getItem('isVerified') === 'true');
-        setIsAdmin(localStorage.getItem('isAdmin') === 'true');
-    }, [token]); // Whenever `token` changes, update states
+    setIsVerified(localStorage.getItem('isVerified') === 'true');
+    setIsAdmin(localStorage.getItem('isAdmin') === 'true');
+  }, [token]); 
 
-  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin,isVerified,setIsVerified, navigate, products,setProducts, addToCart, getCartCount, updateQuantity, cartItems, setCartItems, getCartAmount,setUserDetails, userDetails }
+
+
+  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, isVerified, setIsVerified, navigate, products, setProducts, addToCart, getCartCount, updateQuantity, cartItems, setCartItems, getCartAmount, setUserDetails, userDetails,}
 
   return (
     <RentContext.Provider value={value}>

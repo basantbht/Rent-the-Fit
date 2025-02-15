@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faUser } from '@fortawesome/free-regular-svg-icons'
-import { faCartShopping, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
+import { faCartShopping, faMagnifyingGlass, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import Cookies from "js-cookie";
@@ -11,7 +11,7 @@ import { RentContext } from '../../../context/RentContext'
 
 const Navbar = () => {
     const username = localStorage.getItem('username');
-    const { getCartCount,isVerified,isAdmin,token,setToken,setIsVerified,setIsAdmin } = useContext(RentContext);
+    const { getCartCount, isVerified, isAdmin, token, setToken, setIsVerified, setIsAdmin, setShowSearch, setCartItems } = useContext(RentContext);
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -29,7 +29,7 @@ const Navbar = () => {
             setIsVerified(false);
             setIsAdmin(false);
 
-
+            setCartItems({});
             navigate('/login');
         } catch (error) {
             if (error.response && error.response.data && error.response.data.message) {
@@ -76,14 +76,31 @@ const Navbar = () => {
 
             </ul>
 
+
+
             <div className='mr-5 flex items-center gap-3'>
                 {isVerified && !isAdmin ? (<>
+                    <FontAwesomeIcon onClick={() => setShowSearch(true)} className='w-5 h-6 cursor-pointer mr-2' icon={faMagnifyingGlass} />
+                    
 
-                    <Link to='/profile'>
-                        <div className='w-8 h-8 flex items-center justify-center bg-black text-white rounded-full text-sm font-semibold cursor-pointer'>
-                            {username ? username.charAt(0).toUpperCase() : ''}
+                    <div className='relative group'>
+                        <Link to='/profile'>
+                            <div className='w-8 h-8 flex items-center justify-center bg-black text-white rounded-full text-sm font-semibold cursor-pointer'>
+                                {username ? username.charAt(0).toUpperCase() : ''}
+                            </div>
+                        </Link>
+
+                        {/* Dropdown Menu */}
+                        <div className='group relative'>
+                            <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-2'>
+                                <div className="flex flex-col gap-2 w-36 py-3 px-5 bg-gray-200 text-gray-600 rounded">
+                                    <p onClick={() => navigate('/profile')} className='cursor-pointer hover:text-black'>My profile</p>
+                                    <p onClick={() => navigate('/orders')} className='cursor-pointer hover:text-black'>Orders</p>
+                                </div>
+                            </div>
                         </div>
-                    </Link>
+                    </div>
+
 
                     <Link to='/cart' className='relative'>
                         <FontAwesomeIcon className='w-6 min-w-6 ml-2' icon={faCartShopping} />

@@ -19,14 +19,8 @@ const Profile = () => {
     const formData = new FormData();
     formData.append('username', editedUser.username);
 
-    // console.log(formData);
-
     if (editedUser.image instanceof File) {
       formData.append('image', editedUser.image);
-    }
-
-    for (let [key, value] of formData.entries()) {
-      console.log(key, value); // Logs each key-value pair
     }
 
     try {
@@ -36,7 +30,7 @@ const Profile = () => {
           'Content-Type': 'multipart/form-data'
         },
       });
-      console.log(response)
+      console.log(response);
       if (response.data.error === false) {
 
         const updatedUser = { ...userDetails, username: editedUser.username, profileImage: preview };
@@ -63,7 +57,7 @@ const Profile = () => {
         {/* Profile Picture */}
         <div className="flex flex-col items-center">
           <img
-            src={preview}
+            src={userDetails.profileImage}
             alt="Profile"
             className="w-36 h-36 object-cover rounded-full border-4 border-gray-500 shadow-lg mb-4"
           />

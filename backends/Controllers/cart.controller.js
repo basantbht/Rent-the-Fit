@@ -40,8 +40,11 @@ const addToCart = async (req, res) => {
 
 const updateCart = async (req, res) => {
 try{
-  const {userId,productId,size,quantity}=req.body
+  const {productId,size,quantity}=req.body
+  const userId = req.user._id; 
+
   const userData = await userModel.findById(userId);
+
   if (!userData) {
     return res.status(404).json({ error: true, message: "User not found" });
   }
