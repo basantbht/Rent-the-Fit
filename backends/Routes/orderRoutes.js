@@ -16,4 +16,3 @@ orderRouter.post('/khalti',validateUser,placeOrderKhalti)
 // user feature
 orderRouter.post('/userorders',validateUser,userOrders)
 
-export default orderRouter
