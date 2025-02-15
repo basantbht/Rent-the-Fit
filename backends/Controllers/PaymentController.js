@@ -94,7 +94,7 @@ const completeKhaltiPayment = async (req, res) => {
       amount,
       dataFromVerificationReq: paymentInfo,
       apiQueryFromUser: req.query,
-      paymentGateway: "khalti",
+      paymentGateway: "khalti", 
       status: "success",
     });
 
