@@ -14,14 +14,12 @@ const kycRouter = require("../Routes/kyc.Route");
 const orderRouter = require("../Routes/orderRoutes");
 const couponRouter=require('../Routes/coupon.route');
 // middlewares
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(cors())
 
 // Routes
-
 app.use("/api/users", userRouter);
 app.use("/api/product", productRouter);
 app.use("/api/cart", cartRouter);
