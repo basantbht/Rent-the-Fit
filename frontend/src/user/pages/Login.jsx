@@ -25,7 +25,7 @@ const Login = () => {
 
       console.log(res);
 
-      const { token, message, error, isAdmin, isVerified,username } = res.data;
+      const { token, email, error, isAdmin, isVerified,username,profileImage } = res.data;
       if (res.data.error === false) {
 
         if(isAdmin === true){
