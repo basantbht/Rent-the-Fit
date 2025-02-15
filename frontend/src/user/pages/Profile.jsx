@@ -5,16 +5,17 @@ import { RentContext } from '../../../context/RentContext';
 import upload_area from '../../assets/upload_area.png';
 
 const Profile = () => {
-  const { userDetails, setUserDetails, token, isAdmin } = useContext(RentContext);
-  const storedUser = JSON.parse(localStorage.getItem('userDetails')) || userDetails;
-  const [editedUser, setEditedUser] = useState({ ...userDetails });
+  const { userDetails, setUserDetails, token } = useContext(RentContext);
+  const [editedUser, setEditedUser] = useState({
+    username: userDetails.username,
+    email: userDetails.email,
+    image: null,
+  });
   const [preview, setPreview] = useState(userDetails.profileImage || upload_area);
   const [showEditForm, setShowEditForm] = useState(false);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    console.log(editedUser);
-    console.log(editedUser.username);
 
     const formData = new FormData();
     formData.append('username', editedUser.username);
@@ -27,26 +28,27 @@ const Profile = () => {
       const response = await axios.put('http://localhost:3000/api/users/profile', formData, {
         headers: {
           Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+          'Content-Type': 'multipart/form-data',
         },
       });
-      console.log(response);
+
+      const { profileImage, username } = response.data.message;
+
       if (response.data.error === false) {
+        setUserDetails({
+          ...userDetails,
+          username: editedUser.username,
+          profileImage: profileImage,
+        });
 
-        const updatedUser = { ...userDetails, username: editedUser.username, profileImage: preview };
-        setUserDetails(updatedUser);
-        localStorage.setItem('userDetails', JSON.stringify(updatedUser));
-
-        toast.success(response.data.message);
+        toast.success('Profile updated successfully!');
         setShowEditForm(false);
-
-
       } else {
         toast.error(response.data.message);
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message);
+      toast.error(error.response?.data?.message || 'Something went wrong');
     }
   };
 
@@ -57,22 +59,9 @@ const Profile = () => {
         {/* Profile Picture */}
         <div className="flex flex-col items-center">
           <img
-            src={userDetails.profileImage}
+            src={userDetails.profileImage || upload_area}
             alt="Profile"
             className="w-36 h-36 object-cover rounded-full border-4 border-gray-500 shadow-lg mb-4"
-          />
-
-          <input
-            type="file"
-            id="image-upload"
-            hidden
-            onChange={(e) => {
-              const file = e.target.files[0];
-              if (file) {
-                setEditedUser({ ...editedUser, image: file });
-                setPreview(URL.createObjectURL(file)); // Update preview for new image
-              }
-            }}
           />
         </div>
 
@@ -118,9 +107,8 @@ const Profile = () => {
                         const file = e.target.files[0];
                         if (file) {
                           setEditedUser({ ...editedUser, image: file });
-                          setPreview(URL.createObjectURL(file));
+                          setPreview(URL.createObjectURL(file)); // Show preview
                         }
-                        console.log(editedUser)
                       }}
                     />
                   </label>
