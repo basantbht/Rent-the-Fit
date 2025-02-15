@@ -29,7 +29,7 @@ userRouter.post("/login", loginUser);
 
 userRouter.post("/logout", logoutUser);
 
-userRouter.put("/profile", validateUser, upload.single("profileimage") ,updateCurrentProfile);
+userRouter.put("/profile", validateUser, upload.single("image") ,updateCurrentProfile);
 
 userRouter.get("/profile", validateUser,getCurrentUserProfile);
 

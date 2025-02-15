@@ -1,38 +1,12 @@
-import { useState } from "react";
-import { useLocation } from "react-router-dom"
-import { useNavigate } from "react-router-dom";
+import React from 'react';
+import { Navigate, Outlet } from 'react-router-dom';
 
-const CheckAuth = ({isAuthenticated,isAdmin,children}) => {
+const CheckAuth = () => {
+  const token = localStorage.getItem('token');
+  const isAdmin = localStorage.getItem('isAdmin');
+  const isVerified = localStorage.getItem('isVerified');
 
-  const location = useLocation();
-  const navigate = useNavigate();
+  return isVerified === "true" && isAdmin === "false" && token ? <Outlet /> : <Navigate to="/login" />;
+};
 
-  if (
-    !isAuthenticated &&
-    !(
-      location.pathname.includes('/login') ||
-      location.pathname.includes('/register')
-    )
-  ){
-    return navigate('/login')
-  }
-
-  if (isAuthenticated && (
-    location.pathname.includes('/login') ||
-    location.pathname.includes('/register')
-  )
-){
-
-// if (user?.role === "admin"){
-//   return navigate('/admin/dashboard')
-// }else{
-//   return navigate('/')
-// }
-}
-
-    return (
-      <div>checkAuth</div>
-    )
-}
-
-export default CheckAuth
+export default CheckAuth;

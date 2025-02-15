@@ -7,12 +7,16 @@ const AdminContextProvider = (props) => {
     const currency = 'Rs.';
     const delivery_fee = 10;
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
-    const [token, setToken] = useState('');
-    const [isAdmin, setIsAdmin] = useState('');
+    const [token, setToken] = useState(localStorage.getItem('token') || '');
+    const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
+    const [isVerified, setIsVerified] = useState(localStorage.getItem('isVerified') === 'true');
     const [userCount, setUserCount] = useState(0);
     const[users,setUsers] = useState([]);
 
     const getUsersCount = async () => {
+        if(!token || !isAdmin){
+            return;
+        }
         try {
             const response = await axios.get(backendUrl + '/api/users/', {
                 headers: {
@@ -33,6 +37,8 @@ const AdminContextProvider = (props) => {
     };
 
     const getAllUsers = async () => {
+        if(!token || !isAdmin)return;
+        
         try {
             const response = await axios.get(backendUrl + '/api/users/', {
                 headers: {
@@ -58,9 +64,9 @@ const AdminContextProvider = (props) => {
             getUsersCount();
             getAllUsers();
         }
-    }, [token, isAdmin]);
+    }, [token, isAdmin]); 
 
-    const value = { currency, delivery_fee, backendUrl, token, isAdmin, userCount ,users};
+    const value = { currency, delivery_fee, backendUrl, token, isAdmin,setToken,setIsAdmin,isVerified,setIsVerified, userCount ,users,getUsersCount};
 
     return (
         <AdminContext.Provider value={value}>

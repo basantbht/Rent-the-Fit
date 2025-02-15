@@ -6,16 +6,22 @@ import { useNavigate } from 'react-router-dom';
 export const RentContext = createContext();
 
 const RentContextProvider = (props) => {
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
+    const [isVerified, setIsVerified] = useState(localStorage.getItem('isVerified') === 'true');
+    const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
+
   const currency = 'Rs.';
   const delivery_fee = 10;
   const backendUrl = import.meta.env.VITE_BACKEND_URL;
   const [products, setProducts] = useState([]);
-  const [token, setToken] = useState(null);
-  const [isAdmin, setIsAdmin] = useState('');
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
   const [showSearch, setShowSearch] = useState(false);
   const [cartItems, setCartItems] = useState({});
+  const [userDetails, setUserDetails] = useState(() => {
+    const storedUser = localStorage.getItem("userDetails");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const addToCart = async (productId, size) => {
 
@@ -137,13 +143,17 @@ const RentContextProvider = (props) => {
   }, []);
 
   useEffect(() => {
-    if (!token && localStorage.getItem('token')) {
-      setToken(localStorage.getItem('token'))
-      // getUserCart(localStorage.getItem('token'))
+    if (userDetails) {
+      localStorage.setItem("userDetails", JSON.stringify(userDetails));
     }
-  }, [])
+  }, [userDetails]);
 
-  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, navigate, products,setProducts, addToCart, getCartCount, updateQuantity, cartItems, setCartItems, getCartAmount }
+  useEffect(() => {
+        setIsVerified(localStorage.getItem('isVerified') === 'true');
+        setIsAdmin(localStorage.getItem('isAdmin') === 'true');
+    }, [token]); // Whenever `token` changes, update states
+
+  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin,isVerified,setIsVerified, navigate, products,setProducts, addToCart, getCartCount, updateQuantity, cartItems, setCartItems, getCartAmount,setUserDetails, userDetails }
 
   return (
     <RentContext.Provider value={value}>
