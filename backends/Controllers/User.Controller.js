@@ -227,6 +227,7 @@ const loginUser = async (req, res) => {
           email: userExisted.email,
           isVerified:userExisted.isVerified,
           isAdmin: userExisted.isAdmin,
+          profileImage: userExisted.profileImage,
           error: false,
           token: token,
         });

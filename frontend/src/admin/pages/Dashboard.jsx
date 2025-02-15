@@ -16,7 +16,7 @@ const Dashboard = () => {
 
   return (
     <main className="ml-10 p-6 max-w-full overflow-hidden">
-      <h1 className="text-3xl font-bold mb-5">Dashboard</h1>
+      <h1 className="text-3xl font-bold mb-5 text-white">Dashboard</h1>
       <div className="grid grid-cols-4 gap-6">
         <div className="bg-green-500 p-5 rounded text-white">
           {/* <Link to='customers'> */}
