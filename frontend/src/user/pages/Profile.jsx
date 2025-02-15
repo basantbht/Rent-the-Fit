@@ -6,14 +6,15 @@ import upload_area from '../../assets/upload_area.png';
 
 const Profile = () => {
   const { userDetails, setUserDetails, token, isAdmin } = useContext(RentContext);
+  const storedUser = JSON.parse(localStorage.getItem('userDetails')) || userDetails;
   const [editedUser, setEditedUser] = useState({ ...userDetails });
   const [preview, setPreview] = useState(userDetails.profileImage || upload_area);
   const [showEditForm, setShowEditForm] = useState(false);
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-console.log(editedUser);
-console.log(editedUser.username);
+    console.log(editedUser);
+    console.log(editedUser.username);
 
     const formData = new FormData();
     formData.append('username', editedUser.username);
@@ -26,7 +27,7 @@ console.log(editedUser.username);
 
     for (let [key, value] of formData.entries()) {
       console.log(key, value); // Logs each key-value pair
-    }  
+    }
 
     try {
       const response = await axios.put('http://localhost:3000/api/users/profile', formData, {
@@ -37,19 +38,26 @@ console.log(editedUser.username);
       });
       console.log(response)
       if (response.data.error === false) {
+
+        const updatedUser = { ...userDetails, username: editedUser.username, profileImage: preview };
+        setUserDetails(updatedUser);
+        localStorage.setItem('userDetails', JSON.stringify(updatedUser));
+
         toast.success(response.data.message);
         setShowEditForm(false);
-            } else {
-              toast.error(response.data.message);
-            }
-          } catch (error) {
-            console.error(error);
-            toast.error(error.response?.data?.message);
-          }
+
+
+      } else {
+        toast.error(response.data.message);
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.message);
+    }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-200 to-purple-300 py-8">
+    <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-gray-200 to-slate-300 py-8">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-2xl p-8 mb-20 space-y-6 border border-gray-300">
 
         {/* Profile Picture */}
@@ -145,7 +153,7 @@ console.log(editedUser.username);
                     type="submit"
                     className="bg-gray-600 text-white py-3 rounded-md hover:bg-gray-700 transition duration-200"
                   >
-                    Update 
+                    Update
                   </button>
                 </form>
               </div>
