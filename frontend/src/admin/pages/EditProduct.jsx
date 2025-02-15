@@ -40,14 +40,12 @@ const EditProduct = () => {
   const onSubmitHandler = async (e) => {
     e.preventDefault();
 
-    // Check if all necessary fields are filled
     if (!selectedProduct.name) {
       toast.error("Please fill in the product name.");
       return;
     }
 
     try {
-      // Create FormData to send to the server
       const formData = new FormData();
 
       formData.append('name', selectedProduct.name);
@@ -57,16 +55,16 @@ const EditProduct = () => {
       formData.append('description', selectedProduct.description);
       formData.append('bestseller', selectedProduct.bestseller);
       formData.append('price', selectedProduct.price);
-      formData.append('sizes', JSON.stringify(selectedProduct.sizes)); // Add sizes array
+      formData.append('sizes', JSON.stringify(selectedProduct.sizes));
 
-      // If the image is a File (user uploaded a new image), append it to formData
       if (selectedProduct.image instanceof File) {
-        formData.append('image', selectedProduct.image);
-      } else {
-        // If no new image is uploaded, keep the old image URL as part of the form data
         formData.append('image', selectedProduct.image);
       }
 
+      for (let [key, value] of formData.entries()) {
+        console.log(key, value); // Logs each key-value pair
+      }  
+      
       const response = await axios.put(`${backendUrl}/api/product/${selectedProduct._id}`,
         formData,
         {
@@ -85,7 +83,7 @@ const EditProduct = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || 'An error occurred');
+      toast.error(error.response?.data?.message);
     }
   };
 
@@ -99,8 +97,6 @@ const EditProduct = () => {
       <h1 className="text-2xl font-semibold mb-6">Products List</h1>
 
       {/* Products Grid */}
-     
-
       <div className='flex flex-col gap-4'>
         {/* Table Header */}
         <div className='hidden md:grid grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center py-3 px-6 border border-gray-300 bg-gray-800 text-white text-sm font-semibold rounded-lg shadow-lg'>
@@ -126,7 +122,7 @@ const EditProduct = () => {
             <p className='text-gray-900 font-bold'>{currency}{product.price}</p>
             <button
               className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-              onClick={() => handleEditClick(product)} // Trigger the edit functionality
+              onClick={() => handleEditClick(product)}
             >
               Edit
             </button>
@@ -166,6 +162,7 @@ const EditProduct = () => {
             {/* Product Form */}
             <div className="flex-1">
               <h2 className="text-lg font-semibold text-center mb-4">Edit Product</h2>
+
               <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
                 <input
                   type="text"

@@ -105,9 +105,9 @@ const editProduct = async (req, res) => {
       req.body;
 
     const image = req.file;
-    // if (!image) {
-    //   return res.status(400).json({ error: true, message: "No Image Found" });
-    // }
+    if (!image) {
+      return res.status(400).json({ error: true, message: "No Image Found" });
+    }
     let cloudRes = await cloudinary.uploader.upload(image.path, {
       folder: "product-image",
     });
@@ -119,11 +119,11 @@ const editProduct = async (req, res) => {
         .json({ error: true, message: "Product not found" });
     }
 
-    if (Product.updatedAt.getDate() === new Date().getDate()) {
-      return res
-        .status(404)
-        .json({ error: true, message: "OOPS Wait for 24hr" });
-    }
+    // if (Product.updatedAt.getDate() === new Date().getDate()) {
+    //   return res
+    //     .status(404)
+    //     .json({ error: true, message: "OOPS Wait for 24hr" });
+    // }
 
     const updateProduct = await productModel.findByIdAndUpdate(
       req.params.id,

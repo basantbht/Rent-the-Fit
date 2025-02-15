@@ -25,19 +25,16 @@ const Signup = () => {
       const res = await axios.post('http://localhost:3000/api/users/', formData);
       console.log(res);
 
-      const {token,message,error,isAdmin} = res.data;
+      const {token,message,error,isAdmin,isVerified} = res.data;
 
       if (error === false) {
         setToken(token)
         toast.success(message)
-        localStorage.setItem('token',token)
-        localStorage.setItem('isAdmin',isAdmin)
+        localStorage.setItem('token',token);
+        localStorage.setItem('isAdmin',isAdmin);
+        localStorage.setItem('isVerified',isVerified);
         Cookies.set("token", token, { expires: 5, path: "/" }); // Token expires in 7 days
         navigate('/otp')
-        // setTimeout(()=>{
-        //   setShowOtpField(true)
-        // },1000)
-        
       }
 
     } catch (error) {

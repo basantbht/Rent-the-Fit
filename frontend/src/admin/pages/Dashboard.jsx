@@ -1,14 +1,18 @@
-import React, { useContext } from 'react';
+import React, { useContext, useDebugValue, useEffect } from 'react';
 import { AdminContext } from '../../../context/AdminContext';
 import { Link, useNavigate } from 'react-router-dom';
 
 const Dashboard = () => {
-  const { userCount } = useContext(AdminContext);
+  const { userCount ,getUsersCount,token} = useContext(AdminContext);
   const navigate = useNavigate();
 
   const redirectToCustomers = () => {
     navigate('/admin/customers');
   };
+
+  useEffect(()=> {
+    getUsersCount();
+  },[getUsersCount])
 
   return (
     <main className="ml-10 p-6 max-w-full overflow-hidden">
