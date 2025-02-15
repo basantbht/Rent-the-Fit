@@ -44,7 +44,6 @@ const AddProducts = () => {
           'Content-Type': 'multipart/form-data',
           isAdmin,
         }
-
       })
 
       if (response.data.error === false) {

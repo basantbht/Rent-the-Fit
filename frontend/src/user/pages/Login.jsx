@@ -8,8 +8,7 @@ import { RentContext } from '../../../context/RentContext';
 const Login = () => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
-  const { token, setToken } = useContext(RentContext);
-
+  const { setToken,setIsVerified,setIsAdmin,isVerified } = useContext(RentContext);
 
   const onChange = (e) => {
     setFormData({
@@ -17,8 +16,7 @@ const Login = () => {
       [e.target.name]: e.target.value,
     })
   }
-  console.log(formData)
-
+  
   const submitHandler = async (e) => {
     e.preventDefault();
 
@@ -27,12 +25,22 @@ const Login = () => {
 
       console.log(res);
 
-      const { token, message, error, isAdmin } = res.data;
-
+      const { token, email, error, isAdmin, isVerified,username,profileImage } = res.data;
       if (res.data.error === false) {
+
+        if(isAdmin === true){
+          return toast.error("Go to admin login");
+        }
+
         setToken(token)
+        setIsVerified(isVerified);
+        setIsAdmin(isAdmin)
+
+        localStorage.setItem('userDetails', JSON.stringify(res.data));
         localStorage.setItem('token', token)
         localStorage.setItem('isAdmin', isAdmin)
+        localStorage.setItem('isVerified',isVerified)
+        localStorage.setItem('username',username)
         Cookies.set("token", token, { expires: 5, path: "/" });
         toast.success(res.data.message)
         navigate('/');
@@ -60,7 +68,8 @@ const Login = () => {
 
         <div className='w-full flex justify-between text-sm mt-[-8px]'>
           <Link to='/signup'> <p className='cursor-pointer'>Don't have an account?</p></Link>
-          <Link> <p className='cursor-pointer'>Forgot Password</p></Link>
+          <Link to='/otp'> <p className='cursor-pointer'>Forgot password</p></Link>
+
         </div>
 
         <button className='bg-black text-white font-light px-8 py-2 mt-4 rounded-full w-full cursor-pointer'>Login</button>

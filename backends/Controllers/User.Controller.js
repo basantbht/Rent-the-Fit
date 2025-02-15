@@ -10,6 +10,8 @@ const sendMail = require("../Mail/mail.Send");
 const generateToken = require("../utils/createToken");
 const welcomeMail = require("../Mail/welcome.Mail");
 const passResetMail = require("../Mail/password.Reset");
+const cloudinary = require("../cloudCofig/config");
+
 
 const userCreatingSchema = joi.object({
   username: joi
@@ -176,6 +178,8 @@ const createUser = async (req, res) => {
       username: newUser.username,
       email: newUser.email,
       isAdmin: newUser.isAdmin,
+      profileImage: newUser.profileImage,
+      isVerified:newUser.isVerified,
       token: token,
     });
   } catch (e) {
@@ -221,15 +225,16 @@ const loginUser = async (req, res) => {
           _id: userExisted._id,
           username: userExisted.username,
           email: userExisted.email,
-
+          isVerified:userExisted.isVerified,
           isAdmin: userExisted.isAdmin,
+          profileImage: userExisted.profileImage,
           error: false,
           token: token,
         });
       } else {
         return res
           .status(401)
-          .json({ error: true, message: "Verify First through code" });
+          .json({ error: true, message: "Verify your email first" });
       }
     }
   } catch (e) {
@@ -297,13 +302,14 @@ const updateCurrentProfile = async (req, res) => {
       return res.status(404).json({ message: "User Not Valid." });
     }
 
-    if (user.updatedAt.getDate() === new Date().getDate()) {
-      return res.status(500).json({
-        error: true,
-        message:
-          "OOPS :)Looks like you changed your name recently,it Can be Change after 24hr",
-      });
-    }
+    // if (user.updatedAt.getDate() === new Date().getDate()) {
+    //   return res.status(500).json({
+    //     error: true,
+    //     message:
+    //       "OOPS :)Looks like you changed your name recently,it Can be Change after 24hr",
+    //   });
+    // }
+
     user.username = username || user.username;
     user.profileImage = cloudRes.secure_url;
     const updatedUsername = await user.save();
@@ -381,7 +387,7 @@ const verifyUseremail = async (req, res) => {
   console.log(userverifycode);
 
   try {
-    //console.log(req.user);
+    console.log(req.user);
     const user = await userModel.findById(req.user._id);
     console.log(typeof user.verificationToken, typeof userverifycode);
 
@@ -397,13 +403,13 @@ const verifyUseremail = async (req, res) => {
 
       return res.status(200).json({ error: false, message: "User Verified." });
     } else {
-      return res.status(400).json({ error: true, message: "Couldnt verify." });
+      return res.status(400).json({ error: true, message: "Could not verify." });
     }
   } catch (error) {
     console.log("Error in verifyUseremail", error);
     return res
       .status(500)
-      .json({ error: true, message: "Couldnot verify email" });
+      .json({ error: true, message: "Could not verify email" });
   }
 };
 

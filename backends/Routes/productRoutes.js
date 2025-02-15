@@ -29,9 +29,9 @@ productRouter.post(
 
 productRouter.get("/", ReadProduct);
 
-productRouter.put("/:id", validateUser, authorizeAdmin, editProduct);
+productRouter.put("/:id", validateUser, authorizeAdmin,upload.single("image"), editProduct);
 
-productRouter.delete("/", validateUser, authorizeAdmin, deleteProduct);
+productRouter.delete("/:id", validateUser, authorizeAdmin, deleteProduct);
 
 productRouter.post('/:id/reviews',validateUser,checkId,productReview)
 

@@ -40,7 +40,7 @@ const Sidebar = () => {
               <li className="p-2 hover:bg-gray-600 rounded">Add Product</li>
 
               </NavLink>
-              <NavLink to='updateproducts'>
+              <NavLink to='editproducts'>
 
               <li className="p-2 hover:bg-gray-600 rounded">Update Product</li>
               </NavLink>
@@ -48,13 +48,18 @@ const Sidebar = () => {
           )}
         </li>
 
-        <NavLink to='orders'>
-
+        <NavLink to='vieworders'>
         <li className="p-2 hover:bg-gray-700 rounded">Orders</li>
         </NavLink>
         
+        <NavLink to='customers'>
         <li className="p-2 hover:bg-gray-700 rounded">Customers</li>
+        </NavLink>
+
+
+        <NavLink to='settings'>
         <li className="p-2 hover:bg-gray-700 rounded">Settings</li>
+        </NavLink>
       </ul>
     </aside>
   );

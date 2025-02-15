@@ -11,7 +11,6 @@ const Products = () => {
   const[category,setCategory] = useState([]);
   const[sortType,setSortType] = useState('relavent')
 
-  console.log(products)
   const toggleCategory = (e) => {
     if(category.includes(e.target.value)){
       setCategory(prev=> prev.filter(item => item !== e.target.value))
@@ -58,7 +57,7 @@ const Products = () => {
     if(products){
       applyFilter()
     }
-  },[category,products])
+  },[category,products,search,showSearch])
 
   useEffect(()=>{
     sortProduct()

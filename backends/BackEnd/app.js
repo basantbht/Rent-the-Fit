@@ -37,5 +37,5 @@ const DATABASE_URI = process.env.MONGO_URI;
 connection(DATABASE_URI);
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
-  console.log("Server Running!:)");
+  console.log("Server Running!");
 });

@@ -9,7 +9,7 @@ import { RentContext } from '../../../context/RentContext';
 const Signup = () => {
   const [formData, setFormData] = useState({});
   const [showotpfield, setShowOtpField] = useState(false);
-  const { token, setToken, navigate, backendUrl } = useContext(RentContext);
+  const { token, setToken, navigate, backendUrl,isVerified } = useContext(RentContext);
 
   const onChange = (e) => {
     setFormData({
@@ -25,19 +25,16 @@ const Signup = () => {
       const res = await axios.post('http://localhost:3000/api/users/', formData);
       console.log(res);
 
-      const {token,message,error,isAdmin} = res.data;
+      const {token,message,error,isAdmin,isVerified} = res.data;
 
       if (error === false) {
         setToken(token)
         toast.success(message)
-        localStorage.setItem('token',token)
-        localStorage.setItem('isAdmin',isAdmin)
+        localStorage.setItem('token',token);
+        localStorage.setItem('isAdmin',isAdmin);
+        localStorage.setItem('isVerified',isVerified);
         Cookies.set("token", token, { expires: 5, path: "/" }); // Token expires in 7 days
         navigate('/otp')
-        // setTimeout(()=>{
-        //   setShowOtpField(true)
-        // },1000)
-        
       }
 
     } catch (error) {
@@ -66,6 +63,8 @@ const Signup = () => {
 
           <div className='w-full flex justify-between text-sm mt-[-8px]'>
             <Link to='/login'> <p className='cursor-pointer'>Already have an account?</p></Link>
+            <Link to='/otp'> <p className='cursor-pointer'>{!isVerified? 'Enter Otp' : ''}</p></Link>
+
           </div>
 
           <button className='bg-black text-white font-light px-8 py-2 mt-4 rounded-full w-full cursor-pointer'>SignUp</button>

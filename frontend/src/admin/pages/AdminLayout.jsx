@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import Sidebar from './Sidebar';
 import AdminHeader from '../components/AdminHeader';
 import { Link, Outlet, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import axios from 'axios';
 import Cookies from "js-cookie";
+import { AdminContext } from '../../../context/AdminContext';
 
 const AdminLayout = () => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
+  const {setToken,setIsAdmin,setIsVerified} = useContext(AdminContext);
 
   const onChange = (e) => {
     setFormData({
@@ -23,12 +25,23 @@ const AdminLayout = () => {
     try {
       const res = await axios.post('http://localhost:3000/api/users/login', formData);
 
-      const { token, message, error, isAdmin } = res.data;
+      const { token, message, error, isAdmin,isVerified } = res.data;
 
       console.log(isAdmin);
+
       if (res.data.error === false) {
+
+        if(!isAdmin){
+          return toast.error("Not authorized as an Admin")
+        }
+
+        setToken(token);
+        setIsAdmin(isAdmin);
+        setIsVerified(isAdmin);
+
         localStorage.setItem('token', token)
         localStorage.setItem('isAdmin', isAdmin)
+        localStorage.setItem('isVerified', isVerified)
         Cookies.set("token", token, { expires: 5, path: "/" });
         toast.success(res.data.message)
         navigate('dashboard');

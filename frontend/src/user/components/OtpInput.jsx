@@ -77,7 +77,7 @@ const OtpInput = ({ length = 6, onOtpSubmit = () => { }, email }) => {
 
       if (res.data.error === false) {
         toast.success(res.data.message)
-        navigate('/')
+        navigate('/login')
       }
 
     } catch (error) {
