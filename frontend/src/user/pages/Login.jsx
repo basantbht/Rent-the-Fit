@@ -8,7 +8,7 @@ import { RentContext } from '../../../context/RentContext';
 const Login = () => {
   const [formData, setFormData] = useState({});
   const navigate = useNavigate();
-  const { setToken,setIsVerified,setIsAdmin } = useContext(RentContext);
+  const { setToken,setIsVerified,setIsAdmin,isVerified } = useContext(RentContext);
 
   const onChange = (e) => {
     setFormData({
@@ -68,7 +68,8 @@ const Login = () => {
 
         <div className='w-full flex justify-between text-sm mt-[-8px]'>
           <Link to='/signup'> <p className='cursor-pointer'>Don't have an account?</p></Link>
-          <Link> <p className='cursor-pointer'>Forgot Password</p></Link>
+          <Link to='/otp'> <p className='cursor-pointer'>Forgot password</p></Link>
+
         </div>
 
         <button className='bg-black text-white font-light px-8 py-2 mt-4 rounded-full w-full cursor-pointer'>Login</button>
