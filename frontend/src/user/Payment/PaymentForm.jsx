@@ -23,7 +23,7 @@ const PaymentForm=()=>{
 
     return(
         <div>
-      <h1>eSewa Payment Integration</h1>
+      <h1>For eSewa Payment </h1>
 
       <div className="form-container" onSubmit={handlePayment}>
         <form className="styled-form">

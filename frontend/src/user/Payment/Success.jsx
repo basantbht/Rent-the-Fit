@@ -7,9 +7,11 @@ const Success = () => {
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
   const location = useLocation();
+  
   // Create a new URLSearchParams object using the search string from location
   const queryParams = new URLSearchParams(location.search);
   const token = queryParams.get("data");
+
   // Decode the JWT without verifying the signature
   const decoded = base64Decode(token);
   const verifyPaymentAndUpdateStatus = async () => {
