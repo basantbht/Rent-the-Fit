@@ -5,6 +5,7 @@ const {
   initializeKhaltiPayment,
   verifyKhaltiPayment,
 } = require("../utils/khalti");
+
 const productModel = require("../Models/Product.model");
 const PurchasedItem = require("../Models/purchasedItem.model");
 const payment = require("../Models/payment.model");
@@ -12,12 +13,12 @@ const payment = require("../Models/payment.model");
 payRouter.post("/", async (req, res) => {
   try {
     const { itemId, totalPrice, website_url } = req.body;
-
+    console.log(itemId, totalPrice, website_url)
     const itemData = await productModel.findOne({
       _id: itemId,
       price: Number(totalPrice),
     });
-   // console.log('inside item data',itemData);
+    // console.log('inside item data',itemData);
     if (!itemData) {
       return res.status(400).send({
         success: false,
@@ -29,7 +30,7 @@ payRouter.post("/", async (req, res) => {
       paymentMethod: "khalti",
       totalPrice: totalPrice * 100,
     });
-   // console.log('inside purchased item data',purchasedItemData);
+    // console.log('inside purchased item data',purchasedItemData);
     const paymentInitate = await initializeKhaltiPayment({
       amount: totalPrice * 100,
       purchase_order_id: purchasedItemData._id, //
@@ -108,12 +109,17 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
       paymentGateway: "khalti",
       status: "success",
     });
+    
+    // return res.status(200).json({
+    //   success: true,
+    //   message: "Payment Successful",
+    //   paymentData,
+    // });
+    
+    return res.redirect(`https://test-pay.khalti.com/wallet?pidx=${pidx}`);
+    
+    // return res.redirect("http://localhost:5173/payment-success");
 
-    return res.status(200).json({
-      success: true,
-      message: "Payment Successful",
-      paymentData,
-    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
@@ -124,4 +130,4 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
   }
 });
 
-module.exports=payRouter;
+module.exports = payRouter;
