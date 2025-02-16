@@ -116,9 +116,9 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
     //   paymentData,
     // });
     
-    return res.redirect(`https://test-pay.khalti.com/wallet?pidx=${pidx}`);
+    // return res.redirect(`https://test-pay.khalti.com/wallet?pidx=${pidx}`);
     
-    // return res.redirect("http://localhost:5173/payment-success");
+    return res.redirect("http://localhost:5173/payment-success");
 
   } catch (error) {
     console.error(error);

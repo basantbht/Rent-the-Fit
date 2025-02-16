@@ -15,6 +15,7 @@ import about_img from './about_img.png'
 import contact_img from './contact_img.png'
 import cross_icon from './cross_icon.png'
 import khalti from './khalti.png'
+import checked from './checked.png'
 
 import rent_the_fit_logo from './rent_the_fit_logo.png'
 
@@ -29,5 +30,6 @@ export const assets = {
     star_icon,
     star_dull_icon,
     bin_icon,
-    khalti
+    khalti,
+    checked
 }
