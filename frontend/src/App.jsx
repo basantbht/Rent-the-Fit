@@ -27,6 +27,8 @@ import Settings from './admin/pages/Settings';
 import Notifications from './admin/pages/Notifications';
 import { RentContext } from '../context/RentContext';
 import SearchBar from './user/components/SearchBar';
+import PaymentSuccess from './user/pages/PaymentSuccess';
+import PaymentFailed from './user/pages/PaymentFailed';
 
 const App = () => {
   const location = useLocation();
@@ -85,6 +87,10 @@ const App = () => {
                     <Route path='/about' element={<About />} />
                     <Route path='/contact' element={<Contact />} />
                     <Route path='/admin' element={<Navigate to="/" />} />
+
+                    <Route path="/payment-success" element={<PaymentSuccess />} />
+                    <Route path="/payment-failed" element={<PaymentFailed />} />
+
                   </>
                 )}
 
@@ -98,7 +104,7 @@ const App = () => {
                       <Route path='vieworders' element={<AdminOrders />} />
                       <Route path='customers' element={<Customers />} />
                       <Route path='settings' element={<Settings />} />
-                      <Route path='notifications' element={<Notifications />} />                  
+                      <Route path='notifications' element={<Notifications />} />
                     </Route>
 
                     <Route path='*' element={<Navigate to="/admin/dashboard" />} />

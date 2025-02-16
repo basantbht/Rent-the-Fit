@@ -37,9 +37,11 @@ const Profile = () => {
       if (response.data.error === false) {
         setUserDetails({
           ...userDetails,
-          username: editedUser.username,
+          username: username,
           profileImage: profileImage,
         });
+        localStorage.setItem('username',username);
+        localStorage.setItem('profileImage',profileImage);
 
         toast.success('Profile updated successfully!');
         setShowEditForm(false);

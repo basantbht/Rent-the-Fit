@@ -27,7 +27,7 @@ productRouter.post(
   createProduct
 );
 
-productRouter.get("/", ReadProduct);
+productRouter.get("/", ReadProduct);98573894
 
 productRouter.put("/:id", validateUser, authorizeAdmin,upload.single("image"), editProduct);
 
