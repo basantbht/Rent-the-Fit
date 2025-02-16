@@ -33,6 +33,7 @@ import PaymentFailed from './user/pages/PaymentFailed';
 const App = () => {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
+  const paymentsuccess = location.pathname.startsWith('/payment-success');
   const isOtp = location.pathname.startsWith('/otp');
   const { isVerified, isAdmin } = useContext(RentContext);
 
@@ -40,7 +41,7 @@ const App = () => {
     <>
       <ScrollToTop />
 
-      {!isAdminPage && <Navbar />}
+      {!isAdminPage &&  !paymentsuccess && <Navbar /> }
       <SearchBar />
 
       {/* Apply div properties only for user routes, not admin */}
@@ -135,7 +136,7 @@ const App = () => {
       )}
 
       <ToastContainer />
-      {!isAdminPage && !isOtp && <Footer />}
+      {!isAdminPage && !isOtp && !paymentsuccess && <Footer />}
     </>
   );
 };
