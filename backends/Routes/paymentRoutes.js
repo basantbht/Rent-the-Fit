@@ -17,7 +17,7 @@ payRouter.post("/", async (req, res) => {
       _id: itemId,
       price: Number(totalPrice),
     });
-   // console.log('inside item data',itemData);
+    // console.log('inside item data',itemData);
     if (!itemData) {
       return res.status(400).send({
         success: false,
@@ -29,7 +29,7 @@ payRouter.post("/", async (req, res) => {
       paymentMethod: "khalti",
       totalPrice: totalPrice * 100,
     });
-   // console.log('inside purchased item data',purchasedItemData);
+    // console.log('inside purchased item data',purchasedItemData);
     const paymentInitate = await initializeKhaltiPayment({
       amount: totalPrice * 100,
       purchase_order_id: purchasedItemData._id, //
@@ -97,6 +97,18 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
         },
       }
     );
+    const product = await productModel.findById(purchasedItemData.item);
+
+    if (product) {
+      const newQuantity = product.quantity - 1;
+
+      if (newQuantity < 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Insufficient stock",
+        });
+      }
+    }
 
     const paymentData = await payment.create({
       pidx,
@@ -124,4 +136,4 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
   }
 });
 
-module.exports=payRouter;
+module.exports = payRouter;
