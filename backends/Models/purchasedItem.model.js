@@ -7,6 +7,11 @@ const purchasedItemSchema = new mongoose.Schema(
       ref: "product",
       required: true,
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "user",
+      required: true,
+    },
     totalPrice: { type: Number, required: true },
     purchaseDate: { type: Date, default: Date.now },
     paymentMethod: { type: String, enum: ["khalti"], required: true },

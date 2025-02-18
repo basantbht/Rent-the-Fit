@@ -1,5 +1,6 @@
 // Model
 const productModel = require('../Models/Product.model');
+const PurchasedItem = require("../Models/purchasedItem.model");
 
 // Module
 const joi = require("joi");
@@ -200,6 +201,18 @@ const productReview=async(req,res)=>{
       const alreadyReviewed = product.reviews.find(
         (r) => r.user.toString() === req.user._id.toString()
       );
+      const hasPurchased = await PurchasedItem.findOne({
+        user: req.user._id,
+        item: req.params.id,
+        status: "completed",
+      });
+  
+      if (!hasPurchased) {
+        return res.status(403).json({
+          error: true,
+          message: "You can only review products you have purchased",
+        });
+      }
 
       if (alreadyReviewed) {
         return res
