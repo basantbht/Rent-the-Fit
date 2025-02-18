@@ -98,6 +98,18 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
         },
       }
     );
+    const product = await productModel.findById(purchasedItemData.item);
+
+    if (product) {
+      const newQuantity = product.quantity - 1;
+
+      if (newQuantity < 0) {
+        return res.status(400).json({
+          success: false,
+          message: "Insufficient stock",
+        });
+      }
+    }
 
     const paymentData = await payment.create({
       pidx,
