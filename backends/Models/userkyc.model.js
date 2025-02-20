@@ -6,6 +6,11 @@ const kycSchmea = new mongoose.Schema({
     requied: true,
     default: "",
   },
+  phone:{
+    type:Number,
+    required:true,
+    maxLength:10
+  },
   citizenshipPhotoBack: {
     type: String,
     requied: true,
@@ -23,7 +28,9 @@ const kycSchmea = new mongoose.Schema({
   status:{
     type:String,
     enum:['pending','approved','rejected']
-  }
+  },
+  otp:String,
+  otpExpiresAt:Date,
 });
 const kycModel = mongoose.model("KYC", kycSchmea);
 module.exports = kycModel;
