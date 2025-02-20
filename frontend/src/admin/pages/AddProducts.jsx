@@ -12,6 +12,8 @@ const AddProducts = () => {
   const [brand, setBrand] = useState("");
   const [quantity, setQuantity] = useState("");
   const [category, setCategory] = useState("Men");
+  const [subCategory, setSubCategory] = useState("Topwear");
+  const [color, setColor] = useState("Black");
   const [description, setDescription] = useState("");
   // const [reviews, setReviews] = useState(null);
   // const [ratings, setRatings] = useState('');
@@ -31,12 +33,18 @@ const AddProducts = () => {
       formData.append("brand", brand)
       formData.append("quantity", quantity)
       formData.append("category", category)
+      formData.append("subCategory", subCategory)
+      formData.append("color", color)
       formData.append("description", description)
       // formData.append("reviews", reviews)
       // formData.append("ratings", ratings)
       formData.append("sizes", JSON.stringify(sizes))
       formData.append("bestseller", bestseller)
       formData.append("price", price)
+
+      formData.forEach((key,value)=>{
+        console.log(key,value)
+      })
 
       const response = await axios.post('http://localhost:3000/api/product/', formData, {
         headers: {
@@ -53,6 +61,7 @@ const AddProducts = () => {
         setBrand('')
         setImage(false)
         setPrice('')
+        setQuantity('')
       } else {
         toast.error(response.data.message)
       }
@@ -98,6 +107,28 @@ const AddProducts = () => {
           </select>
         </div>
 
+        
+        <div>
+          <p className='mb-2 font-medium'>Product SubCategory</p>
+          <select onChange={(e) => setSubCategory(e.target.value)} className='px-4 py-2 border rounded-md'>
+            <option value='Topwear'>Topwear</option>
+            <option value='Bottomwear'>Bottomwear</option>
+            <option value='Kidswear'>Kidswear</option>
+          </select>
+        </div>
+        
+        <div>
+          <p className='mb-2 font-medium'>Color</p>
+          <select onChange={(e) => setColor(e.target.value)} className='px-4 py-2 border rounded-md'>
+            <option value='Black'>Black</option>
+            <option value='White'>White</option>
+            <option value='Red'>Red</option>
+          </select>
+        </div>
+        
+      </div>
+
+      <div className='mb-2 flex gap-6'>
         <div>
           <p className='mb-2 font-medium'>Product Price</p>
           <input onChange={(e) => setPrice(e.target.value)} className='px-4 py-2 border rounded-md' type='number' placeholder='25' />
@@ -106,7 +137,7 @@ const AddProducts = () => {
         <div>
           <p className='mb-2 font-medium'>Product Quantity</p>
           <input onChange={(e) => setQuantity(e.target.value)} className='px-4 py-2 border rounded-md' type='number' placeholder='5' />
-        </div>
+        </div> 
       </div>
 
       <div className='mb-2'>

@@ -421,27 +421,28 @@ const forgotpass = async (req, res) => {
   try {
     const { email } = req.body;
 
-    const user = await userModel.findOne(email);
+    const user = await userModel.findOne({email});
     if (!user) {
       return res
         .status(400)
         .json({ error: true, message: "Invalid Credentials" });
     }
     const resetToken = crypto.randomBytes(20).toString("hex");
-
-    const tokenexpiry = Date.now() + 1 * 60 * 60 * 1000;
+    const tokenExpiry = Date.now() + 1 * 60 * 60 * 1000;
 
     user.resetPasswordToken = resetToken;
-    user.resetPasswordExpiresAt = tokenexpiry;
+    user.resetPasswordExpiresAt = tokenExpiry;
 
     await user.save();
     passResetMail(
       user.email,
-      `${process.env.CLIENT_URL}/reset-passwod/${resetPasswordToken}`
+      `http://localhost:5173/reset-password/${resetToken}`
     );
+
+    return res.status(200).json({error: false, message: "Successfully sent reset password link"})
   } catch (error) {
     console.log("Error in forgot pass", error);
-    return res.status({ error: false, message: "Could not recover password." });
+    return res.status({ error: true, message: "Could not recover password." });
   }
 };
 
@@ -452,10 +453,17 @@ const resetpass = async (req, res) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
+    // console.log(token,password)
 
     const user = await userModel.findOne({
       resetPasswordToken: token,
     });
+    console.log(user)
+
+    if (!user) {
+      // Return an error if user doesn't exist
+      return res.status(400).json({ error: true, message: "Invalid or expired token" });
+    }
     if (user.resetPasswordExpiresAt > Date.now()) {
       const salt = await bcrypt.genSalt(10);
       const hashedPass = await bcrypt.hash(password, salt);

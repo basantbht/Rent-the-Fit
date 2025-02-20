@@ -6,6 +6,12 @@ import upload_area from '../../assets/upload_area.png';
 
 const Profile = () => {
   const { userDetails, setUserDetails, token } = useContext(RentContext);
+
+  if (!userDetails) {
+    return <div className="text-center text-gray-600">Loading profile...</div>;
+  }
+
+
   const [editedUser, setEditedUser] = useState({
     username: userDetails.username,
     email: userDetails.email,

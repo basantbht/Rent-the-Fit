@@ -6,7 +6,7 @@ import { AdminContext } from '../../../context/AdminContext';
 import { RentContext } from '../../../context/RentContext';
 
 const EditProduct = () => {
-  const { backendUrl, token, isAdmin,currency } = useContext(AdminContext);
+  const { backendUrl, token, isAdmin, currency } = useContext(AdminContext);
   const { products, setProducts } = useContext(RentContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
@@ -52,6 +52,8 @@ const EditProduct = () => {
       formData.append('brand', selectedProduct.brand);
       formData.append('quantity', selectedProduct.quantity);
       formData.append('category', selectedProduct.category);
+      formData.append('subCategory', selectedProduct.subCategory);
+      formData.append('color', selectedProduct.color);
       formData.append('description', selectedProduct.description);
       formData.append('bestseller', selectedProduct.bestseller);
       formData.append('price', selectedProduct.price);
@@ -63,8 +65,8 @@ const EditProduct = () => {
 
       for (let [key, value] of formData.entries()) {
         console.log(key, value); // Logs each key-value pair
-      }  
-      
+      }
+
       const response = await axios.put(`${backendUrl}/api/product/${selectedProduct._id}`,
         formData,
         {
@@ -112,7 +114,7 @@ const EditProduct = () => {
         {products.map((product, index) => (
           <div
             className={`grid grid-cols-[1fr_3fr_1fr] md:grid-cols-[1fr_3fr_1fr_1fr_1fr_1fr] items-center gap-4 py-3 px-6 border border-gray-200 text-sm rounded-lg shadow-md transition duration-200 
-            ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-200 hover:shadow-lg`}
+        ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-gray-200 hover:shadow-lg`}
             key={index}
           >
             <img className='w-16 h-16 object-cover rounded-lg border border-gray-400' src={product.image} alt="" />
@@ -130,11 +132,9 @@ const EditProduct = () => {
         ))}
       </div>
 
-
-
       {showEditForm && selectedProduct && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-4xl flex gap-6 relative">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full md:w-[80%] lg:w-[70%] xl:w-[60%] flex gap-6 relative">
 
             {/* Close Button */}
             <button className="absolute top-2 right-2 text-xl" onClick={handleCloseForm}>
@@ -142,7 +142,7 @@ const EditProduct = () => {
             </button>
 
             {/* Image Upload Section */}
-            <div className="flex flex-col items-center w-1/3">
+            <div className="flex flex-col items-center h-1/2">
               <p className="mb-2 font-medium">Upload Image</p>
               <label htmlFor="image-upload" className="cursor-pointer">
                 <img
@@ -164,60 +164,120 @@ const EditProduct = () => {
               <h2 className="text-lg font-semibold text-center mb-4">Edit Product</h2>
 
               <form onSubmit={onSubmitHandler} className="flex flex-col gap-4">
-                <input
-                  type="text"
-                  value={selectedProduct.name}
-                  onChange={(e) => setSelectedProduct({ ...selectedProduct, name: e.target.value })}
-                  className="border p-2 rounded w-full"
-                  placeholder="Product Name"
-                  required
-                />
-                <input
-                  type="text"
-                  value={selectedProduct.brand}
-                  onChange={(e) => setSelectedProduct({ ...selectedProduct, brand: e.target.value })}
-                  className="border p-2 rounded w-full"
-                  placeholder="Brand"
-                  required
-                />
-                <textarea
-                  value={selectedProduct.description}
-                  onChange={(e) => setSelectedProduct({ ...selectedProduct, description: e.target.value })}
-                  className="border p-2 rounded w-full"
-                  placeholder="Description"
-                  required
-                />
 
-                <div className="grid grid-cols-2 gap-4">
-                  <select
-                    value={selectedProduct.category}
-                    onChange={(e) => setSelectedProduct({ ...selectedProduct, category: e.target.value })}
-                    className="border p-2 rounded w-full"
-                  >
-                    <option value="Men">Men</option>
-                    <option value="Women">Women</option>
-                    <option value="Kids">Kids</option>
-                  </select>
+                <div className='flex gap-6'>
+                  <div className="flex-1">
+                    <p className="font-medium">Product Name</p>
+                    <input
+                      type="text"
+                      value={selectedProduct.name}
+                      onChange={(e) => setSelectedProduct({ ...selectedProduct, name: e.target.value })}
+                      className="border p-2 rounded w-full"
+                      placeholder="Product Name"
+                      required
+                      name="name"
+                    />
+                  </div>
 
-                  <input
-                    type="number"
-                    value={selectedProduct.price}
-                    onChange={(e) => setSelectedProduct({ ...selectedProduct, price: e.target.value })}
+                  <div className="flex-1">
+                    <p className="font-medium">Brand</p>
+                    <input
+                      type="text"
+                      value={selectedProduct.brand}
+                      onChange={(e) => setSelectedProduct({ ...selectedProduct, brand: e.target.value })}
+                      className="border p-2 rounded w-full"
+                      placeholder="Brand"
+                      required
+                      name="brand"
+                    />
+                  </div>
+                </div>
+
+
+
+
+                <div>
+                  <p className="font-medium">Description</p>
+                  <textarea
+                    value={selectedProduct.description}
+                    onChange={(e) => setSelectedProduct({ ...selectedProduct, description: e.target.value })}
                     className="border p-2 rounded w-full"
-                    placeholder="Price"
+                    placeholder="Description"
                     required
+                    name="description"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
-                  <input
-                    type="number"
-                    value={selectedProduct.quantity}
-                    onChange={(e) => setSelectedProduct({ ...selectedProduct, quantity: e.target.value })}
-                    className="border p-2 rounded w-full"
-                    placeholder="Quantity"
-                    required
-                  />
+                  <div>
+                    <p className="font-medium">Category</p>
+                    <select
+                      value={selectedProduct.category}
+                      onChange={(e) => setSelectedProduct({ ...selectedProduct, category: e.target.value })}
+                      className="border p-2 rounded w-full"
+                      name="category"
+                    >
+                      <option value="Men">Men</option>
+                      <option value="Women">Women</option>
+                      <option value="Kids">Kids</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <p className="font-medium">Subcategory</p>
+                    <select
+                      value={selectedProduct.subCategory}
+                      onChange={(e) => setSelectedProduct({ ...selectedProduct, subCategory: e.target.value })}
+                      className="border p-2 rounded w-full"
+                      name="subCategory"
+                    >
+                      <option value="Topwear">Topwear</option>
+                      <option value="Bottomwear">Bottomwear</option>
+                      <option value="Kidswear">Kidswear</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <p className="font-medium">Color</p>
+                    <select
+                      value={selectedProduct.color}
+                      onChange={(e) => setSelectedProduct({ ...selectedProduct, color: e.target.value })}
+                      className="border p-2 rounded w-full"
+                      name="color"
+                    >
+                      <option value="Black">Black</option>
+                      <option value="White">White</option>
+                      <option value="Red">Red</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <p className="font-medium">Price</p>
+                    <input
+                      type="number"
+                      value={selectedProduct.price}
+                      onChange={(e) => setSelectedProduct({ ...selectedProduct, price: e.target.value })}
+                      className="border p-2 rounded w-full"
+                      placeholder="Price"
+                      required
+                      name="price"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <p className="font-medium">Quantity</p>
+                    <input
+                      type="number"
+                      value={selectedProduct.quantity}
+                      onChange={(e) => setSelectedProduct({ ...selectedProduct, quantity: e.target.value })}
+                      className="border p-2 rounded w-full"
+                      placeholder="Quantity"
+                      required
+                      name="quantity"
+                    />
+                  </div>
                 </div>
 
                 {/* Sizes Block */}
@@ -236,6 +296,7 @@ const EditProduct = () => {
                               : selectedProduct.sizes.filter((s) => s !== size);
                             setSelectedProduct({ ...selectedProduct, sizes: newSizes });
                           }}
+                          name={`size_${size}`}
                         />
                         {size}
                       </label>
@@ -244,14 +305,17 @@ const EditProduct = () => {
                 </div>
 
                 {/* Bestseller Checkbox */}
-                <label className="flex items-center gap-2 cursor-pointer">
-                  <input
-                    type="checkbox"
-                    checked={selectedProduct.bestseller}
-                    onChange={() => setSelectedProduct({ ...selectedProduct, bestseller: !selectedProduct.bestseller })}
-                  />
-                  Bestseller
-                </label>
+                <div>
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedProduct.bestseller}
+                      onChange={() => setSelectedProduct({ ...selectedProduct, bestseller: !selectedProduct.bestseller })}
+                      name="bestseller"
+                    />
+                    Bestseller
+                  </label>
+                </div>
 
                 <button type="submit" className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
                   Update Product
@@ -262,6 +326,7 @@ const EditProduct = () => {
         </div>
       )}
     </div>
+
   );
 
 };

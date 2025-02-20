@@ -19,6 +19,14 @@ const productSchema = joi.object({
     "string.empty": "Category is required.",
     "string.max": "Category name cannot exceed 30 characters.",
   }),
+  subCategory: joi.string().required().max(30).messages({
+    "string.empty": "Category is required.",
+    "string.max": "Category name cannot exceed 30 characters.",
+  }),
+  color: joi.string().required().max(30).messages({
+    "string.empty": "Category is required.",
+    "string.max": "Category name cannot exceed 30 characters.",
+  }),
   quantity: joi.string().required().messages({
     "string.empty": "Quantity is required.",
   }),
@@ -43,16 +51,10 @@ const createProduct = async (req, res) => {
     if (error) {
       return res.status(404).json({ error: true, message: error.message });
     }
-    const {
-      name,
-      brand,
-      quantity,
-      category,
-      description,
-      price,
-      sizes,
-      bestseller,
-    } = req.body;
+
+    const { name, brand, quantity, category,subCategory,color, description, price, sizes, bestseller } =
+      req.body;
+
     //console.log(req.file);
     const image = req.file;
     if (!image) {
@@ -68,6 +70,8 @@ const createProduct = async (req, res) => {
       brand,
       quantity,
       category,
+      subCategory,
+      color,
       description,
       price: Number(price),
       sizes: JSON.parse(sizes),
@@ -110,16 +114,10 @@ const editProduct = async (req, res) => {
     return res.status(404).json({ error: true, message: error.message });
   }
   try {
-    const {
-      name,
-      brand,
-      quantity,
-      category,
-      description,
-      price,
-      bestseller,
-      sizes,
-    } = req.body;
+
+    const { name, brand, quantity, category, subCategory, color, description, price, bestseller, sizes } =
+      req.body;
+
 
     const image = req.file;
     if (!image) {
@@ -149,6 +147,8 @@ const editProduct = async (req, res) => {
         brand: brand || Product.brand,
         quantity: quantity || Product.quantity,
         category: category || Product.category,
+        subCategory: subCategory || Product.subCategory,
+        color: color || Product.color,
         description: description || Product.description,
         price: price || Product.price,
         sizes: sizes ? JSON.parse(sizes) : Product.sizes,
