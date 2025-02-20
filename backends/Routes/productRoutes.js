@@ -15,7 +15,7 @@ const {
   deleteProduct,
   searchProduct,
   productReview,
-} = require("../Controllers/Product.Controller");
+  recommendProduct,} = require("../Controllers/Product.Controller");
 
 productRouter.get("/search", searchProduct);
 
@@ -28,6 +28,8 @@ productRouter.post(
 );
 
 productRouter.get("/", ReadProduct);98573894
+
+productRouter.get("/recommend", recommendProduct);
 
 productRouter.put("/:id", validateUser, authorizeAdmin,upload.single("image"), editProduct);
 
