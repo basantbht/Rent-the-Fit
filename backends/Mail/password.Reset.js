@@ -5,7 +5,7 @@ const sendRestPasswordMail = async (email, url) => {
     await transporter.sendMail({
       from: process.env.SENDER_EMAIL,
       to: email,
-      subject: "Verify Your Email.",
+      subject: "Reset your Password.",
       html: `Click <a href="${url}">here </a> to reset your password`,
     });
     console.log("Email Sent");

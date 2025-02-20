@@ -20,8 +20,9 @@ const RentContextProvider = (props) => {
   const [cartItems, setCartItems] = useState({});
   const [userDetails, setUserDetails] = useState(() => {
     const storedUser = localStorage.getItem("userDetails");
-    return storedUser ? JSON.parse(storedUser) : null;
+    return storedUser ? JSON.parse(storedUser) : { username: "", email: "", profileImage: "" };
   });
+  
 
   const addToCart = async (productId, size) => {
 

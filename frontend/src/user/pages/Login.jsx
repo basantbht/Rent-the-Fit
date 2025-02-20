@@ -68,7 +68,7 @@ const Login = () => {
 
         <div className='w-full flex justify-between text-sm mt-[-8px]'>
           <Link to='/signup'> <p className='cursor-pointer'>Don't have an account?</p></Link>
-          <Link to='/otp'> <p className='cursor-pointer'>Forgot password</p></Link>
+          <Link to='/forgotpassword'> <p className='cursor-pointer'>Forgot password</p></Link>
 
         </div>
 

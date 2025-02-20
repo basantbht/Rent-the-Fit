@@ -48,7 +48,7 @@ payRouter.post("/", async (req, res) => {
     console.log("Error in initializekhalti", error);
     return res
       .status(500)
-      .json({ error: true, message: "Couldnot initialize payment" });
+      .json({ error: true, message: "Could not initialize payment" });
   }
 });
 payRouter.get("/complete-khalti-payment", async (req, res) => {
