@@ -33,6 +33,7 @@ const placeOrder = async (req, res) => {
 
 // Order using khalti
 const placeOrderKhalti = async (req, res) => {
+    
 
 }
 
