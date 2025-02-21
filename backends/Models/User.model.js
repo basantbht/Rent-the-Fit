@@ -31,14 +31,23 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    cartData: { type: Object, default: {} },
+    profileImage: {
+      type: String,
+      default: "",
+    },
+
+    cartData: {
+      type:Object,
+      default:{},
+    },
+
     resetPasswordToken: String,
     resetPasswordExpiresAt: Date,
     verificationToken: String,
     verificationTokenExpiresAt: Date,
   },
 
-  { timestamps: true }
+  { timestamps: true, minimize:false}
 );
 const userModel = mongoose.model("user", userSchema);
 module.exports = userModel;

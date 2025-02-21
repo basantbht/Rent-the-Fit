@@ -1,57 +1,75 @@
-const userModel = require("../Models/User.model");
-const getUserCart = async (req, res) => {
-  try {
-    const { userId } = req.body;
-    const user = await userModel.findById(userId);
-    const cartData = await user.cartData;
+const userModel=require('../Models/User.model')
 
-    return res.json({ error: false, message: cartData });
-  } catch (error) {
-    console.log("Error in getuserCart", error);
-    return res
-      .status(500)
-      .json({ error: true, message: "Couldnot get cart product." });
-  }
-};
 const addToCart = async (req, res) => {
   try {
-    const { userId, productId, size } = req.body;
-    const user = await userModel.findById(userId);
-    let cartData = await user.cartData;
+    const { size, productId } = req.body;
+    const userId = req.user._id; 
 
-    if (cartData[productId]) {
-      if (cartData[productId][size]) {
-        cartData[productId][size] += 1;
-      } else {
-        cartData[productId][size] = 1;
-      }
-    } else {
+    // Find user
+    const userData = await userModel.findById(userId);
+    if (!userData) {
+      return res.status(404).json({ error: true, message: "User not found" });
+    }
+
+    // Ensure cartData exists
+    let cartData = userData.cartData || {};
+
+    // Check if the product exists in cartData
+    if (!cartData[productId]) {
       cartData[productId] = {};
+    }
+
+    // Update size quantity
+    if (cartData[productId][size]) {
+      cartData[productId][size] += 1;
+    } else {
       cartData[productId][size] = 1;
     }
-    await userModel.findByIdAndUpdate(userId, { cartData });
-    return res.status(200).json({ error: false, message: "Added to cart." });
-  } catch (error) {
-    console.log("Error in addToCart", error);
-    return res
-      .status(500)
-      .json({ error: true, message: "Couldnot add product to cart." });
-  }
-};
-const updateCart = async (req, res) => {
-  try {
-    const { userId, productId, size, quantity } = req.body;
-    const user = await userModel.findById(userId);
-    let cartData = await user.cartData;
 
-    cartData[productId][size] = quantity;
+    // Save updated cart
     await userModel.findByIdAndUpdate(userId, { cartData });
-    return res.status(200).json({ error: false, message: "Cart Updated" });
+
+    return res.status(200).json({ error: false, message: 'Added to cart' });
+
   } catch (error) {
-    console.log("Error in updateCart,", error);
-    return res
-      .status(500)
-      .json({ error: false, message: "Couldnot update Cart." });
+    console.error("Error in addToCart:", error);
+    return res.status(500).json({ error: true, message: "Could not add to cart" });
   }
 };
-module.exports = { getUserCart, addToCart, updateCart };
+
+
+const updateCart = async (req, res) => {
+try{
+  const {productId,size,quantity}=req.body
+  const userId = req.user._id; 
+
+  const userData = await userModel.findById(userId);
+
+  if (!userData) {
+    return res.status(404).json({ error: true, message: "User not found" });
+  }
+  let cartData = await userData.cartData;
+
+  cartData[productId][size]=quantity;
+  await userModel.findByIdAndUpdate(userId,{cartData})
+  return res.status(200).json({error:false,message:'cart updated'})
+}
+  catch (error) {
+    console.log("Error in updatecart", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "coudlnot update item" });
+  }
+};
+const allItems = async (req, res) => {
+  try {
+    const user = req.user;
+    return res.status(200).json({ error: false, items: user.cartItems });
+  } catch (error) {
+    console.log("Error in allCart", error);
+    return res.status(500).json({ error: true, message: "couldnot get items" });
+  }
+};
+
+module.exports = { addToCart, updateCart, allItems };
+

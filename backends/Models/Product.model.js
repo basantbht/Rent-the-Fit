@@ -36,7 +36,7 @@ const productSchema = new mongoose.Schema(
     },
     image: {
       type: String,
-      //required: true,
+      required: true,
     },
     brand: {
       type: String,
@@ -48,9 +48,8 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      type: mongoose.Schema.Types.ObjectId,
-      //required: true,
-      ref: "Category",
+      type: String,
+      required: true,
     },
     description: {
       type: String,
@@ -75,13 +74,9 @@ const productSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
-    countInStock: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
   },
   { timestamps: true }
 );
-const productModel = mongoose.model("product", productSchema);
+const productModel = mongoose.models.product || mongoose.model("product", productSchema);
+
 module.exports = productModel;

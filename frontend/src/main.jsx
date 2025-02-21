@@ -3,13 +3,17 @@ import './index.css'
 import App from './App.jsx'
 import axios from 'axios'
 import { BrowserRouter } from 'react-router-dom'
-import { Provider } from 'react-redux'
-import { store } from './store/store.js'
+import RentContextProvider from '../context/RentContext.jsx'
+import AdminContextProvider from '../context/AdminContext.jsx'
 
 createRoot(document.getElementById('root')).render(
   <BrowserRouter>
-  <Provider store={store}>
+  <RentContextProvider>
+    <AdminContextProvider>
+ 
     <App />
-    </Provider>
+
+    </AdminContextProvider>
+    </RentContextProvider>
   </BrowserRouter>
 )

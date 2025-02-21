@@ -1,12 +1,14 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
 import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import { RentContext } from "../../../context/RentContext";
 
-const OtpInput = ({ length = 6, onOtpSubmit = () => {}, email }) => {
-  const [token,setToken] = useState('');
-
+const OtpInput = ({ length = 6, onOtpSubmit = () => { }, email }) => {
+  const { token, setToken, backendUrl } = useContext(RentContext);
   const [otp, setOtp] = useState(new Array(length).fill("")); // This is the state for OTP
   const inputRefs = useRef([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (inputRefs.current[0]) {
@@ -24,7 +26,12 @@ const OtpInput = ({ length = 6, onOtpSubmit = () => {}, email }) => {
 
     // Submit trigger
     const combinedOtp = newOtp.join("");
-    if (combinedOtp.length === length) onOtpSubmit(combinedOtp);
+    if (combinedOtp.length === length)
+      {
+       onOtpSubmit(combinedOtp);        
+      }
+        
+
 
     // Move to next input if the current field is filled
     if (value && index < length - 1 && inputRefs.current[index + 1]) {
@@ -52,28 +59,33 @@ const OtpInput = ({ length = 6, onOtpSubmit = () => {}, email }) => {
       inputRefs.current[index - 1].focus();
     }
   };
-  setToken(localStorage.getItem('token', token))
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    console.log(token)
     try {
       const combinedOtp = otp.join("");
-      console.log(combinedOtp) // Combine OTP array to a single string
-      const res = await axios.post('http://localhost:3000/api/users/verifyemail', { otp: combinedOtp, token: token });
+      console.log(combinedOtp)
+      const res = await axios.post('http://localhost:3000/api/users/verifyemail', { userverifycode: combinedOtp },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        }
+      });
       console.log(res);
 
-      // if (res.data.error === false) {
-      //   toast.success(res.data.message)
-      //   navigate('/login')
-      //   setFormData('') 
-      //   setShowOtpField(false) 
-      // }
+      if (res.data.error === false) {
+        toast.success(res.data.message)
+        navigate('/login')
+      }
 
     } catch (error) {
       if (error.response && error.response.data && error.response.data.message) {
+        console.log(error)
         toast.error(error.response.data.message);
       } else {
+        console.log(error)
         toast.error(error.message);
       }
     }
@@ -81,27 +93,34 @@ const OtpInput = ({ length = 6, onOtpSubmit = () => {}, email }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="flex flex-col items-center justify-center">
-        <div className="flex mb-4">
-          <p>{email}</p>
-          {otp.map((value, index) => (
-            <input
-              key={index}
-              type="text"
-              ref={(input) => (inputRefs.current[index] = input)}
-              value={value}
-              onChange={(e) => handleChange(index, e)}
-              onClick={() => handleClick(index)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
-              className="w-[40px] h-[40px] mx-[5px] text-center text-[1.2em] border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          ))}
-        </div>
-        <button className="px-4 py-2 bg-black text-white rounded hover:bg-gray-600 cursor-pointer">
-          Submit
-        </button>
-      </div>
-    </form>
+     <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl p-6 w-[90%] max-w-md">
+  <h2 className="text-xl font-semibold mb-4 text-center">
+    Enter the verification code we just emailed to you.
+  </h2>
+  <div className="flex flex-col items-center justify-center">
+    <div className="flex mb-4">
+      <p>{email}</p>
+      {otp.map((value, index) => (
+        <input
+          key={index}
+          type="text"
+          ref={(input) => (inputRefs.current[index] = input)}
+          value={value}
+          onChange={(e) => handleChange(index, e)}
+          onClick={() => handleClick(index)}
+          onKeyDown={(e) => handleKeyDown(index, e)}
+          className="w-[40px] h-[40px] mx-[5px] text-center text-[1.2em] border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      ))}
+    </div>
+    <button className="px-4 py-2 bg-black text-white rounded hover:bg-gray-600 cursor-pointer">
+      Submit
+    </button>
+  </div>
+</div>
+
+
+    </form >
   );
 };
 

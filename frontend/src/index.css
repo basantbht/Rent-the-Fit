@@ -1,1 +1,48 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Poppins:wght@400;700&family=Prata&family=Roboto:wght@400;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a.active hr{
+    display: block;
+}
+
+/* This CSS controls the sliding effect */
+.transition-transform {
+    transition: transform 0.3s ease-in-out;
+  }
+  
+  .translate-x-full {
+    transform: translateX(100%);
+  }
+  
+  .translate-x-0 {
+    transform: translateX(0);
+  }
+  
+  /* Adding the initial transform state */
+  .fixed {
+    position: fixed;
+  }
+  
+  .z-50 {
+    z-index: 50;
+  }
+  
+
+*{
+    font-family: Outfit;
+}
+
+.prata-regular {
+    font-family: "Prata", serif;
+    font-weight: 400;
+    font-style: normal;
+  
+}
+
+::-webkit-scrollbar{
+    display: none;
+}
+

@@ -1,5 +1,5 @@
 // Model
-const productModel = require("../Models/Product.model");
+const productModel = require('../Models/Product.model');
 
 // Module
 const joi = require("joi");
@@ -13,6 +13,10 @@ const productSchema = joi.object({
   brand: joi.string().required().max(30).messages({
     "string.empty": "Brand is required.",
     "string.max": "Brand name cannot exceed 30 characters.",
+  }),  
+  category: joi.string().required().max(30).messages({
+    "string.empty": "Category is required.",
+    "string.max": "Category name cannot exceed 30 characters.",
   }),
   quantity: joi.string().required().messages({
     "string.empty": "Quantity is required.",
@@ -29,6 +33,7 @@ const productSchema = joi.object({
   sizes: joi.string().required().messages({
     "string.empty": "Sizes are required.",
   }),
+  bestseller:joi.boolean().required()
 });
 
 const createProduct = async (req, res) => {
@@ -37,7 +42,7 @@ const createProduct = async (req, res) => {
     if (error) {
       return res.status(404).json({ error: true, message: error.message });
     }
-    const { name, brand, quantity, description, price, sizes, bestseller } =
+    const { name, brand, quantity, category, description, price, sizes, bestseller } =
       req.body;
     //console.log(req.file);
     const image = req.file;
@@ -53,12 +58,14 @@ const createProduct = async (req, res) => {
       name,
       brand,
       quantity,
-
+      category,
       description,
-      price,
-      sizes,
+      price:Number(price),
+      sizes:JSON.parse(sizes),
+
       image: cloudRes.secure_url,
-      bestseller: bestseller === true ? true : false,
+      bestseller: bestseller === "true" ? true : false,
+      date:Date.now()
     });
     await newProduct.save();
     return res.status(201).json({ error: false, message: "Product Added" });
@@ -88,12 +95,13 @@ const ReadProduct = async (req, res) => {
 };
 
 const editProduct = async (req, res) => {
+  console.log(req.body)
   const { error } = productSchema.validate(req.body);
   if (error) {
     return res.status(404).json({ error: true, message: error.message });
   }
   try {
-    const { name, brand, quantity, category, description, price, bestseller } =
+    const { name, brand, quantity, category, description, price, bestseller, sizes } =
       req.body;
 
     const image = req.file;
@@ -111,11 +119,11 @@ const editProduct = async (req, res) => {
         .json({ error: true, message: "Product not found" });
     }
 
-    if (Product.updatedAt.getDate() === new Date().getDate()) {
-      return res
-        .status(404)
-        .json({ error: true, message: "OOPS Wait for 24hr" });
-    }
+    // if (Product.updatedAt.getDate() === new Date().getDate()) {
+    //   return res
+    //     .status(404)
+    //     .json({ error: true, message: "OOPS Wait for 24hr" });
+    // }
 
     const updateProduct = await productModel.findByIdAndUpdate(
       req.params.id,
@@ -126,13 +134,14 @@ const editProduct = async (req, res) => {
         category: category || Product.category,
         description: description || Product.description,
         price: price || Product.price,
+        sizes:sizes ? JSON.parse(sizes) : Product.sizes,
         image: cloudRes.secure_url || Product.image,
         bestseller: bestseller === true ? true : false,
       },
       { new: true }
     );
 
-    return res.status(200).json({ error: false, message: updateProduct });
+    return res.status(200).json({ error: false, message: updateProduct,msg: "Product Updated Successfully" });
   } catch (error) {
     console.log("Error in UpdateProduct", error);
     return res
@@ -143,7 +152,7 @@ const editProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-    const product = await product.findByIdAndDelete(req.body.id);
+    const product = await productModel.findByIdAndDelete(req.params.id);
     if (!product) {
       return res
         .status(404)
@@ -159,7 +168,7 @@ const deleteProduct = async (req, res) => {
     console.log("Error in RemoveProduct", error);
     return res
       .status(400)
-      .json({ error: true, messsage: "Couldnot delete product." });
+      .json({ error: true, messsage: "Could not delete product." });
   }
 };
 
@@ -182,10 +191,44 @@ const searchProduct = async (req, res) => {
     return res.status(500).json({ message: "couldnot get product" });
   }
 };
+const productReview=async(req,res)=>{
+  try {
+    const { rating, comment } = req.body;
+    const product = await productModel.findById(req.params.id);
+
+    if (product) {
+      const alreadyReviewed = product.reviews.find(
+        (r) => r.user.toString() === req.user._id.toString()
+      );
+
+      if (alreadyReviewed) {
+        return res
+          .status(500)
+          .json({ error: true, message: "Product Already reviewed" });
+      }
+      const review = {
+        name: req.user.username,
+        rating,
+        comment,
+        user: req.user._id,
+      };
+      product.reviews.push(review);
+      await product.save();
+      return res.status(200).json({ error: false, message: "review Added." });
+    }
+  } catch (error) {
+    console.log("Error in productReviews", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "Something went wrong." });
+  }
+
+}
 module.exports = {
   createProduct,
   ReadProduct,
   editProduct,
   deleteProduct,
   searchProduct,
+  productReview
 };

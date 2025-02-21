@@ -18,6 +18,7 @@ const {
 } = require("../Controllers/User.Controller.js");
 
 const { validateUser, authorizeAdmin } = require("../middlewares/auth");
+const upload=require('../middlewares/multer.js')
 
 userRouter
   .route("/")
@@ -28,9 +29,9 @@ userRouter.post("/login", loginUser);
 
 userRouter.post("/logout", logoutUser);
 
-userRouter.put("/profile", validateUser, updateCurrentProfile);
+userRouter.put("/profile", validateUser, upload.single("image") ,updateCurrentProfile);
 
-userRouter.get("/profile", validateUser, getCurrentUserProfile);
+userRouter.get("/profile", validateUser,getCurrentUserProfile);
 
 userRouter.post("/verifyemail", validateUser, verifyUseremail);
 
