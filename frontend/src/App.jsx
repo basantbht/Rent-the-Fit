@@ -45,7 +45,7 @@ const App = () => {
     <>
       <ScrollToTop />
 
-      {!isAdminPage &&  !paymentsuccess && <Navbar /> }
+      {!isAdminPage &&  !paymentsuccess && !resetpassword && <Navbar /> }
       <SearchBar />
 
       {/* Apply div properties only for user routes, not admin */}

@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import logo from '../../assets/logo.png'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faUser } from '@fortawesome/free-regular-svg-icons'
 import { faCartShopping, faMagnifyingGlass, faRightFromBracket } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 import axios from 'axios'
@@ -23,6 +22,7 @@ const Navbar = () => {
             localStorage.removeItem('isVerified');
             localStorage.removeItem('username');
             localStorage.removeItem('userDetails');
+            localStorage.removeItem('profileImage');
             Cookies.remove('token');
 
             setToken(null);

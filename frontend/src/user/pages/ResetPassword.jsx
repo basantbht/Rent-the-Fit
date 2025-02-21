@@ -36,6 +36,10 @@ const ResetPassword = () => {
 
       if (!response.data.error) {
         toast.success(response.data.message);
+        setFormData({
+          password: "",
+          confirmPassword: "",
+        });
       } else {
         toast.error(response.data.error);
       }

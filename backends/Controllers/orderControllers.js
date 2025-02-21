@@ -5,6 +5,7 @@ const userModel = require("../Models/User.model.js");
 const placeOrder = async (req, res) => {
     try {
         const { items, amount, address } = req.body;
+        console.log(req.body)
         const userId = req.user._id; 
 
         const orderData = {
