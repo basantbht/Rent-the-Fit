@@ -20,6 +20,14 @@ const productSchema = joi.object({
     "string.empty": "Category is required.",
     "string.max": "Category name cannot exceed 30 characters.",
   }),
+  subCategory: joi.string().required().max(30).messages({
+    "string.empty": "Category is required.",
+    "string.max": "Category name cannot exceed 30 characters.",
+  }),
+  color: joi.string().required().max(30).messages({
+    "string.empty": "Category is required.",
+    "string.max": "Category name cannot exceed 30 characters.",
+  }),
   quantity: joi.string().required().messages({
     "string.empty": "Quantity is required.",
   }),
@@ -44,16 +52,10 @@ const createProduct = async (req, res) => {
     if (error) {
       return res.status(404).json({ error: true, message: error.message });
     }
-    const {
-      name,
-      brand,
-      quantity,
-      category,
-      description,
-      price,
-      sizes,
-      bestseller,
-    } = req.body;
+
+    const { name, brand, quantity, category,subCategory,color, description, price, sizes, bestseller } =
+      req.body;
+
     //console.log(req.file);
     const image = req.file;
     if (!image) {
@@ -69,6 +71,8 @@ const createProduct = async (req, res) => {
       brand,
       quantity,
       category,
+      subCategory,
+      color,
       description,
       price: Number(price),
       sizes: JSON.parse(sizes),
@@ -111,16 +115,10 @@ const editProduct = async (req, res) => {
     return res.status(404).json({ error: true, message: error.message });
   }
   try {
-    const {
-      name,
-      brand,
-      quantity,
-      category,
-      description,
-      price,
-      bestseller,
-      sizes,
-    } = req.body;
+
+    const { name, brand, quantity, category, subCategory, color, description, price, bestseller, sizes } =
+      req.body;
+
 
     const image = req.file;
     if (!image) {
@@ -150,6 +148,8 @@ const editProduct = async (req, res) => {
         brand: brand || Product.brand,
         quantity: quantity || Product.quantity,
         category: category || Product.category,
+        subCategory: subCategory || Product.subCategory,
+        color: color || Product.color,
         description: description || Product.description,
         price: price || Product.price,
         sizes: sizes ? JSON.parse(sizes) : Product.sizes,
@@ -242,10 +242,22 @@ const productReview = async (req, res) => {
       (review) => review.user.toString() === req.user._id.toString()
     );
 
-    if (alreadyReviewed) {
-      return res
-        .status(400)
-        .json({ error: true, message: "Product already reviewed" });
+
+      if (alreadyReviewed) {
+        return res
+          .status(500)
+          .json({ error: true, message: "Product Already reviewed" });
+      }
+      const review = {
+        name: req.user.username,
+        rating,
+        comment,
+        user: req.user._id,
+      };
+      product.reviews.push(review);
+      await product.save();
+      return res.status(200).json({ error: false, message: review });
+
     }
 
     const review = {
@@ -269,6 +281,24 @@ const productReview = async (req, res) => {
       .json({ error: true, message: "Something went wrong." });
   }
 };
+
+
+const getProductReview = async (req, res) => {
+  try {
+    const product = await productModel.findById(req.params.id).select('reviews'); 
+
+    if (!product) {
+      return res.status(404).json({ error: true, message: "Product not found" });
+    }
+
+    return res.status(200).json({ error: false, reviews: product.reviews });
+  } catch (e) {
+    console.log("Error in get reviews", e);
+    return res.status(500).json({ error: true, message: "Could not retrieve reviews." });
+  }
+};
+
+
 
 const recommendProduct = async (req, res) => {
   try {
@@ -329,6 +359,7 @@ module.exports = {
   deleteProduct,
   searchProduct,
   productReview,
+  getProductReview,
   recommendProduct,
   likeUnlikeProduct,
 };

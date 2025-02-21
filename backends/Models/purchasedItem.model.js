@@ -14,7 +14,7 @@ const purchasedItemSchema = new mongoose.Schema(
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "user",
-      required: true,
+      
     },
     totalPrice: { type: Number, required: true },
     purchaseDate: { type: Date, default: Date.now },

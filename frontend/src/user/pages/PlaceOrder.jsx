@@ -4,6 +4,7 @@ import CartTotal from '../components/CartTotal'
 import { toast } from 'react-toastify'
 import axios from 'axios'
 import { RentContext } from '../../../context/RentContext'
+import { assets } from '../../assets/assets'
 
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
@@ -47,7 +48,16 @@ const PlaceOrder = () => {
         items: orderItems,
         amount: getCartAmount() + delivery_fee
       }
-      console.log(token)
+
+      console.log(orderItems)
+
+      let khaltiData = {
+        itemId: orderItems[0]._id,
+        totalPrice: getCartAmount(),
+        website_url: "http://localhost:5173/orders"
+      }
+
+      console.log(khaltiData)
       switch (method) {
 
         // api calls for cod
@@ -64,6 +74,27 @@ const PlaceOrder = () => {
             navigate('/orders')
           } else {
             toast.error(res.data.message)
+          }
+          break;
+          //api call for khalti
+          case 'khalti':
+            console.log(method);
+            console.log(khaltiData)
+          const kres = await axios.post('http://localhost:3000/api/pay/', khaltiData,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`
+              }
+            })
+          console.log(kres);
+          if(kres.data.success){
+            window.location.href = kres.data.payment.payment_url;
+            
+            // navigate(kres.data.payment.payment_url);
+            // const sres = await axios.get('http://localhost:3000/api/pay/complete-khalti-payment');
+            // console.log(sres);
+            // console.log("you can pay here")
+            // navigate('/orders')
           }
           break;
 
@@ -122,7 +153,7 @@ const PlaceOrder = () => {
           <div className='flex gap-3 flex-xol lg:flex-row'>
             <div onClick={() => setMethod('khalti')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>
               <p className={`min-w-3.5 h-3.5 border rounded-full ${method === 'khalti' ? 'bg-green-400' : ''}`}></p>
-              <img className='h-5 mx-4' src='' alt="Khalti" />
+              <img className='h-5 mx-4' src={assets.khalti} alt="Khalti" />
             </div>
 
             <div onClick={() => setMethod('cod')} className='flex items-center gap-3 border p-2 px-3 cursor-pointer'>

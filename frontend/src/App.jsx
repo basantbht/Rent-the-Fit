@@ -27,23 +27,30 @@ import Settings from './admin/pages/Settings';
 import Notifications from './admin/pages/Notifications';
 import { RentContext } from '../context/RentContext';
 import SearchBar from './user/components/SearchBar';
+import PaymentSuccess from './user/pages/PaymentSuccess';
+import PaymentFailed from './user/pages/PaymentFailed';
+import ForgotPassword from './user/pages/ForgotPassword';
+import ResetPassword from './user/pages/ResetPassword';
 
 const App = () => {
   const location = useLocation();
   const isAdminPage = location.pathname.startsWith('/admin');
+  const paymentsuccess = location.pathname.startsWith('/payment-success');
   const isOtp = location.pathname.startsWith('/otp');
+  const forgotpassword = location.pathname.startsWith('/forgotpassword');
+  const resetpassword = location.pathname.startsWith('/reset-password');
   const { isVerified, isAdmin } = useContext(RentContext);
 
   return (
     <>
       <ScrollToTop />
 
-      {!isAdminPage && <Navbar />}
+      {!isAdminPage &&  !paymentsuccess && <Navbar /> }
       <SearchBar />
 
       {/* Apply div properties only for user routes, not admin */}
       {!isAdmin && (
-        <div className='px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]'>
+  <div className={isAdminPage ? "" : "px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]"}>
           <Routes>
             {!isVerified ? (
               <>
@@ -52,7 +59,9 @@ const App = () => {
                 <Route path='/otp' element={<OtpInput />} />
                 <Route path='/' element={<Home />} />
                 <Route path='/products' element={<Products />} />
-
+                <Route path='/forgotpassword' element={<ForgotPassword />} />
+                <Route path='/reset-password/:token' element={<ResetPassword />} />
+ 
                 <Route path='/admin' element={<AdminLayout />}>
                   <Route path='dashboard' element={<Dashboard />} />
                   <Route path='adminproducts' element={<AdminProducts />} />
@@ -62,6 +71,7 @@ const App = () => {
                   <Route path='customers' element={<Customers />} />
                   <Route path='settings' element={<Settings />} />
                   <Route path='notifications' element={<Notifications />} />
+                  
                 </Route>
 
                 <Route path='*' element={<Navigate to="/login" />} />
@@ -85,6 +95,10 @@ const App = () => {
                     <Route path='/about' element={<About />} />
                     <Route path='/contact' element={<Contact />} />
                     <Route path='/admin' element={<Navigate to="/" />} />
+
+                    <Route path="/payment-success" element={<PaymentSuccess />} />
+                    <Route path="/payment-failed" element={<PaymentFailed />} />
+
                   </>
                 )}
 
@@ -98,7 +112,7 @@ const App = () => {
                       <Route path='vieworders' element={<AdminOrders />} />
                       <Route path='customers' element={<Customers />} />
                       <Route path='settings' element={<Settings />} />
-                      <Route path='notifications' element={<Notifications />} />                  
+                      <Route path='notifications' element={<Notifications />} />
                     </Route>
 
                     <Route path='*' element={<Navigate to="/admin/dashboard" />} />
@@ -129,7 +143,7 @@ const App = () => {
       )}
 
       <ToastContainer />
-      {!isAdminPage && !isOtp && <Footer />}
+      {!isAdminPage && !isOtp && !paymentsuccess && !forgotpassword && !resetpassword && <Footer />}
     </>
   );
 };

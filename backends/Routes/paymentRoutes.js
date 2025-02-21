@@ -5,6 +5,7 @@ const {
   initializeKhaltiPayment,
   verifyKhaltiPayment,
 } = require("../utils/khalti");
+
 const productModel = require("../Models/Product.model");
 const PurchasedItem = require("../Models/purchasedItem.model");
 const Payment = require("../Models/payment.model");
@@ -35,6 +36,7 @@ payRouter.post("/", async (req, res) => {
         paymentMethod: "khalti",
         totalPrice: totalPrice * 100,
         quantity,
+
       });
 
       purchasedItems.push(purchasedItem);
@@ -54,8 +56,11 @@ payRouter.post("/", async (req, res) => {
       payment: paymentInitiate,
     });
   } catch (error) {
-    console.error("Error in initializeKhaltiPayment", error);
-    return res.status(500).json({ success: false, message: "Could not initialize payment" });
+
+    console.log("Error in initializekhalti", error);
+    return res
+      .status(500)
+      .json({ error: true, message: "Could not initialize payment" });
   }
 });
 
@@ -98,6 +103,16 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
       paymentGateway: "khalti",
       status: "success",
     });
+    
+    // return res.status(200).json({
+    //   success: true,
+    //   message: "Payment Successful",
+    //   paymentData,
+    // });
+    
+    // return res.redirect(`https://test-pay.khalti.com/wallet?pidx=${pidx}`);
+    
+    return res.redirect("http://localhost:5173/payment-success");
 
     return res.status(200).json({ success: true, message: "Payment Successful", paymentData });
   } catch (error) {

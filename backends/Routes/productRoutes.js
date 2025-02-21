@@ -15,6 +15,9 @@ const {
   deleteProduct,
   searchProduct,
   productReview,
+   getProductReview,
+ 
+
   recommendProduct,
   likeUnlikeProduct
 } = require("../Controllers/Product.Controller");
@@ -29,7 +32,7 @@ productRouter.post(
   createProduct
 );
 
-productRouter.get("/", ReadProduct);
+productRouter.get("/", ReadProduct);98573894
 
 productRouter.get("/recommend", recommendProduct);
 
@@ -39,6 +42,8 @@ productRouter.delete("/:id", validateUser, authorizeAdmin, deleteProduct);
 
 productRouter.post('/:id/reviews',validateUser,checkId,productReview)
 
+
 productRouter.post('/like/:id',likeUnlikeProduct);
+productRouter.get('/:id/reviews',validateUser,checkId,getProductReview)
 
 module.exports = productRouter;
