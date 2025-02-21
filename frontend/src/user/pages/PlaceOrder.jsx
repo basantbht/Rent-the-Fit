@@ -9,7 +9,7 @@ import { assets } from '../../assets/assets'
 const PlaceOrder = () => {
   const [method, setMethod] = useState('cod');
   const { navigate, token, cartItems, setCartItems, getCartAmount, delivery_fee, products } = useContext(RentContext);
-
+  console.log(delivery_fee)
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
@@ -19,12 +19,20 @@ const PlaceOrder = () => {
     state: '',
     zipcode: '',
     phone: '',
+    startdate: '',
+    enddate: ''
   })
 
   const onChangeHandler = (event) => {
     const name = event.target.name;
     const value = event.target.value
     setFormData(data => ({ ...data, [name]: value }))
+
+
+    Object.entries(formData).forEach(([key, value]) => {
+      console.log(`${key}: ${value}`);
+  });
+  
   }
 
   const onSubmitHandler = async (e) => {
@@ -43,26 +51,32 @@ const PlaceOrder = () => {
           }
         }
       }
-      
+
       let orderData = {
         address: formData,
         items: orderItems,
-        amount: getCartAmount() + delivery_fee
+        amount: (getCartAmount() + delivery_fee)
       }
 
-      console.log(orderItems)
 
       let khaltiData = {
         items: orderItems.map(item => ({
           itemId: item._id,
           quantity: item.quantity
         })),
-        totalPrice: getCartAmount(),
+
+
+        totalPrice: getCartAmount() + delivery_fee,
         website_url: "http://localhost:5173/orders"
       };
 
       console.log(khaltiData);
-      
+
+      if (new Date(formData.enddate) <= new Date(formData.startdate)) {
+        toast.error("End date must be later than the start date.");
+        return;
+      }
+
       switch (method) {
 
         // api calls for cod
@@ -81,10 +95,10 @@ const PlaceOrder = () => {
             toast.error(res.data.message)
           }
           break;
-          //api call for khalti
-          case 'khalti':
-            console.log(method);
-            console.log(khaltiData)
+        //api call for khalti
+        case 'khalti':
+          console.log(method);
+          console.log(khaltiData)
           const kres = await axios.post('http://localhost:3000/api/pay/', khaltiData,
             {
               headers: {
@@ -92,9 +106,9 @@ const PlaceOrder = () => {
               }
             })
           console.log(kres);
-          if(kres.data.success){
+          if (kres.data.success) {
             window.location.href = kres.data.payment.payment_url;
-            
+
             // navigate(kres.data.payment.payment_url);
             // const sres = await axios.get('http://localhost:3000/api/pay/complete-khalti-payment');
             // console.log(sres);
@@ -120,7 +134,7 @@ const PlaceOrder = () => {
         <div className='text-xl sm:text-2xl my-3'>
           <Title text1={'DELIVERY'} text2={'INFORMATION'} />
         </div>
-        {/* <div className='flex gap-3'>
+        <div className='flex gap-3'>
           <input required onChange={onChangeHandler} name='firstName' value={FormData.firstName} className='border border-gray-500 rounded py-1.5 px-3.5 w-full' type="text" placeholder='First name' />
 
           <input required onChange={onChangeHandler} name='lastName' value={FormData.lastName} className='border border-gray-500 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Last name' />
@@ -138,10 +152,44 @@ const PlaceOrder = () => {
 
         <div className='flex gap-3'>
           <input onChange={onChangeHandler} name='zipcode' value={FormData.zipcode} required className='border border-gray-500 rounded py-1.5 px-3.5 w-full' type="number" placeholder='Zipcode' />
-        </div> */}
+        </div>
+
+
 
         <input required onChange={onChangeHandler} name='phone' value={FormData.phone} className='border border-gray-500 rounded py-1.5 px-3.5 w-full' type="number" placeholder='Phone' />
+
+        <div className='flex gap-6'>
+          <div className='flex flex-col w-full'>
+            <label htmlFor="startname">StartDate</label>
+            <input
+              onChange={onChangeHandler}
+              id='startname'
+              name='startdate'
+              value={FormData.startdate}
+              required
+              className='border border-gray-500 rounded py-1.5 px-3.5'
+              type="date"
+            />
+          </div>
+          <div className='flex flex-col w-full'>
+            <label htmlFor="enddate">EndDate</label>
+            <input
+              onChange={onChangeHandler}
+              id='enddate'
+              name='enddate'
+              value={FormData.enddate}
+              required
+              className='border border-gray-500 rounded py-1.5 px-3.5'
+              type="date"
+            />
+          </div>
+        </div>
+
       </div>
+
+
+
+
 
       {/* Right Side */}
       <div className='mt-8'>

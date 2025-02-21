@@ -215,9 +215,9 @@ const searchProduct = async (req, res) => {
 };
 const productReview = async (req, res) => {
   try {
-    const { rating, comment, item } = req.body;
-
-    const product = await productModel.findById(item);
+    const { rating, comment,productId } = req.body;
+console.log(req.body)
+    const product = await productModel.findById(productId);
 
     if (!product) {
       return res
@@ -227,7 +227,7 @@ const productReview = async (req, res) => {
 
     const hasPurchased = await PurchasedItem.findOne({
       user: req.user._id,
-      item: item,
+      item: productId,
       status: "completed",
     });
 

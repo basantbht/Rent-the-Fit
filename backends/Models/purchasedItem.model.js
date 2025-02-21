@@ -24,6 +24,12 @@ const purchasedItemSchema = new mongoose.Schema(
       enum: ["pending", "completed", "refunded"],
       default: "pending",
     },
+    startdate:{
+      type:Date
+    },
+    enddate:{
+      type:Date
+    },
   },
   { timestamps: true }
 );
