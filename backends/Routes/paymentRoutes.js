@@ -13,7 +13,7 @@ const Payment = require("../Models/payment.model");
 payRouter.post("/", async (req, res) => {
   try {
     const { items, totalPrice, website_url, userId } = req.body;
-
+console.log(items)
     if (!items || !Array.isArray(items) || items.length === 0) 
       {
       return res.status(400).json({ success: false, message: "Invalid items array" });
@@ -106,17 +106,16 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
       status: "success",
     });
     
-    return res.status(200).json({
-      success: true,
-      message: "Payment Successful",
-      paymentData,
-    });
+    // return res.status(200).json({
+    //   success: true,
+    //   message: "Payment Successful",
+    //   paymentData,
+    // });
     
     // return res.redirect(`https://test-pay.khalti.com/wallet?pidx=${pidx}`);
     
-    // return res.redirect("http://localhost:5173/payment-success");
+    return res.redirect("http://localhost:5173/payment-success");
 
-    return res.status(200).json({ success: true, message: "Payment Successful", paymentData });
   } catch (error) {
     console.error("Error in completing payment", error);
     return res.status(500).json({ success: false, message: "An error occurred", error });

@@ -258,22 +258,7 @@ const productReview = async (req, res) => {
       await product.save();
       return res.status(200).json({ error: false, message: review });
 
-    }
-
-    const review = {
-      name: req.user.username,
-      rating: Number(rating),
-      comment,
-      user: req.user._id,
-    };
-
-    product.reviews.push(review);
-
-    await product.save();
-
-    return res
-      .status(200)
-      .json({ error: false, message: "Review added successfully." });
+    
   } catch (error) {
     console.error("Error in productReview", error);
     return res

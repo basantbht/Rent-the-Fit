@@ -52,12 +52,16 @@ const PlaceOrder = () => {
       console.log(orderItems)
 
       let khaltiData = {
-        itemId: orderItems[0]._id,
+        items: orderItems.map(item => ({
+          itemId: item._id,
+          quantity: item.quantity
+        })),
         totalPrice: getCartAmount(),
         website_url: "http://localhost:5173/orders"
-      }
+      };
 
-      console.log(khaltiData)
+      console.log(khaltiData);
+      
       switch (method) {
 
         // api calls for cod
@@ -115,7 +119,7 @@ const PlaceOrder = () => {
         <div className='text-xl sm:text-2xl my-3'>
           <Title text1={'DELIVERY'} text2={'INFORMATION'} />
         </div>
-        <div className='flex gap-3'>
+        {/* <div className='flex gap-3'>
           <input required onChange={onChangeHandler} name='firstName' value={FormData.firstName} className='border border-gray-500 rounded py-1.5 px-3.5 w-full' type="text" placeholder='First name' />
 
           <input required onChange={onChangeHandler} name='lastName' value={FormData.lastName} className='border border-gray-500 rounded py-1.5 px-3.5 w-full' type="text" placeholder='Last name' />
@@ -133,7 +137,7 @@ const PlaceOrder = () => {
 
         <div className='flex gap-3'>
           <input onChange={onChangeHandler} name='zipcode' value={FormData.zipcode} required className='border border-gray-500 rounded py-1.5 px-3.5 w-full' type="number" placeholder='Zipcode' />
-        </div>
+        </div> */}
 
         <input required onChange={onChangeHandler} name='phone' value={FormData.phone} className='border border-gray-500 rounded py-1.5 px-3.5 w-full' type="number" placeholder='Phone' />
       </div>
