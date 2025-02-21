@@ -15,8 +15,12 @@ const {
   deleteProduct,
   searchProduct,
   productReview,
-  getProductReview,
-  recommendProduct,} = require("../Controllers/Product.Controller");
+   getProductReview,
+ 
+
+  recommendProduct,
+  likeUnlikeProduct
+} = require("../Controllers/Product.Controller");
 
 productRouter.get("/search", searchProduct);
 
@@ -38,6 +42,8 @@ productRouter.delete("/:id", validateUser, authorizeAdmin, deleteProduct);
 
 productRouter.post('/:id/reviews',validateUser,checkId,productReview)
 
+
+productRouter.post('/like/:id',likeUnlikeProduct);
 productRouter.get('/:id/reviews',validateUser,checkId,getProductReview)
 
 module.exports = productRouter;
