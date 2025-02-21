@@ -14,10 +14,11 @@ async function verifyKhaltiPayment(pidx) {
     headers: headersList,
     data: bodyContent,
   };
-
+ 
   try {
     const response = await axios.request(reqOptions);
     return response.data;
+  
   } catch (error) {
     console.error("Error verifying Khalti payment:", error);
     throw error;
@@ -41,6 +42,7 @@ async function initializeKhaltiPayment(details) {
 
   try {
     const response = await axios.request(reqOptions);
+
     return response.data;
   } catch (error) {
     console.error("Error initializing Khalti payment:", error);

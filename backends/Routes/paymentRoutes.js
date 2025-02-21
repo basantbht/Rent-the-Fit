@@ -67,8 +67,10 @@ payRouter.post("/", async (req, res) => {
 payRouter.get("/complete-khalti-payment", async (req, res) => {
   const { pidx, transaction_id, amount, purchase_order_id } = req.query;
 
+
   try {
     const paymentInfo = await verifyKhaltiPayment(pidx);
+
 
     if (paymentInfo?.status !== "Completed" || paymentInfo.transaction_id !== transaction_id) {
       return res.status(400).json({ success: false, message: "Payment verification failed", paymentInfo });
@@ -104,15 +106,15 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
       status: "success",
     });
     
-    // return res.status(200).json({
-    //   success: true,
-    //   message: "Payment Successful",
-    //   paymentData,
-    // });
+    return res.status(200).json({
+      success: true,
+      message: "Payment Successful",
+      paymentData,
+    });
     
     // return res.redirect(`https://test-pay.khalti.com/wallet?pidx=${pidx}`);
     
-    return res.redirect("http://localhost:5173/payment-success");
+    // return res.redirect("http://localhost:5173/payment-success");
 
     return res.status(200).json({ success: true, message: "Payment Successful", paymentData });
   } catch (error) {
