@@ -5,15 +5,17 @@ const {
   initializeKhaltiPayment,
   verifyKhaltiPayment,
 } = require("../utils/khalti");
+const {validateUser}=require('../middlewares/auth')
 
 const productModel = require("../Models/Product.model");
 const PurchasedItem = require("../Models/purchasedItem.model");
 const Payment = require("../Models/payment.model");
+const orderModel = require("../Models/orderModel");
 
-payRouter.post("/", async (req, res) => {
+payRouter.post("/", validateUser,async (req, res) => {
   try {
-    const { items, totalPrice, website_url, userId } = req.body;
-console.log(items)
+    const { items, totalPrice, website_url } = req.body;
+//console.log(userId)
     if (!items || !Array.isArray(items) || items.length === 0) 
       {
       return res.status(400).json({ success: false, message: "Invalid items array" });
@@ -30,13 +32,17 @@ console.log(items)
         return res.status(400).json({ success: false, message: `Insufficient stock for item: ${itemId}` });
       }
 
+
+
+
       const purchasedItem = await PurchasedItem.create({
         item: itemId,
-        user: userId,
+        user: req.user._id,
         paymentMethod: "khalti",
         totalPrice: totalPrice * 100,
         quantity,
-
+        // startdate:address.startdate,
+        // enddate:address.enddate,
       });
 
       purchasedItems.push(purchasedItem);
@@ -105,6 +111,7 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
       paymentGateway: "khalti",
       status: "success",
     });
+
     
     // return res.status(200).json({
     //   success: true,
