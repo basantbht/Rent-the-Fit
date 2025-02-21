@@ -15,6 +15,7 @@ const {
   deleteProduct,
   searchProduct,
   productReview,
+  getProductReview,
   recommendProduct,} = require("../Controllers/Product.Controller");
 
 productRouter.get("/search", searchProduct);
@@ -36,5 +37,7 @@ productRouter.put("/:id", validateUser, authorizeAdmin,upload.single("image"), e
 productRouter.delete("/:id", validateUser, authorizeAdmin, deleteProduct);
 
 productRouter.post('/:id/reviews',validateUser,checkId,productReview)
+
+productRouter.get('/:id/reviews',validateUser,checkId,getProductReview)
 
 module.exports = productRouter;

@@ -21,7 +21,7 @@ const kycSchmea = new mongoose.Schema({
     ref: "user",
     required: true,
   },
-  Adress: {
+  Address: {
     type: String,
     required: true,
   },

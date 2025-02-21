@@ -4,6 +4,7 @@ import { createContext, useEffect, useState } from 'react';
 export const AdminContext = createContext();
 
 const AdminContextProvider = (props) => {
+    const isAdminPage = location.pathname.startsWith('/admin');
     const currency = 'Rs.';
     const delivery_fee = 10;
     const backendUrl = import.meta.env.VITE_BACKEND_URL;
@@ -11,10 +12,10 @@ const AdminContextProvider = (props) => {
     const [isAdmin, setIsAdmin] = useState(localStorage.getItem('isAdmin') === 'true');
     const [isVerified, setIsVerified] = useState(localStorage.getItem('isVerified') === 'true');
     const [userCount, setUserCount] = useState(0);
-    const[users,setUsers] = useState([]);
+    const [users, setUsers] = useState([]);
 
     const getUsersCount = async () => {
-        if(!token || !isAdmin){
+        if (!token || !isAdmin) {
             return;
         }
         try {
@@ -37,8 +38,8 @@ const AdminContextProvider = (props) => {
     };
 
     const getAllUsers = async () => {
-        if(!token || !isAdmin)return;
-        
+        if (!token || !isAdmin) return;
+
         try {
             const response = await axios.get(backendUrl + '/api/users/', {
                 headers: {
@@ -61,12 +62,15 @@ const AdminContextProvider = (props) => {
 
     useEffect(() => {
         if (token && isAdmin) {
-            getUsersCount();
-            getAllUsers();
+            if (isAdminPage){
+                getUsersCount();
+                getAllUsers();
+            }
+                
         }
-    }, [token, isAdmin]); 
+    }, [token, isAdmin]);
 
-    const value = { currency, delivery_fee, backendUrl, token, isAdmin,setToken,setIsAdmin,isVerified,setIsVerified, userCount ,users,getUsersCount};
+    const value = { currency, delivery_fee, backendUrl, token, isAdmin, setToken, setIsAdmin, isVerified, setIsVerified, userCount, users, getUsersCount };
 
     return (
         <AdminContext.Provider value={value}>
