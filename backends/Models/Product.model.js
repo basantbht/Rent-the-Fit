@@ -66,6 +66,7 @@ const productSchema = new mongoose.Schema(
     },
     reviews: {
       type: [reviewSchema],
+      default:[]
     },
     rating: {
       type: Number,
@@ -82,6 +83,14 @@ const productSchema = new mongoose.Schema(
       required: true,
       default: 0,
     },
+    likes:[
+      {
+        users:{
+          type:mongoose.Schema.Types.ObjectId,
+          ref:'user'
+        }
+      }
+    ]
   },
   { timestamps: true }
 );

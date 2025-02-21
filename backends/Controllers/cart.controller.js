@@ -1,9 +1,9 @@
-const userModel=require('../Models/User.model')
+const userModel = require("../Models/User.model");
 
 const addToCart = async (req, res) => {
   try {
     const { size, productId } = req.body;
-    const userId = req.user._id; 
+    const userId = req.user._id;
 
     // Find user
     const userData = await userModel.findById(userId);
@@ -29,32 +29,31 @@ const addToCart = async (req, res) => {
     // Save updated cart
     await userModel.findByIdAndUpdate(userId, { cartData });
 
-    return res.status(200).json({ error: false, message: 'Added to cart' });
-
+    return res.status(200).json({ error: false, message: "Added to cart" });
   } catch (error) {
     console.error("Error in addToCart:", error);
-    return res.status(500).json({ error: true, message: "Could not add to cart" });
+    return res
+      .status(500)
+      .json({ error: true, message: "Could not add to cart" });
   }
 };
 
-
 const updateCart = async (req, res) => {
-try{
-  const {productId,size,quantity}=req.body
-  const userId = req.user._id; 
+  try {
+    const { productId, size, quantity } = req.body;
+    const userId = req.user._id;
 
-  const userData = await userModel.findById(userId);
+    const userData = await userModel.findById(userId);
 
-  if (!userData) {
-    return res.status(404).json({ error: true, message: "User not found" });
-  }
-  let cartData = await userData.cartData;
+    if (!userData) {
+      return res.status(404).json({ error: true, message: "User not found" });
+    }
+    let cartData = await userData.cartData;
 
-  cartData[productId][size]=quantity;
-  await userModel.findByIdAndUpdate(userId,{cartData})
-  return res.status(200).json({error:false,message:'cart updated'})
-}
-  catch (error) {
+    cartData[productId][size] = quantity;
+    await userModel.findByIdAndUpdate(userId, { cartData });
+    return res.status(200).json({ error: false, message: "cart updated" });
+  } catch (error) {
     console.log("Error in updatecart", error);
     return res
       .status(500)
@@ -72,4 +71,3 @@ const allItems = async (req, res) => {
 };
 
 module.exports = { addToCart, updateCart, allItems };
-

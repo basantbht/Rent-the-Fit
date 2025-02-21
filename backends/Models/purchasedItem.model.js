@@ -3,9 +3,13 @@ const mongoose = require("mongoose");
 const purchasedItemSchema = new mongoose.Schema(
   {
     item: {
-      type: mongoose.Schema.Types.ObjectId,
+      type:Array,
       ref: "product",
       required: true,
+    },
+    quantity:{
+      type:Number,
+      default:0
     },
     user: {
       type: mongoose.Schema.Types.ObjectId,
