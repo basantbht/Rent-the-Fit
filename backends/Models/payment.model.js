@@ -7,7 +7,7 @@ const paymentSchema = new mongoose.Schema(
     productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "PurchasedItem",
-      required: true,
+     // required: true,
     },
     amount: { type: Number, required: true },
     dataFromVerificationReq: { type: Object },
