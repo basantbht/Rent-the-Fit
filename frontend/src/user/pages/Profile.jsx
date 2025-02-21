@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { RentContext } from '../../../context/RentContext';
@@ -6,11 +7,11 @@ import upload_area from '../../assets/upload_area.png';
 
 const Profile = () => {
   const { userDetails, setUserDetails, token } = useContext(RentContext);
+  const navigate = useNavigate(); // Navigation hook
 
   if (!userDetails) {
     return <div className="text-center text-gray-600">Loading profile...</div>;
   }
-
 
   const [editedUser, setEditedUser] = useState({
     username: userDetails.username,
@@ -25,7 +26,6 @@ const Profile = () => {
 
     const formData = new FormData();
     formData.append('username', editedUser.username);
-
     if (editedUser.image instanceof File) {
       formData.append('image', editedUser.image);
     }
@@ -41,13 +41,9 @@ const Profile = () => {
       const { profileImage, username } = response.data.message;
 
       if (response.data.error === false) {
-        setUserDetails({
-          ...userDetails,
-          username: username,
-          profileImage: profileImage,
-        });
-        localStorage.setItem('username',username);
-        localStorage.setItem('profileImage',profileImage);
+        setUserDetails({ ...userDetails, username, profileImage });
+        localStorage.setItem('username', username);
+        localStorage.setItem('profileImage', profileImage);
 
         toast.success('Profile updated successfully!');
         setShowEditForm(false);
@@ -76,19 +72,27 @@ const Profile = () => {
         <h2 className="text-center text-2xl font-semibold text-gray-800">{userDetails.username}</h2>
         <p className="text-center text-sm text-gray-500">{userDetails.email}</p>
 
-        <div className="flex justify-center">
+        {/* Buttons for Edit and KYC */}
+        <div className="flex justify-center gap-4 flex-col">
           <button
             onClick={() => setShowEditForm(true)}
             className="bg-gray-600 text-white py-2 px-6 rounded-md hover:bg-gray-700 transition duration-200"
           >
             Edit Profile
           </button>
+
+          <button
+            onClick={() => navigate('/kyc-form')}
+            className="bg-gray-600 text-white py-2 px-6 rounded-md hover:bg-gray-700 transition duration-200"
+          >
+            Fill KYC Form
+          </button>
         </div>
 
+        {/* Edit Profile Modal */}
         {showEditForm && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
             <div className="bg-white p-6 rounded-lg shadow-lg w-[90%] max-w-xl flex flex-col gap-6 relative">
-
               <button
                 className="absolute top-2 right-2 text-2xl text-gray-600"
                 onClick={() => setShowEditForm(false)}
@@ -115,7 +119,7 @@ const Profile = () => {
                         const file = e.target.files[0];
                         if (file) {
                           setEditedUser({ ...editedUser, image: file });
-                          setPreview(URL.createObjectURL(file)); // Show preview
+                          setPreview(URL.createObjectURL(file));
                         }
                       }}
                     />

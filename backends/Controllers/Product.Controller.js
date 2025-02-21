@@ -249,7 +249,7 @@ const productReview = async (req, res) => {
       };
       product.reviews.push(review);
       await product.save();
-      return res.status(200).json({ error: false, message: "review Added." });
+      return res.status(200).json({ error: false, message: review });
     }
   } catch (error) {
     console.log("Error in productReviews", error);
@@ -258,6 +258,24 @@ const productReview = async (req, res) => {
       .json({ error: true, message: "Something went wrong." });
   }
 };
+
+const getProductReview = async (req, res) => {
+  try {
+    const product = await productModel.findById(req.params.id).select('reviews'); 
+
+    if (!product) {
+      return res.status(404).json({ error: true, message: "Product not found" });
+    }
+
+    return res.status(200).json({ error: false, reviews: product.reviews });
+  } catch (e) {
+    console.log("Error in get reviews", e);
+    return res.status(500).json({ error: true, message: "Could not retrieve reviews." });
+  }
+};
+
+
+
 const recommendProduct = async (req, res) => {
   try {
     const product = await productModel.findById(req.body.id);
@@ -286,5 +304,6 @@ module.exports = {
   deleteProduct,
   searchProduct,
   productReview,
+  getProductReview,
   recommendProduct,
 };
