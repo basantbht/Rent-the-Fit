@@ -23,7 +23,6 @@ import PlaceOrder from './user/pages/PlaceOrder';
 import Orders from './user/pages/Orders';
 import AdminOrders from './admin/pages/AdminOrders';
 import Customers from './admin/pages/Customers';
-import Settings from './admin/pages/Settings';
 import Notifications from './admin/pages/Notifications';
 import { RentContext } from '../context/RentContext';
 import SearchBar from './user/components/SearchBar';
@@ -32,6 +31,7 @@ import PaymentFailed from './user/pages/PaymentFailed';
 import ForgotPassword from './user/pages/ForgotPassword';
 import ResetPassword from './user/pages/ResetPassword';
 import KycForm from './user/pages/KycForm';
+import Coupons from './admin/pages/Coupons';
 
 const App = () => {
   const location = useLocation();
@@ -70,7 +70,7 @@ const App = () => {
                   <Route path='editproducts' element={<EditProduct />} />
                   <Route path='vieworders' element={<AdminOrders />} />
                   <Route path='customers' element={<Customers />} />
-                  <Route path='settings' element={<Settings />} />
+                  <Route path='coupons' element={<Coupons />} />
                   <Route path='notifications' element={<Notifications />} />
                   
                 </Route>
@@ -113,7 +113,7 @@ const App = () => {
                       <Route path='editproducts' element={<EditProduct />} />
                       <Route path='vieworders' element={<AdminOrders />} />
                       <Route path='customers' element={<Customers />} />
-                      <Route path='settings' element={<Settings />} />
+                      <Route path='coupons' element={<Coupons />} />
                       <Route path='notifications' element={<Notifications />} />
                     </Route>
 
@@ -136,7 +136,7 @@ const App = () => {
             <Route path='editproducts' element={<EditProduct />} />
             <Route path='vieworders' element={<AdminOrders />} />
             <Route path='customers' element={<Customers />} />
-            <Route path='settings' element={<Settings />} />
+            <Route path='coupons' element={<Coupons />} />
             <Route path='notifications' element={<Notifications />} />
           </Route>
 

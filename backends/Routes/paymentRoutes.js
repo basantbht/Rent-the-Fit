@@ -29,7 +29,7 @@ payRouter.post("/", validateUser,async (req, res) => {
       }
 
       if (itemData.quantity < quantity) {
-        return res.status(400).json({ success: false, message: `Insufficient stock for item: ${itemId}` });
+        return res.status(400).json({ success: false, message: `Insufficient stock for item!` });
       }
 
 
