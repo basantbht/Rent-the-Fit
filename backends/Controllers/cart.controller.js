@@ -1,4 +1,5 @@
 const userModel = require("../Models/User.model");
+const productModel = require("../Models/Product.model");
 
 const addToCart = async (req, res) => {
   try {
@@ -14,7 +15,12 @@ const addToCart = async (req, res) => {
     // Ensure cartData exists
     let cartData = userData.cartData || {};
 
-    // Check if the product exists in cartData
+    const product = await productModel.findById(productId);
+    if (product.quantity === 0) {
+      return res
+        .status(500)
+        .json({ error: true, message: "Product out of stock." });
+    }
     if (!cartData[productId]) {
       cartData[productId] = {};
     }

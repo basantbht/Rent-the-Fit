@@ -14,20 +14,28 @@ payRouter.post("/", async (req, res) => {
   try {
     const { items, totalPrice, website_url, userId } = req.body;
 
-    if (!items || !Array.isArray(items) || items.length === 0) 
-      {
-      return res.status(400).json({ success: false, message: "Invalid items array" });
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res
+        .status(400)
+        .json({ success: false, message: "Invalid items array" });
     }
 
     const purchasedItems = [];
     for (const { itemId, quantity } of items) {
       const itemData = await productModel.findById(itemId);
       if (!itemData) {
-        return res.status(400).json({ success: false, message: `Item not found: ${itemId}` });
+        return res
+          .status(400)
+          .json({ success: false, message: `Item not found: ${itemId}` });
       }
 
       if (itemData.quantity < quantity) {
-        return res.status(400).json({ success: false, message: `Insufficient stock for item: ${itemId}` });
+        return res
+          .status(400)
+          .json({
+            success: false,
+            message: `Insufficient stock for item: ${itemId}`,
+          });
       }
 
       const purchasedItem = await PurchasedItem.create({
@@ -36,7 +44,6 @@ payRouter.post("/", async (req, res) => {
         paymentMethod: "khalti",
         totalPrice: totalPrice * 100,
         quantity,
-
       });
 
       purchasedItems.push(purchasedItem);
@@ -56,7 +63,6 @@ payRouter.post("/", async (req, res) => {
       payment: paymentInitiate,
     });
   } catch (error) {
-
     console.log("Error in initializekhalti", error);
     return res
       .status(500)
@@ -70,25 +76,44 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
   try {
     const paymentInfo = await verifyKhaltiPayment(pidx);
 
-    if (paymentInfo?.status !== "Completed" || paymentInfo.transaction_id !== transaction_id) {
-      return res.status(400).json({ success: false, message: "Payment verification failed", paymentInfo });
+    if (
+      paymentInfo?.status !== "Completed" ||
+      paymentInfo.transaction_id !== transaction_id
+    ) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          message: "Payment verification failed",
+          paymentInfo,
+        });
     }
 
-    const purchasedItems = await PurchasedItem.find({ _id: { $in: purchase_order_id.split(",") } });
+    const purchasedItems = await PurchasedItem.find({
+      _id: { $in: purchase_order_id.split(",") },
+    });
 
     if (!purchasedItems || purchasedItems.length === 0) {
-      return res.status(400).json({ success: false, message: "Purchased data not found" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Purchased data not found" });
     }
 
     for (const purchasedItem of purchasedItems) {
-      await PurchasedItem.findByIdAndUpdate(purchasedItem._id, { $set: { status: "completed" } });
+      await PurchasedItem.findByIdAndUpdate(purchasedItem._id, {
+        $set: { status: "completed" },
+      });
       const product = await productModel.findById(purchasedItem.item);
       if (product) {
         const newQuantity = product.quantity - purchasedItem.quantity;
         if (newQuantity < 0) {
-          return res.status(400).json({ success: false, message: "Insufficient stock" });
+          return res
+            .status(400)
+            .json({ success: false, message: "Insufficient stock" });
         }
-        await productModel.findByIdAndUpdate(product._id, { $set: { quantity: newQuantity } });
+        await productModel.findByIdAndUpdate(product._id, {
+          $set: { quantity: newQuantity },
+        });
       }
     }
 
@@ -103,21 +128,23 @@ payRouter.get("/complete-khalti-payment", async (req, res) => {
       paymentGateway: "khalti",
       status: "success",
     });
-    
+
     // return res.status(200).json({
     //   success: true,
     //   message: "Payment Successful",
     //   paymentData,
     // });
-    
+
     // return res.redirect(`https://test-pay.khalti.com/wallet?pidx=${pidx}`);
-    
+
     return res.redirect("http://localhost:5173/payment-success");
 
-    return res.status(200).json({ success: true, message: "Payment Successful", paymentData });
+    // return res.status(200).json({ success: true, message: "Payment Successful", paymentData });
   } catch (error) {
     console.error("Error in completing payment", error);
-    return res.status(500).json({ success: false, message: "An error occurred", error });
+    return res
+      .status(500)
+      .json({ success: false, message: "An error occurred", error });
   }
 });
 

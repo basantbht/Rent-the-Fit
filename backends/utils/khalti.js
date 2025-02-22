@@ -6,7 +6,7 @@ async function verifyKhaltiPayment(pidx) {
     "Content-Type": "application/json",
   };
 
-  const bodyContent = JSON.stringify({ pidx });
+  const bodyContent = JSON.stringify({ pidx }); 
 
   const reqOptions = {
     url: `${process.env.KHALTI_GATEWAY_URL}/api/v2/epayment/lookup/`,

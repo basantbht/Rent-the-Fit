@@ -53,8 +53,18 @@ const createProduct = async (req, res) => {
       return res.status(404).json({ error: true, message: error.message });
     }
 
-    const { name, brand, quantity, category,subCategory,color, description, price, sizes, bestseller } =
-      req.body;
+    const {
+      name,
+      brand,
+      quantity,
+      category,
+      subCategory,
+      color,
+      description,
+      price,
+      sizes,
+      bestseller,
+    } = req.body;
 
     //console.log(req.file);
     const image = req.file;
@@ -115,10 +125,18 @@ const editProduct = async (req, res) => {
     return res.status(404).json({ error: true, message: error.message });
   }
   try {
-
-    const { name, brand, quantity, category, subCategory, color, description, price, bestseller, sizes } =
-      req.body;
-
+    const {
+      name,
+      brand,
+      quantity,
+      category,
+      subCategory,
+      color,
+      description,
+      price,
+      bestseller,
+      sizes,
+    } = req.body;
 
     const image = req.file;
     if (!image) {
@@ -242,38 +260,20 @@ const productReview = async (req, res) => {
       (review) => review.user.toString() === req.user._id.toString()
     );
 
-
-      if (alreadyReviewed) {
-        return res
-          .status(500)
-          .json({ error: true, message: "Product Already reviewed" });
-      }
-      const review = {
-        name: req.user.username,
-        rating,
-        comment,
-        user: req.user._id,
-      };
-      product.reviews.push(review);
-      await product.save();
-      return res.status(200).json({ error: false, message: review });
-
+    if (alreadyReviewed) {
+      return res
+        .status(500)
+        .json({ error: true, message: "Product Already reviewed" });
     }
-
     const review = {
       name: req.user.username,
-      rating: Number(rating),
+      rating,
       comment,
       user: req.user._id,
     };
-
     product.reviews.push(review);
-
     await product.save();
-
-    return res
-      .status(200)
-      .json({ error: false, message: "Review added successfully." });
+    return res.status(200).json({ error: false, message: review });
   } catch (error) {
     console.error("Error in productReview", error);
     return res
@@ -282,23 +282,26 @@ const productReview = async (req, res) => {
   }
 };
 
-
 const getProductReview = async (req, res) => {
   try {
-    const product = await productModel.findById(req.params.id).select('reviews'); 
+    const product = await productModel
+      .findById(req.params.id)
+      .select("reviews");
 
     if (!product) {
-      return res.status(404).json({ error: true, message: "Product not found" });
+      return res
+        .status(404)
+        .json({ error: true, message: "Product not found" });
     }
 
     return res.status(200).json({ error: false, reviews: product.reviews });
   } catch (e) {
     console.log("Error in get reviews", e);
-    return res.status(500).json({ error: true, message: "Could not retrieve reviews." });
+    return res
+      .status(500)
+      .json({ error: true, message: "Could not retrieve reviews." });
   }
 };
-
-
 
 const recommendProduct = async (req, res) => {
   try {
