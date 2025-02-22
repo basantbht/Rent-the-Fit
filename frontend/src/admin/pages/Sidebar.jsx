@@ -57,9 +57,9 @@ const Sidebar = () => {
         </NavLink>
 
 
-        <NavLink to='settings'>
+        {/* <NavLink to='settings'>
         <li className="p-2 hover:bg-gray-700 rounded">Settings</li>
-        </NavLink>
+        </NavLink> */}
       </ul>
     </aside>
   );

@@ -80,13 +80,13 @@ const Profile = () => {
           >
             Edit Profile
           </button>
-
+{/* 
           <button
             onClick={() => navigate('/kyc-form')}
             className="bg-gray-600 text-white py-2 px-6 rounded-md hover:bg-gray-700 transition duration-200"
           >
             Fill KYC Form
-          </button>
+          </button> */}
         </div>
 
         {/* Edit Profile Modal */}

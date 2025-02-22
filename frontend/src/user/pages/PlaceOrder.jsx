@@ -60,11 +60,12 @@ const PlaceOrder = () => {
 
 
       let khaltiData = {
+        address:formData,
+        itemsdata:orderItems,
         items: orderItems.map(item => ({
           itemId: item._id,
           quantity: item.quantity
         })),
-
 
         totalPrice: getCartAmount() + delivery_fee,
         website_url: "http://localhost:5173/orders"

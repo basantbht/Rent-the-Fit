@@ -7,7 +7,7 @@ import { AdminContext } from '../../../context/AdminContext';
 
 const AdminOrders = () => {
   const { backendUrl, currency, token, isAdmin } = useContext(AdminContext);
-  const [orders, setOrders] = useState([] || "no orders");
+  const [orders, setOrders] = useState([]);
 
   const fetchAllOrders = async () => {
     if (!token) {
@@ -22,30 +22,72 @@ const AdminOrders = () => {
           headers: { Authorization: `Bearer ${token}`, isAdmin },
         }),
       ]);
-  
-      const normalOrders = normalOrdersResponse.data?.orders || [];
-      console.log(normalOrders);
-      
-      const khaltiOrders = khaltiOrdersResponse.data?.orders || [];
-      console.log(khaltiOrdersResponse.data);
-  
-      // Correct this line to combine the orders directly
-      setOrders([...normalOrders, ...khaltiOrders]);
-  
-      console.log(orders);  // This might still show an empty array, due to async state update, you can check state in another effect
+
+      const normalOrders = Array.isArray(normalOrdersResponse?.data?.orders)
+        ? normalOrdersResponse?.data?.orders
+        : [];
+
+      const khaltiOrders = Array.isArray(khaltiOrdersResponse?.data?.orders)
+        ? khaltiOrdersResponse?.data?.orders
+        : [];
+
+      console.log(normalOrders, khaltiOrders);
+
+      const normalizedKhaltiOrders = khaltiOrders.map((order) => ({
+        _id: order._id,
+        userId: order.user,
+        items: order.item.map((itemId) => {
+          const itemData = order.itemsdata.find((item) => item._id === itemId);
+          return {
+            id: itemId,
+            name: itemData?.name || 'Name Not Found',
+            quantity: order.quantity,
+            size: itemData?.size || 'Size Not Found',
+          };
+        }),
+        amount: (order.totalPrice) / 100 - 10,
+        payment: order.paymentMethod,
+        paymentMethod: order.paymentMethod,
+        status: order.status,
+        address: {
+          firstName: order.address.firstName,
+          lastName: order.address.lastName,
+          email: order.address.email,
+          street: order.address.street,
+          city: order.address.city,
+          state: order.address.state,
+          zipcode: order.address.zipcode,
+          phone: order.address.phone,
+        },
+        date: new Date(order.purchaseDate).getTime(),
+        startdate: order.startdate,
+        enddate: order.enddate,
+      }));
+
+      setOrders([...normalOrders, ...normalizedKhaltiOrders]);
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to fetch orders");
+      toast.error(error.response?.data?.message || 'Failed to fetch orders');
       console.error(error);
-      setOrders([]); // Ensure it is always an array
+      setOrders([]); // Set orders to empty array in case of error
     }
   };
-  
 
-  const statusHandler = async (e, orderId) => {
+  const statusHandler = async (e, orderId, paymentMethod) => {
     try {
+      let status = e.target.value;
+  
+      console.log('Payment Method:', paymentMethod);
+  
+      if (paymentMethod === 'Khalti' && status !== 'Delivered') {
+        console.log('Changing status to Paid');
+        status = 'Paid';
+      }
+  
+      console.log('Updated Status:', status);
+  
       const response = await axios.post(
         `${backendUrl}/api/order/status`,
-        { orderId, status: e.target.value },
+        { orderId, status,paymentMethod },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -53,14 +95,16 @@ const AdminOrders = () => {
           },
         }
       );
+  
       if (response.data.error === false) {
         await fetchAllOrders();
       }
     } catch (error) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Failed to update status");
+      console.log('Error during status update:', error);
+      toast.error(error.response?.data?.message || 'Failed to update status');
     }
   };
+  
 
   useEffect(() => {
     fetchAllOrders();
@@ -114,7 +158,7 @@ const AdminOrders = () => {
 
               {/* Order Status Dropdown */}
               <select
-                onChange={(e) => statusHandler(e, order._id)}
+                onChange={(e) => statusHandler(e, order._id, order.paymentMethod)} // Pass paymentMethod here
                 value={order.status}
                 className="p-2 font-semibold border border-gray-400 rounded-md bg-gray-100 text-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-500"
               >

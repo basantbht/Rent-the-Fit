@@ -26,7 +26,7 @@ const Dashboard = () => {
         </div>
         <div className="bg-blue-500 p-5 rounded text-white">
           <h3 className="text-lg">PRODUCTS</h3>
-          <h1 className="text-2xl font-bold">300</h1>
+          <h1 className="text-2xl font-bold">10</h1>
         </div>
       </div>
     </main>

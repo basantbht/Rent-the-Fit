@@ -16,6 +16,10 @@ const purchasedItemSchema = new mongoose.Schema(
       ref: "user",
       
     },
+    address: {type:Object, required: true},
+    itemsdata: {type:Array, required: true},
+
+
     totalPrice: { type: Number, required: true },
     purchaseDate: { type: Date, default: Date.now },
     paymentMethod: { type: String, enum: ["khalti"], required: true },

@@ -50,7 +50,7 @@ const App = () => {
 
       {/* Apply div properties only for user routes, not admin */}
       {!isAdmin && (
-  <div className={isAdminPage ? "" : "px-4 sm:px-[5vw] md:px-[7vw] lg:px-[9vw]"}>
+  <div className={isAdminPage ? "" : "px-4 sm:px-[5vw] md:px-[7vw] lg:px-[8vw]"}>
           <Routes>
             {!isVerified ? (
               <>
