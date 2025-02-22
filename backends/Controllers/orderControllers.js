@@ -1,7 +1,8 @@
 const orderModel = require("../Models/orderModel.js");
 const userModel = require("../Models/User.model.js");
 const purchasedItem = require('../Models/purchasedItem.model.js');
-const productModel = require('../Models/Product.model.js')
+const productModel = require('../Models/Product.model.js');
+const PurchasedItem = require("../Models/purchasedItem.model.js");
 
 // Order using cash on delivery
 const placeOrder = async (req, res) => {
@@ -128,11 +129,11 @@ const userOrders = async (req, res) => {
             }))
         }));
 
-        res.json({ success: true, orders: formattedOrders });
+        res.json({ error: false, orders: formattedOrders });
 
     } catch (error) {
         console.log(error);
-        res.json({ success: false, message: error.message });
+        res.json({ error: true, message: error.message });
     }
 };
 
@@ -146,7 +147,6 @@ const khaltiOrders = async (req, res) => {
         console.log(purchaseItems)
         return res.json({
             error: false,
-            message: "All items",
             orders: purchaseItems // Changed from 'items' to 'orders' for consistency
         });
 
@@ -157,7 +157,7 @@ const khaltiOrders = async (req, res) => {
 };
 const khaltiOrder = async (req, res) => {
     try {
-        const purchaseItems = await purchasedItem.find({status: "completed"});
+        const purchaseItems = await purchasedItem.find({});
         console.log(purchaseItems)
         return res.json({
             error: false,
@@ -174,8 +174,12 @@ const khaltiOrder = async (req, res) => {
 // Update order status from admin panel
 const updateStatus = async (req, res) => {
     try {
-        const { orderId, status } = req.body;
+        const { orderId, status,paymentMethod } = req.body;
         await orderModel.findByIdAndUpdate(orderId, { status });
+
+        if(paymentMethod === "khalti"){
+            await PurchasedItem.findByIdAndUpdate(orderId,{status});
+        }
 
         res.json({ error: false, message: "Status Updated" });
 

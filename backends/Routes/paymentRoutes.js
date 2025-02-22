@@ -14,7 +14,7 @@ const orderModel = require("../Models/orderModel");
 
 payRouter.post("/", validateUser,async (req, res) => {
   try {
-    const { items, totalPrice, website_url } = req.body;
+    const { items, totalPrice, website_url,address,itemsdata } = req.body;
 //console.log(userId)
     if (!items || !Array.isArray(items) || items.length === 0) 
       {
@@ -38,11 +38,13 @@ payRouter.post("/", validateUser,async (req, res) => {
       const purchasedItem = await PurchasedItem.create({
         item: itemId,
         user: req.user._id,
+        address,
+        itemsdata,
         paymentMethod: "khalti",
         totalPrice: totalPrice * 100,
         quantity,
-        // startdate:address.startdate,
-        // enddate:address.enddate,
+        startdate:address.startdate,
+        enddate:address.enddate,
       });
 
       purchasedItems.push(purchasedItem);
