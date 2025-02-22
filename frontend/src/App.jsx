@@ -31,6 +31,7 @@ import PaymentSuccess from './user/pages/PaymentSuccess';
 import PaymentFailed from './user/pages/PaymentFailed';
 import ForgotPassword from './user/pages/ForgotPassword';
 import ResetPassword from './user/pages/ResetPassword';
+import KycForm from './user/pages/KycForm';
 
 const App = () => {
   const location = useLocation();
@@ -95,6 +96,7 @@ const App = () => {
                     <Route path='/about' element={<About />} />
                     <Route path='/contact' element={<Contact />} />
                     <Route path='/admin' element={<Navigate to="/" />} />
+                    <Route path='/kycform' element={<KycForm />} />
 
                     <Route path="/payment-success" element={<PaymentSuccess />} />
                     <Route path="/payment-failed" element={<PaymentFailed />} />
