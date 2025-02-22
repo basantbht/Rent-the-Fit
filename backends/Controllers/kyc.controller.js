@@ -10,6 +10,8 @@ const createKyc = async (req, res) => {
     const image1 = req.files.front[0];
     const image2 = req.files.back[0];
 
+    console.log(address,phone,user,image1,image2)
+
     if (!image1 && !image2) {
       return res.status(400).json({ error: true, message: "No Image Found" });
     }
@@ -28,7 +30,7 @@ const createKyc = async (req, res) => {
       citizenshipPhotoBack: cloudRes2.secure_url,
       phone,
       user: user._id,
-      Adress: address,
+      Address: address,
       otp: phoneOTP,
       otpExpiresAt: Date.now() + 24 * 60 * 60 * 60 * 1000,
     });
@@ -37,6 +39,7 @@ const createKyc = async (req, res) => {
     return res.status(200).json({ error: false, message: "Success" });
   } catch (error) {
     console.log("Error in createkyc");
+    console.log(error)
     return res
       .status(500)
       .json({ error: true, message: "Couldnot verify Something went wrong." });
