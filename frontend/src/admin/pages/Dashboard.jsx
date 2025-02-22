@@ -1,9 +1,11 @@
 import React, { useContext, useDebugValue, useEffect } from 'react';
 import { AdminContext } from '../../../context/AdminContext';
 import { Link, useNavigate } from 'react-router-dom';
+import { RentContext } from '../../../context/RentContext';
 
 const Dashboard = () => {
   const { userCount ,getUsersCount,token} = useContext(AdminContext);
+  const { getTotalProductsCount } = useContext(RentContext);
   const navigate = useNavigate();
 
   const redirectToCustomers = () => {
@@ -26,7 +28,7 @@ const Dashboard = () => {
         </div>
         <div className="bg-blue-500 p-5 rounded text-white">
           <h3 className="text-lg">PRODUCTS</h3>
-          <h1 className="text-2xl font-bold">10</h1>
+          <h1 className="text-2xl font-bold">{getTotalProductsCount()}</h1>
         </div>
       </div>
     </main>

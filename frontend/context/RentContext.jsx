@@ -24,7 +24,7 @@ const RentContextProvider = (props) => {
   });
   
 
-  const addToCart = async (productId, size) => {
+  const addToCart = async (productId, size, quantity) => {
 
     if (!token) {
       alert('login first');
@@ -33,6 +33,11 @@ const RentContextProvider = (props) => {
 
     if (!size) {
       toast.error('Select Product Size');
+      return;
+    }
+    
+    if (!quantity) {
+      toast.error('Out of Stock');
       return;
     }
 
@@ -82,6 +87,11 @@ const RentContextProvider = (props) => {
       toast.error(error.response.data.message);
     }
   };
+
+  const getTotalProductsCount = () => {
+    return products.length;
+  };
+  
 
   const getCartCount = () => {
     let totalCount = 0;
@@ -156,7 +166,7 @@ const RentContextProvider = (props) => {
 
 
 
-  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, isVerified, setIsVerified, navigate, products, setProducts, addToCart, getCartCount, updateQuantity, cartItems, setCartItems, getCartAmount, setUserDetails, userDetails,}
+  const value = { currency, search, setSearch, showSearch, setShowSearch, delivery_fee, backendUrl, token, setToken, isAdmin, setIsAdmin, isVerified, setIsVerified, navigate, products, setProducts, addToCart, getCartCount, updateQuantity, cartItems, setCartItems, getCartAmount, setUserDetails, userDetails,getTotalProductsCount}
 
   return (
     <RentContext.Provider value={value}>
