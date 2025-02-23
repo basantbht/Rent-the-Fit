@@ -82,7 +82,7 @@ const Product = () => {
         {/* Product Images */}
         <div className="flex-1 flex flex-col items-center">
           <img className="w-full max-w-[400px] sm:max-w-[500px] rounded-lg shadow-lg" src={image} alt="" />
-          <p className="mt-4 text-lg font-semibold text-red-500">{`Remaining: ${productData.quantity}`}</p>
+          <p className="mt-4 text-lg font-semibold text-red-500">{`Remaining: ${productData.quantity===0?"Out of stock":productData.quantity}`}</p>
         </div>
 
         {/* Product Info */}
@@ -113,7 +113,7 @@ const Product = () => {
           </div>
 
           <button
-            onClick={() => addToCart(productData._id, size)}
+            onClick={() => addToCart(productData._id, size, productData.quantity)}
             className="bg-black text-white px-10 py-4 text-sm rounded-lg shadow-md hover:bg-gray-800 transition-all"
           >
             ADD TO CART

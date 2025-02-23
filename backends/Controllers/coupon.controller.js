@@ -4,6 +4,8 @@ const createCoupon = async (req, res) => {
   try {
     const { code, discountPer, expirationDate } = req.body;
 
+    console.log(req.body)
+
     if (!code || !discountPer || !expirationDate) {
       return res
         .status(400)
