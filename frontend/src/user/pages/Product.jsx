@@ -35,6 +35,7 @@ const Product = () => {
           headers: { Authorization: `Bearer ${token}` },
         });
 
+        console.log(response)
         if (!response.data.error) {
           setReviews(response.data.reviews);
         }
@@ -200,7 +201,6 @@ const Product = () => {
                       {Array(review.rating).fill('⭐').join('')} ({review.rating} Stars)
                     </p>
                     <p>{review.comment}</p>
-                    <p className="text-xs text-gray-400">{new Date(review.createdAt).toLocaleDateString()}</p>
                   </div>
                 ))
               )}
@@ -244,7 +244,7 @@ const Product = () => {
 
       {/* Related Products */}
       <div className="mt-20">
-        <RelatedProducts />
+        <RelatedProducts category={productData.category} rating={productData.rating} currentProductId={productData._id}/>
       </div>
     </div>
   ) : (

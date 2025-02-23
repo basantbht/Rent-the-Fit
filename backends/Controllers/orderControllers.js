@@ -142,7 +142,7 @@ const khaltiOrders = async (req, res) => {
     try {
         const purchaseItems = await purchasedItem.find({
             user: req.user._id,
-            status: "completed"
+         
         });
         console.log(purchaseItems)
         return res.json({
