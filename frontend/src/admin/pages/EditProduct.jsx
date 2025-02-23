@@ -10,6 +10,10 @@ const EditProduct = () => {
   const { products, setProducts } = useContext(RentContext);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showEditForm, setShowEditForm] = useState(false);
+    const [loading, setLoading] = useState(false);
+  
+  
+
 
   const handleEditClick = (product) => {
     setSelectedProduct(product);
@@ -39,6 +43,8 @@ const EditProduct = () => {
   // Submit form
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+    setLoading(true);
+
 
     if (!selectedProduct.name) {
       toast.error("Please fill in the product name.");
@@ -86,6 +92,8 @@ const EditProduct = () => {
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message);
+    }finally {
+      setLoading(false);
     }
   };
 
@@ -123,7 +131,7 @@ const EditProduct = () => {
             <p className='text-gray-700'>{product.quantity}</p>
             <p className='text-gray-900 font-bold'>{currency}{product.price}</p>
             <button
-              className="mt-3 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
+              className="mt-3 px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition"
               onClick={() => handleEditClick(product)}
             >
               Edit
@@ -317,8 +325,8 @@ const EditProduct = () => {
                   </label>
                 </div>
 
-                <button type="submit" className="w-full py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
-                  Update Product
+                <button type="submit" className="w-full py-2 bg-gray-600 text-white rounded-md hover:bg-gray-700 transition" disabled={loading}>
+                {loading ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : "Update"}
                 </button>
               </form>
             </div>

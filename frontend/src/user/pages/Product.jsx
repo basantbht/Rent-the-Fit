@@ -4,9 +4,10 @@ import RelatedProducts from '../components/RelatedProducts';
 import { RentContext } from '../../../context/RentContext';
 import axios from 'axios';
 import { toast } from 'react-toastify';
+import { FaHeart, FaRegHeart } from 'react-icons/fa'; // Import the icons
 
 const Product = () => {
-  const { backendUrl, token } = useContext(RentContext);
+  const { backendUrl, token, userId } = useContext(RentContext); // Added userId from context
   const { productId } = useParams();
   const { products, currency, addToCart } = useContext(RentContext);
   const [productData, setProductData] = useState(null);
@@ -14,8 +15,9 @@ const Product = () => {
   const [size, setSize] = useState('');
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState({ rating: 1, comment: '' });
-
-  const [activeTab, setActiveTab] = useState('description'); // State to toggle tabs
+  const [activeTab, setActiveTab] = useState('description');
+  const [likes, setLikes] = useState(0); // Track the number of likes
+  const [isLiked, setIsLiked] = useState(false); // Track the like status
 
   const fetchProductData = async () => {
     setReviews([]);
@@ -24,6 +26,9 @@ const Product = () => {
     if (product) {
       setProductData(product);
       setImage(product.image);
+      setLikes(product.likes.length); // Set initial like count
+      // Check if the current user has already liked the product
+      setIsLiked(product.likes.some(like => like.user.toString() === userId.toString())); // Use `userId` from context
 
       try {
         const response = await axios.get(`${backendUrl}/api/product/${productId}/reviews`, {
@@ -38,6 +43,28 @@ const Product = () => {
       }
     }
   };
+
+  const handleLikeToggle = async () => {
+    try {
+      const response = await axios.post(
+        `${backendUrl}/api/product/like/${productId}`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+  
+      if (!response.data.error) {
+        toast.success(response.data.message);
+  
+        // Correct state update to ensure likes count is accurate
+        setIsLiked(!isLiked); 
+        setLikes(isLiked ? likes - 1 : likes + 1);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message);
+    }
+  };
+  
 
   const handleReviewChange = (e) => {
     const { name, value } = e.target;
@@ -73,7 +100,7 @@ const Product = () => {
 
   useEffect(() => {
     fetchProductData();
-  }, [productId, products]);
+  }, [productId, products, userId]);  // Adding `userId` as a dependency
 
   return productData ? (
     <div className="border-t-2 pt-10 transition-opacity ease-in duration-500 opacity-100 px-4 md:px-10">
@@ -82,18 +109,25 @@ const Product = () => {
         {/* Product Images */}
         <div className="flex-1 flex flex-col items-center">
           <img className="w-full max-w-[400px] sm:max-w-[500px] rounded-lg shadow-lg" src={image} alt="" />
-          <p className="mt-4 text-lg font-semibold text-red-500">{`Remaining: ${productData.quantity===0?"Out of stock":productData.quantity}`}</p>
+          <p className="mt-4 text-lg font-semibold text-red-500">{`Remaining: ${productData.quantity === 0 ? "Out of stock" : productData.quantity}`}</p>
         </div>
 
         {/* Product Info */}
         <div className="flex-1">
           <h1 className="font-semibold text-2xl">{productData.name}</h1>
-          <p className="mt-5 text-3xl font-bold">
-            {currency}
-            {productData.price}
-          </p>
-
+          <p className="mt-5 text-3xl font-bold">{currency}{productData.price}</p>
           <p className="mt-5 text-gray-600 md:w-4/5">{productData.description}</p>
+
+          {/* Love Icon and Likes Count */}
+          <div className="flex items-center mt-5 gap-3">
+            <div
+              onClick={handleLikeToggle}
+              className={`cursor-pointer text-2xl ${isLiked ? 'text-red-500' : 'text-gray-400'}`}
+            >
+              {isLiked ? <FaHeart /> : <FaRegHeart />}
+            </div>
+            <p className="text-gray-600">{likes} {likes === 1 ? 'Like' : 'Likes'}</p>
+          </div>
 
           <div className="flex flex-col gap-4 my-8">
             <p className="font-medium text-lg">Select Size</p>
@@ -102,9 +136,8 @@ const Product = () => {
                 <button
                   key={index}
                   onClick={() => setSize(item)}
-                  className={`border py-2 px-4 rounded-lg transition-all ${
-                    item === size ? 'border-orange-500 bg-orange-100' : 'bg-gray-200 hover:bg-gray-300'
-                  }`}
+                  className={`border py-2 px-4 rounded-lg transition-all ${item === size ? 'border-orange-500 bg-orange-100' : 'bg-gray-200 hover:bg-gray-300'
+                    }`}
                 >
                   {item}
                 </button>
@@ -175,7 +208,7 @@ const Product = () => {
           )}
         </div>
 
-        {/* Review Submission Form (Shown Only in Reviews Tab) */}
+        {/* Review Submission Form */}
         {activeTab === 'reviews' && (
           <div className="mt-8">
             <h2 className="text-xl font-medium">Write a Review</h2>
@@ -209,11 +242,13 @@ const Product = () => {
         )}
       </div>
 
-      {/* Show Related Products */}
-      <RelatedProducts category={productData.category} />
+      {/* Related Products */}
+      <div className="mt-20">
+        <RelatedProducts />
+      </div>
     </div>
   ) : (
-    <div className="opacity-0"></div>
+    <div className="h-screen flex justify-center items-center">Loading...</div>
   );
 };
 

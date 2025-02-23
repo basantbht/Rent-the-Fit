@@ -31,7 +31,7 @@ const productSchema = joi.object({
   quantity: joi.string().required().messages({
     "string.empty": "Quantity is required.",
   }),
-  description: joi.string().required().max(100).messages({
+  description: joi.string().required().max(300).messages({
     "string.empty": "Description is required.",
     "string.max": "Description cannot exceed 100 characters.",
   }),
@@ -56,7 +56,7 @@ const createProduct = async (req, res) => {
     const { name, brand, quantity, category,subCategory,color, description, price, sizes, bestseller } =
       req.body;
 
-    //console.log(req.file);
+    // console.log(req.body);
     const image = req.file;
     if (!image) {
       return res.status(400).json({ error: true, message: "No Image Found" });
@@ -154,7 +154,7 @@ const editProduct = async (req, res) => {
         price: price || Product.price,
         sizes: sizes ? JSON.parse(sizes) : Product.sizes,
         image: cloudRes.secure_url || Product.image,
-        bestseller: bestseller === true ? true : false,
+        bestseller: bestseller === "true" ? true : false,
       },
       { new: true }
     );
@@ -306,37 +306,56 @@ const recommendProduct = async (req, res) => {
     return res.status(500).json({ error: true, message: "couldnot found." });
   }
 };
-const likeUnlikeProduct = async (req, res) => {
+const likeUnlikeProduct = async (req, res, next) => {
   try {
     const product = await productModel.findById(req.params.id);
     if (!product) {
       return next({ statusCode: 404, message: "Unable to find the product" });
     }
-    const alreadyLiked = product.likes.includes(req.user._id);
+
+    const alreadyLiked = product.likes.some(like => like.users.toString() === req.user._id.toString());
+    //console.log(alreadyLiked)
     if (alreadyLiked) {
-      await productModel.updateOne(req.params.id, {
-        $pull: { likes: req.user._id },
-      });
-      await product.save();
-      return res.status(200).json({ error: false, message: "Unliked ." });
+      await productModel.findByIdAndUpdate(
+        req.params.id,
+        { $pull: { likes: { users: req.user._id } } }
+      );
+      return res.status(200).json({ error: false, message: "Unliked." });
     } else {
-      product.likes.push({
-        user: req.user._id,
-      });
-      await post.save();
+      await productModel.findByIdAndUpdate(
+        req.params.id,
+        { $push: { likes: { users: req.user._id } } }
+      );
+
       const notification = new notiModel({
         from: req.user._id,
         type: "like",
-        to: null,
+        
       });
       await notification.save();
-      return res.status(200).json({ error: false, message: "liked" });
+
+      return res.status(200).json({ error: false, message: "Liked." });
     }
   } catch (error) {
-    console.log("Error in Liking/Unliking Post");
-    return res.status(500).json({ error: true, message: "Couldnot like it" });
+    console.error("Error in Liking/Unliking Product:", error);
+    next(error);
   }
 };
+const getLikes=async(req,res)=>{
+  try {
+    const noti=await notiModel.find({
+      type:'like'
+    }).populate('user');
+    return res.status(200).json({error:true,notification:noti})
+
+    
+  } catch (error) {
+    console.log('Error in get likes')
+    return res.status(500).json({error:true,message:'Couldnot get'})
+    
+  }
+}
+
 module.exports = {
   createProduct,
   ReadProduct,
@@ -347,4 +366,5 @@ module.exports = {
   getProductReview,
   recommendProduct,
   likeUnlikeProduct,
+  getLikes
 };

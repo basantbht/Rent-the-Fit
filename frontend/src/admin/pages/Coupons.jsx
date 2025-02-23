@@ -20,7 +20,7 @@ const Coupons = () => {
       const res = await axios.post(
         "http://localhost:3000/api/coupon",
         {
-          code: `COUPON${Math.floor(100000 + Math.random() * 900000)}`, // Generate a random coupon code
+          code: `COUPON${Math.floor(100000 + Math.random() * 900000)}`, 
           discountPer,
           expirationDate,
           

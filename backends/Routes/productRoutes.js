@@ -16,7 +16,7 @@ const {
   searchProduct,
   productReview,
    getProductReview,
- 
+   getLikes,
 
   recommendProduct,
   likeUnlikeProduct
@@ -42,8 +42,9 @@ productRouter.delete("/:id", validateUser, authorizeAdmin, deleteProduct);
 
 productRouter.post('/:id/reviews',validateUser,checkId,productReview)
 
+productRouter.post('/like/:id',validateUser,likeUnlikeProduct);
+productRouter.get('/like',validateUser,authorizeAdmin,getLikes)
 
-productRouter.post('/like/:id',likeUnlikeProduct);
 productRouter.get('/:id/reviews',validateUser,checkId,getProductReview)
 
 module.exports = productRouter;

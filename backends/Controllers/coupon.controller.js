@@ -58,7 +58,7 @@ const validateCoupon = async (req, res) => {
       isActive: true,
     });
     if (!coupon) {
-      return res.status(500).json({ error: true, message: "not found" });
+      return res.status(500).json({ error: true, message: "coupon already used" });
     }
     if (coupon.expirationDate < new Date()) {
 
@@ -66,6 +66,8 @@ const validateCoupon = async (req, res) => {
         await coupon.save();
       return res.status(500).json({ error: true, message: "expired" });
     }
+    coupon.isActive = false,
+        await coupon.save();
     return res.status(200).json({ error: false, discount: coupon.discountPer });
   } catch (error) {
     console.log("Error in validatecoupon", error);
