@@ -3,9 +3,10 @@ import Title from '../components/Title';
 import ProductItem from '../components/ProductItem';
 import {assets} from '../../assets/assets'
 import { RentContext } from '../../../context/RentContext';
+import axios from 'axios'
 
 const Products = () => {
-  const { products,search,showSearch } = useContext(RentContext);
+  const { products,search,showSearch,backendUrl } = useContext(RentContext);
   const [showFilter, setShowFilter] = useState(false);
   const [filterProducts,setFilterProducts] = useState([]);
   const[category,setCategory] = useState([]);
@@ -40,14 +41,14 @@ const Products = () => {
     }
   }
 
-  const applyFilter = () => {
+  const applyFilter = async() => {
     let productsCopy = products.slice();
     console.log(products)
 
     if(showSearch && search){
       productsCopy = productsCopy.filter(item => item.name.toLowerCase().includes(search.toLowerCase()))
     }
-
+  
     if(category.length > 0){
       productsCopy = productsCopy.filter(item => category.includes(item.category));
     }

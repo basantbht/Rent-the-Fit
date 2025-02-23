@@ -32,7 +32,7 @@ productRouter.post(
   createProduct
 );
 
-productRouter.get("/", ReadProduct);98573894
+productRouter.get("/", ReadProduct);
 
 productRouter.get("/recommend", recommendProduct);
 

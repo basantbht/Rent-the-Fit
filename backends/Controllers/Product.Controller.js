@@ -2,6 +2,8 @@
 const productModel = require("../Models/Product.model");
 const PurchasedItem = require("../Models/purchasedItem.model");
 const notiModel = require("../Models/notification.model");
+const Fuse = require("fuse.js");
+
 
 // Module
 const joi = require("joi");
@@ -195,23 +197,24 @@ const deleteProduct = async (req, res) => {
 };
 
 const searchProduct = async (req, res) => {
-  const searchingValue = req.query.value;
-  // RegExp(searchingValue,"i")
-
   try {
-    const searchdetail = await productModel.find({ name: searchingValue });
-    // console.log(searchdetail);
+    const { name, category, minPrice, maxPrice, bestseller, color, rating } = req.query;
+    let filter = {};
 
-    if (searchdetail.length > 0) {
-      return res.status(200).json({ value: searchdetail });
-    } else {
-      return res
-        .status(400)
-        .json({ value: `OOPS :) CouldNot Found Your ${searchingValue}` });
-    }
-  } catch (e) {
-    return res.status(500).json({ message: "couldnot get product" });
+    if (name) filter.name = { $regex: new RegExp(name, "i") };
+    if (category) filter.category = category;
+    if (minPrice) filter.price = { ...filter.price, $gte: Number(minPrice) };
+    if (maxPrice) filter.price = { ...filter.price, $lte: Number(maxPrice) };
+    if (bestseller) filter.bestseller = bestseller === "true";
+    if (color) filter.color = color;
+    if (rating) filter.rating = { $gte: Number(rating) };
+
+    const products = await productModel.find(filter);
+    res.json({ success: true, products });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
+
 };
 const productReview = async (req, res) => {
   try {
@@ -287,23 +290,21 @@ const getProductReview = async (req, res) => {
 
 const recommendProduct = async (req, res) => {
   try {
-    const product = await productModel.findById(req.body.id);
-    if (!product) {
-      return res
-        .status(400)
-        .json({ error: true, message: "Couldnot found product" });
-    }
-    const recommendProducts = await productModel
-      .find({
-        _id: { $ne: req.body.id },
-        category: product.category,
-      })
-      .sort({ bestseller: -1 })
-      .limit(5);
-    return res.status(200).json({ error: false, recommendProducts });
+    const { query } = req.query;
+    if (!query) return res.status(400).json({ success: false, message: "Query is required" });
+
+    const products = await productModel.find(); // Fetch all products
+
+    const fuse = new Fuse(products, {
+      keys: ["name", "description", "category", "brand"], // Fields to search in
+      threshold: 0.3, // Lower values mean stricter matching
+      distance: 100, // Maximum distance for fuzzy matches
+    });
+
+    const results = fuse.search(query).map((item) => item.item);
+    res.json({ success: true, products: results });
   } catch (error) {
-    console.log("error in recommending Product");
-    return res.status(500).json({ error: true, message: "couldnot found." });
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 const likeUnlikeProduct = async (req, res, next) => {

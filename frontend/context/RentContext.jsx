@@ -24,6 +24,9 @@ const RentContextProvider = (props) => {
   });
   
 
+ 
+  
+
   const addToCart = async (productId, size, quantity) => {
 
     if (!token) {
