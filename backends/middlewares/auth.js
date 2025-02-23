@@ -13,7 +13,6 @@ const validateUser = async (req, res, next) => {
   }
   try {
     const signId = jwt.verify(cookieToken, process.env.SECRET);
-    // req.body.userId = await userModel.findById(signId.userId).select("-password");
     req.user = await userModel.findById(signId.userId).select("-password");
 
     next();

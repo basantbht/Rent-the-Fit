@@ -74,23 +74,5 @@ const verifyKyc = async (req, res) => {
     return res.status(500).json({ error: true, message: "Couldnot verify" });
   }
 };
-const verifyPhone = async (req, res) => {
-  try {
-    const { phoneOtp } = req.body;
-    const user = await kycModel.findById(req.user._id);
-    if (user.otp === phoneOtp && user.otpExpiresAt > new Date()) {
-      user.otp = null;
-      user.otpExpiresAt = null;
-      await user.save();
-      return res
-        .status(200)
-        .json({ error: false, message: "Phone Number Verified." });
-    }
-  } catch (error) {
-    console.log("Error in Verify-Phone");
-    return res
-      .status(500)
-      .josn({ error: true, message: "Couldnot verify your Number." });
-  }
-};
+
 module.exports = { createKyc, getkyc, verifyKyc, verifyPhone };

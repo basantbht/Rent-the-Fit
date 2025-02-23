@@ -53,8 +53,18 @@ const createProduct = async (req, res) => {
       return res.status(404).json({ error: true, message: error.message });
     }
 
-    const { name, brand, quantity, category,subCategory,color, description, price, sizes, bestseller } =
-      req.body;
+    const {
+      name,
+      brand,
+      quantity,
+      category,
+      subCategory,
+      color,
+      description,
+      price,
+      sizes,
+      bestseller,
+    } = req.body;
 
     //console.log(req.file);
     const image = req.file;
@@ -64,7 +74,6 @@ const createProduct = async (req, res) => {
     let cloudRes = await cloudinary.uploader.upload(image.path, {
       folder: "product-image",
     });
-    // console.log(cloudRes);
 
     const newProduct = new productModel({
       name,
@@ -115,10 +124,18 @@ const editProduct = async (req, res) => {
     return res.status(404).json({ error: true, message: error.message });
   }
   try {
-
-    const { name, brand, quantity, category, subCategory, color, description, price, bestseller, sizes } =
-      req.body;
-
+    const {
+      name,
+      brand,
+      quantity,
+      category,
+      subCategory,
+      color,
+      description,
+      price,
+      bestseller,
+      sizes,
+    } = req.body;
 
     const image = req.file;
     if (!image) {
@@ -215,8 +232,8 @@ const searchProduct = async (req, res) => {
 };
 const productReview = async (req, res) => {
   try {
-    const { rating, comment,productId } = req.body;
-console.log(req.body)
+    const { rating, comment, productId } = req.body;
+    console.log(req.body);
     const product = await productModel.findById(productId);
 
     if (!product) {
@@ -242,23 +259,20 @@ console.log(req.body)
       (review) => review.user.toString() === req.user._id.toString()
     );
 
-
-      if (alreadyReviewed) {
-        return res
-          .status(500)
-          .json({ error: true, message: "Product Already reviewed" });
-      }
-      const review = {
-        name: req.user.username,
-        rating,
-        comment,
-        user: req.user._id,
-      };
-      product.reviews.push(review);
-      await product.save();
-      return res.status(200).json({ error: false, message: review });
-
-    
+    if (alreadyReviewed) {
+      return res
+        .status(500)
+        .json({ error: true, message: "Product Already reviewed" });
+    }
+    const review = {
+      name: req.user.username,
+      rating,
+      comment,
+      user: req.user._id,
+    };
+    product.reviews.push(review);
+    await product.save();
+    return res.status(200).json({ error: false, message: review });
   } catch (error) {
     console.error("Error in productReview", error);
     return res
@@ -267,23 +281,26 @@ console.log(req.body)
   }
 };
 
-
 const getProductReview = async (req, res) => {
   try {
-    const product = await productModel.findById(req.params.id).select('reviews'); 
+    const product = await productModel
+      .findById(req.params.id)
+      .select("reviews");
 
     if (!product) {
-      return res.status(404).json({ error: true, message: "Product not found" });
+      return res
+        .status(404)
+        .json({ error: true, message: "Product not found" });
     }
 
     return res.status(200).json({ error: false, reviews: product.reviews });
   } catch (e) {
     console.log("Error in get reviews", e);
-    return res.status(500).json({ error: true, message: "Could not retrieve reviews." });
+    return res
+      .status(500)
+      .json({ error: true, message: "Could not retrieve reviews." });
   }
 };
-
-
 
 const recommendProduct = async (req, res) => {
   try {
@@ -306,37 +323,42 @@ const recommendProduct = async (req, res) => {
     return res.status(500).json({ error: true, message: "couldnot found." });
   }
 };
-const likeUnlikeProduct = async (req, res) => {
+const likeUnlikeProduct = async (req, res, next) => {
   try {
     const product = await productModel.findById(req.params.id);
     if (!product) {
       return next({ statusCode: 404, message: "Unable to find the product" });
     }
-    const alreadyLiked = product.likes.includes(req.user._id);
+
+    const alreadyLiked = product.likes.some(
+      (like) => like.users.toString() === req.user._id.toString()
+    );
+
     if (alreadyLiked) {
-      await productModel.updateOne(req.params.id, {
-        $pull: { likes: req.user._id },
+      await productModel.findByIdAndUpdate(req.params.id, {
+        $pull: { likes: { users: req.user._id } },
       });
-      await product.save();
-      return res.status(200).json({ error: false, message: "Unliked ." });
+      return res.status(200).json({ error: false, message: "Unliked." });
     } else {
-      product.likes.push({
-        user: req.user._id,
+      await productModel.findByIdAndUpdate(req.params.id, {
+        $push: { likes: { users: req.user._id } },
       });
-      await post.save();
+
       const notification = new notiModel({
         from: req.user._id,
         type: "like",
         to: null,
       });
       await notification.save();
-      return res.status(200).json({ error: false, message: "liked" });
+
+      return res.status(200).json({ error: false, message: "Liked." });
     }
   } catch (error) {
-    console.log("Error in Liking/Unliking Post");
-    return res.status(500).json({ error: true, message: "Couldnot like it" });
+    console.error("Error in Liking/Unliking Product:", error);
+    next(error);
   }
 };
+
 module.exports = {
   createProduct,
   ReadProduct,

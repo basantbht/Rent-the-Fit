@@ -6,7 +6,7 @@ const { validateUser, authorizeAdmin } = require("../middlewares/auth");
 
 const upload = require("../middlewares/multer");
 
-const {checkId}=require('../middlewares/checkId')
+const { checkId } = require("../middlewares/checkId");
 
 const {
   createProduct,
@@ -15,11 +15,10 @@ const {
   deleteProduct,
   searchProduct,
   productReview,
-   getProductReview,
- 
+  getProductReview,
 
   recommendProduct,
-  likeUnlikeProduct
+  likeUnlikeProduct,
 } = require("../Controllers/Product.Controller");
 
 productRouter.get("/search", searchProduct);
@@ -32,18 +31,24 @@ productRouter.post(
   createProduct
 );
 
-productRouter.get("/", ReadProduct);98573894
+productRouter.get("/", ReadProduct);
+98573894;
 
 productRouter.get("/recommend", recommendProduct);
 
-productRouter.put("/:id", validateUser, authorizeAdmin,upload.single("image"), editProduct);
+productRouter.put(
+  "/:id",
+  validateUser,
+  authorizeAdmin,
+  upload.single("image"),
+  editProduct
+);
 
 productRouter.delete("/:id", validateUser, authorizeAdmin, deleteProduct);
 
-productRouter.post('/:id/reviews',validateUser,checkId,productReview)
+productRouter.post("/:id/reviews", validateUser, checkId, productReview);
 
-
-productRouter.post('/like/:id',likeUnlikeProduct);
-productRouter.get('/:id/reviews',validateUser,checkId,getProductReview)
+productRouter.post("/like/:id", likeUnlikeProduct);
+productRouter.get("/:id/reviews", validateUser, checkId, getProductReview);
 
 module.exports = productRouter;

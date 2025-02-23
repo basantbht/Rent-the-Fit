@@ -1,6 +1,6 @@
 const express = require("express")
 
-const {placeOrder, placeOrderKhalti, allOrders,userOrders,updateStatus,khaltiOrders,productReview,khaltiOrder} = require('../Controllers/orderControllers.js')
+const {placeOrder, placeOrderKhalti, allOrders,userOrders,updateStatus,khaltiOrders,productReview,khaltiOrder,sendMail} = require('../Controllers/orderControllers.js')
 
 const { authorizeAdmin, validateUser } = require('../middlewares/auth.js');
 
@@ -21,7 +21,7 @@ orderRouter.get('/khaltiorders',validateUser,khaltiOrders)
 orderRouter.get('/khaltiorders/admin',validateUser,authorizeAdmin,khaltiOrder)
 
 orderRouter.post('/review',validateUser,productReview)
-
+orderRouter.post('/mail/enddate',validateUser,sendMail)
 
 module.exports=orderRouter;
 

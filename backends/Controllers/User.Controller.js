@@ -333,7 +333,7 @@ const deleteUser = async (req, res) => {
         .status(400)
         .json({ message: "OOPS .. Couldnot Delelte Admin...", error: true });
     }
-    await userModel.findByIdAndDelete({ _id: User._id });
+    await User.deleteOne();
     return res.status(200).json({ message: "User Deleted..." });
   } else {
     return res
