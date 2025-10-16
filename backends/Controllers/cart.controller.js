@@ -63,7 +63,7 @@ const updateCart = async (req, res) => {
 const allItems = async (req, res) => {
   try {
     const user = req.user;
-    return res.status(200).json({ error: false, items: user.cartItems });
+    return res.status(200).json({ error: false, items: user.cartData });
   } catch (error) {
     console.log("Error in allCart", error);
     return res.status(500).json({ error: true, message: "couldnot get items" });

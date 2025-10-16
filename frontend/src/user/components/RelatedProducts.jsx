@@ -10,24 +10,20 @@ const RelatedProducts = ({ category, currentProductId }) => {
 
   useEffect(() => {
     if (products.length > 0) {
-      // Step 1: Filter products by category to limit to the same category
       let filteredProducts = products.filter(
         (product) => product.category === category && product._id !== currentProductId
       );
 
-      // Step 2: Fuse.js setup for fuzzy search within the filtered products
       const fuseOptions = {
         includeScore: true,
         threshold: 0.2,
-        keys: ['name', 'category'],  // You can adjust the keys depending on your needs
+        keys: ['name', 'category'],
       };
 
       const fuse = new Fuse(filteredProducts, fuseOptions);
 
-      // Step 3: Perform the fuzzy search (if needed, you can adjust the search query)
       const result = fuse.search(category).map(result => result.item);
 
-      // Step 4: Limit the number of related products to 5
       setRelated(result.slice(0, 5));
     }
   }, [products, category, currentProductId]);

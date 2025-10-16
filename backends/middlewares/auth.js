@@ -2,9 +2,8 @@ const jwt = require("jsonwebtoken");
 const userModel = require("../Models/User.model");
 
 const validateUser = async (req, res, next) => {
-  let cookieToken = req.headers.authorization?.split(" ")[1]; // Extract Bearer Token
-
-  console.log("TOKEN FORM AUTH",cookieToken)
+  let cookieToken = req.headers.authorization?.split(" ")[1]; 
+  console.log("token",cookieToken)
 
   if (!cookieToken) {
     return res
@@ -13,7 +12,7 @@ const validateUser = async (req, res, next) => {
   }
   try {
     const signId = jwt.verify(cookieToken, process.env.SECRET);
-    // req.body.userId = await userModel.findById(signId.userId).select("-password");
+    // req.body.userId = await user Model.findById(signId.userId).select("-password");
     req.user = await userModel.findById(signId.userId).select("-password");
 
     next();

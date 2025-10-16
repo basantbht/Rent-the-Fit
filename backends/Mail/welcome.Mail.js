@@ -7,7 +7,8 @@ const welcomeMail = async (email) => {
       from: process.env.SENDER_EMAIL,
       to: email,
       subject: "Welcome to our world",
-      text: `Welcome to the Cloth Renting system`,
+      text: `Welcome to the Cloth Renting system.
+      Being a first customer to our website .You can apply discount.Your code is COUPON227208 `,
     });
     console.log("Email Sent");
   } catch (e) {

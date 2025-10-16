@@ -148,7 +148,7 @@ const createUser = async (req, res) => {
     if (userExisted) {
       return res
         .status(403)
-        .json({ error: true, message: "Account Already Exists" });
+        .json({ error: true, message: "Email Already Exists" });
     }
 
     const salt = await bcrypt.genSalt(10);

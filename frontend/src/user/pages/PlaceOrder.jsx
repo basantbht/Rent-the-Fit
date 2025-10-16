@@ -64,6 +64,30 @@ const PlaceOrder = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
+  
+    // Basic form validation
+    if (!formData.firstName || !formData.lastName || !formData.email || !formData.street ||
+        !formData.city || !formData.state || !formData.zipcode || !formData.phone ||
+        !formData.startdate || !formData.enddate) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+  
+    if (!/^\d{10}$/.test(formData.phone)) {
+      toast.error("Phone number must be 10 digits.");
+      return;
+    }
+  
+    if (!/^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$/.test(formData.email)) {
+      toast.error("Please enter a valid email address.");
+      return;
+    }
+  
+    if (new Date(formData.enddate) <= new Date(formData.startdate)) {
+      toast.error("End date must be later than the start date.");
+      return;
+    }
+  
     try {
       let orderItems = [];
       for (const items in cartItems) {
@@ -103,11 +127,6 @@ const PlaceOrder = () => {
   
       console.log(khaltiData);
   
-      if (new Date(formData.enddate) <= new Date(formData.startdate)) {
-        toast.error("End date must be later than the start date.");
-        return;
-      }
-  
       switch (method) {
         case 'cod':
           const res = await axios.post('http://localhost:3000/api/order/place', orderData, {
@@ -115,7 +134,6 @@ const PlaceOrder = () => {
               Authorization: `Bearer ${token}`
             }
           });
-          console.log(res);
           if (res.data.success) {
             setCartItems({});
             navigate('/orders');
@@ -123,14 +141,13 @@ const PlaceOrder = () => {
             toast.error(res.data.message);
           }
           break;
-        
+  
         case 'khalti':
           const kres = await axios.post('http://localhost:3000/api/pay/', khaltiData, {
             headers: {
               Authorization: `Bearer ${token}`
             }
           });
-          console.log(kres);
           if (kres.data.success) {
             window.location.href = kres.data.payment.payment_url;
           }
@@ -144,6 +161,7 @@ const PlaceOrder = () => {
       toast.error(error.response?.data?.message || "Order submission failed");
     }
   };
+  
   
 
   return (

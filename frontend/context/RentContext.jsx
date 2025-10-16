@@ -39,7 +39,7 @@ const RentContextProvider = (props) => {
       return;
     }
     
-    if (!quantity) {
+    if (quantity === "0") {
       toast.error('Out of Stock');
       return;
     }
@@ -69,6 +69,7 @@ const RentContextProvider = (props) => {
               Authorization: `Bearer ${token}`
             }
           })
+          console.log(res)
       } catch (error) {
         console.log(error);
         toast.error(error.response.data.message)
@@ -152,8 +153,53 @@ const RentContextProvider = (props) => {
     return totalAmount;
   }
 
+  const getUserCart = async () => {
+    try {
+      const response = await axios.get(backendUrl + '/api/cart/', {
+        headers: {
+          Authorization: `Bearer ${token}`, // Ensure token is set correctly
+        },
+      });
+  
+      console.log(response);
+      console.log(response.data.items);
+  
+      if (response.data.success) {
+        const cartItemsArray = [];
+  
+        // Loop through each product ID (key) and size-quantity mappings (value)
+        for (const productId in response.data.items) {
+          const sizeQuantityMap = response.data.items[productId];
+  
+          // Loop through the size-quantity map
+          for (const size in sizeQuantityMap) {
+            const quantity = sizeQuantityMap[size];
+  
+            // Push the transformed cart item into the array
+            if (quantity > 0) {
+              cartItemsArray.push({
+                _id: productId,   // Product ID
+                size: size,       // Size (e.g., 'L', 'M', 'XL')
+                quantity: quantity // Quantity
+              });
+            }
+          }
+        }
+  
+        // Set the state for cart items
+        setCartItems(cartItemsArray);
+        console.log(cartItemsArray); // Check the transformed cart data
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(error.message); // Show error if something goes wrong
+    }
+  };
+  
+
   useEffect(() => {
     getProductsData();
+    // getUserCart();
   }, []);
 
   useEffect(() => {
